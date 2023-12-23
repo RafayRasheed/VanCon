@@ -6,6 +6,7 @@ import { myFontSize, myFonts } from "../../ultils/myFonts";
 import { myColors } from "../../ultils/myColors";
 import { deccodeInfo, encodeInfo } from "../functions/functions";
 import firestore from '@react-native-firebase/firestore';
+import { FirebaseUser } from "../functions/firebase";
 
 
 export const NewPass = ({ navigation, route }) => {
@@ -38,7 +39,7 @@ export const NewPass = ({ navigation, route }) => {
 
     function changePassword() {
         setIsLoading(true)
-        firestore().collection('users').doc(profile.uid)
+        FirebaseUser.doc(profile.uid)
             .update({
                 password: encodeInfo(newPass),
             })

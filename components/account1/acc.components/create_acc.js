@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { ios, myHeight, myWidth, Spacer } from "../../common";
 import { myFontSize, myFonts } from "../../../ultils/myFonts";
 import { myColors } from "../../../ultils/myColors";
@@ -10,6 +10,7 @@ import { dataFullData, encodeInfo, verificationCode } from "../../functions/func
 import firestore from '@react-native-firebase/firestore';
 import { sendVerficationEmail } from "../../functions/email";
 import { SelectCity } from "../select_city";
+import { FirebaseUser } from "../../functions/firebase";
 
 
 export const CreateAcc = ({ navigate, showError, showLoading, city, setShowCityModal }) => {
@@ -82,10 +83,12 @@ export const CreateAcc = ({ navigate, showError, showLoading, city, setShowCityM
     }
     function sendEmail() {
         const dateData = dataFullData()
-        const profile = new Person(uuid.v4(), name, email, city, encodeInfo(password), dateData.date, dateData.dateInt)
+        const profile = new Person(uuid.v4(), name, email, city, encodeInfo(password), dateData.date, dateData.dateInt,)
+
         const code = verificationCode()
         sendVerficationEmail(profile, code)
             .then(success => {
+                console.log(profile)
                 showLoading(false)
                 goToVerification(profile, code)
             })
@@ -98,7 +101,7 @@ export const CreateAcc = ({ navigate, showError, showLoading, city, setShowCityM
 
     function onRegister() {
         showLoading(true)
-        firestore().collection('users')
+        FirebaseUser
             .where('email', '==', email).get()
             .then(result => {
                 if (result.empty) {

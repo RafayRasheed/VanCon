@@ -2,7 +2,8 @@ import firestore from '@react-native-firebase/firestore';
 import { storage } from "../common";
 import { getLogin } from "./storageMMKV";
 
-
+export const FirebaseUser = firestore().collection('users')
+export const FirebaseLocation = firestore().collection('locations')
 export function uploadFavouriteFirebase(newFav, type) {
     // const dispatch = useDispatch()
     const profile = getLogin()

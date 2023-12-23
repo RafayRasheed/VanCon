@@ -7,6 +7,7 @@ import { myColors } from "../../ultils/myColors";
 import firestore from '@react-native-firebase/firestore';
 import { sendVerficationEmail } from "../functions/email";
 import { verificationCode } from "../functions/functions";
+import { FirebaseUser } from "../functions/firebase";
 
 export const ForgetPassword = ({ navigation }) => {
     const [email, setEmail] = useState()
@@ -58,8 +59,7 @@ export const ForgetPassword = ({ navigation }) => {
     function onSubmit() {
         if (verifyEmail()) {
             setIsLoading(true)
-            firestore().collection('users')
-                .where('email', '==', email).get()
+            FirebaseUser.where('email', '==', email).get()
                 .then(result => {
                     if (result.empty) {
                         showError('User not exists with this email')

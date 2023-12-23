@@ -9,6 +9,7 @@ import { setLogin } from "../../functions/storageMMKV";
 import { useDispatch } from "react-redux";
 import { setProfile } from "../../../redux/profile_reducer";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { FirebaseUser } from "../../functions/firebase";
 
 export const Login = ({ navigation, showError, showLoading }) => {
 
@@ -65,7 +66,7 @@ export const Login = ({ navigation, showError, showLoading }) => {
 
     function checkUser() {
         showLoading(true)
-        firestore().collection('users')
+        FirebaseUser
             .where('email', '==', email).get()
             .then(result => {
                 if (result.empty) {
