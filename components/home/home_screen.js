@@ -129,7 +129,7 @@ export const HomeScreen = ({ navigation }) => {
 
     }
     useEffect(() => {
-        console.log(profile.ready)
+        getCurrentLocations()
         const interval = setInterval(() => {
             getCurrentLocations()
 
@@ -188,7 +188,7 @@ export const HomeScreen = ({ navigation }) => {
                             fontFamily: myFonts.heading,
                             alignSelf: 'center',
 
-                        }]}>VanCon<Text style={{ color: myColors.primaryT }}> Captain</Text></Text>
+                        }]}>Van<Text style={{ color: myColors.primaryT }}>Con</Text></Text>
 
 
 

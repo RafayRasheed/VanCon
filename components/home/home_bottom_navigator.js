@@ -21,19 +21,21 @@ const Icons = {
         image: require('../assets/home_main/home/navigator/home.png'),
         style: { width: myWidth(6.5), height: myHeight(2.68) }
     },
-    ORDERS: {
-        image: require('../assets/home_main/home/navigator/orderIcon.png'),
-        style: { width: myHeight(2.9), height: myHeight(2.9) }
+    RIDES: {
+        // image: require('../assets/home_main/home/navigator/van.png'),
+        // style: { width: myHeight(4.4), height: myHeight(4.4) }
+        image: require('../assets/home_main/home/navigator/van2.png'),
+        style: { width: myHeight(3.4), height: myHeight(3.4) }
     },
-    // HOT: {
-    //     image: require('../assets/home_main/home/navigator/fire.png'),
-    //     style: { width: myHeight(3.8), height: myHeight(3.8) }
-    // },
+    HOT: {
+        image: require('../assets/home_main/home/navigator/fire.png'),
+        style: { width: myHeight(3.8), height: myHeight(3.8) }
+    },
 
     // WALLET: require('../assets/home_main/navigator/wallet.png'),
-    CART: {
-        image: require('../assets/home_main/home/navigator/cart.png'),
-        style: { width: myWidth(5.5), height: myHeight(2.68) }
+    ALERT: {
+        image: require('../assets/home_main/home/navigator/bell.png'),
+        style: { width: myHeight(2.8), height: myHeight(2.8) }
     },
     PROFILE: {
         image: require('../assets/home_main/home/navigator/account.png'),
@@ -61,19 +63,19 @@ const screenOptions = ({ navigator, route }) => {
         tabBarInactiveTintColor: myColors.text,
         // tabBarShowLabel:name=='HOT'?true:false,
         tabBarIcon: ({ color }) => {
-            // if (name == 'HOT') {
-            //     return (
-            //         <View style={{
-            //             padding: myHeight(2), backgroundColor: color == myColors.primaryT ? myColors.primaryL3 : myColors.primaryL5, borderWidth: myHeight(0.1), borderColor: myColors.offColor7,
-            //             borderRadius: myHeight(10), elevation: 3,
-            //             marginTop: -myHeight(7.5)
-            //         }}>
-            //             <Image style={[Icons[name].style, { resizeMode: 'contain', }]}
-            //                 source={Icons[name].image} />
-            //         </View>
-            //     )
-            // }
-            if (name == 'CART') {
+            if (name == 'HOT') {
+                return (
+                    <View style={{
+                        padding: myHeight(2), backgroundColor: color == myColors.primaryT ? myColors.primaryL3 : myColors.primaryL5, borderWidth: myHeight(0.1), borderColor: myColors.offColor7,
+                        borderRadius: myHeight(10), elevation: 3,
+                        marginTop: -myHeight(7.5)
+                    }}>
+                        <Image style={[Icons[name].style, { resizeMode: 'contain', }]}
+                            source={Icons[name].image} />
+                    </View>
+                )
+            }
+            if (name == 'ALERT') {
                 return (
                     <View>
                         <Image style={[Icons[name].style, { tintColor: color, resizeMode: 'contain', }]}
@@ -91,7 +93,7 @@ const screenOptions = ({ navigator, route }) => {
                     </View>
                 )
             }
-            if (name == 'ORDERS') {
+            if (name == 'RIDES') {
                 return (
                     <View>
                         <Image style={[Icons[name].style, { tintColor: color, resizeMode: 'contain', }]}
@@ -150,8 +152,9 @@ export const HomeBottomNavigator = ({ route, navigation }) => {
                 initialRouteName="HOME"
             >
                 <Tab.Screen name="HOME" component={HomeNavigator} />
-                <Tab.Screen name="ORDERS" component={OrderScreen} />
-                <Tab.Screen name="CART" component={CartNavigator} />
+                <Tab.Screen name="RIDES" component={OrderScreen} />
+                {/* <Tab.Screen name="HOT" component={OrderScreen} /> */}
+                <Tab.Screen name="ALERT" component={CartNavigator} />
                 <Tab.Screen name="PROFILE" component={ProfileNavigator} />
 
             </Tab.Navigator>

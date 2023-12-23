@@ -35,8 +35,8 @@ export const AppNavigator = () => {
     return (
         <NavigationContainer ref={(re) => NavigationService.setTopLevelNavigator(re)}>
             <AppTAB.Navigator
-                // initialRouteName="StartupNavigator"
-                initialRouteName={containFirstTime() ? containLogin() ? 'HomeBottomNavigator' : "AccountNavigator" : "StartupScreen"}
+                initialRouteName="HomeBottomNavigator"
+                // initialRouteName={containFirstTime() ? containLogin() ? 'HomeBottomNavigator' : "AccountNavigator" : "StartupScreen"}
                 screenOptions={{
                     animation: 'fade',
                     headerShown: false
