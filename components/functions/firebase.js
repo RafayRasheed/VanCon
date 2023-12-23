@@ -19,11 +19,16 @@ export function uploadFavouriteFirebase(newFav, type) {
     })
 
 }
-export const sendPushNotification = async (title, body) => {
+export const getTokenAndServerKey=async()=>{
     const deviceToken = await getDeviceToken()
     const serverKey = 'AAAAvzxaN6w:APA91bGpnX3s6pQjXZL-Wr-NtJRt7fNxMyu8LkCoNGu1GPB9ht4XiS5QAgybtdGoz4mmkI3J9TTbJBHGGI8Q6SNDWaFiwZL3Ax3NbnbhwtPDK9nAh9loGDf_5MAXFhR8QfSp9dXN-rQ7'
     console.log('Token', deviceToken)
     console.log('serverKey', serverKey)
+    return{deviceToken, serverKey}
+}
+export const sendPushNotification = async (title, body, status) => {
+    const {deviceToken, serverKey} =await getTokenAndServerKey()
+
     const fcmEndpoint = 'https://fcm.googleapis.com/fcm/send';
 
     const headers = {
@@ -36,8 +41,11 @@ export const sendPushNotification = async (title, body) => {
         notification: {
             title: title,
             body: body,
-            status:0,
         },
+        data:{
+            status,
+
+        }
     };
 
     try {
@@ -57,7 +65,17 @@ export const sendPushNotification = async (title, body) => {
         console.error('Error sending notification:', error.message);
     }
 };
-
+export async function updateDeviceTokenToFireBase(uid){
+    const {deviceToken} =await getTokenAndServerKey()
+    FirebaseUser.doc(uid)
+    .update({
+        deviceToken
+    }).then((data) => {
+        console.log('Token Update To Firebase Succesfully')
+    }).catch(err => {
+        console.log('Internal error while Updating a Token', err)
+    });
+}
 
 export const getDeviceToken = async () => {
     try {

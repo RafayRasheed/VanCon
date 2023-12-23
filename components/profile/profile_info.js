@@ -12,6 +12,7 @@ import { deccodeInfo, encodeInfo } from '../functions/functions';
 import firestore from '@react-native-firebase/firestore';
 import { setProfile } from '../../redux/profile_reducer';
 import { SelectCity } from '../account1/select_city';
+import { FirebaseUser } from '../functions/firebase';
 
 
 export const ProfileInfo = ({ navigation }) => {
@@ -107,7 +108,7 @@ export const ProfileInfo = ({ navigation }) => {
     function onSave() {
         if (checking()) {
             setIsLoading(true)
-            firestore().collection('users').doc(profile.uid)
+            FirebaseUser.doc(profile.uid)
                 .update({
                     name: name,
                     password: encodeInfo(password),

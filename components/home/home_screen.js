@@ -23,7 +23,7 @@ import database from '@react-native-firebase/database';
 import { SetErrorAlertToFunction, deccodeInfo, getCurrentLocations } from '../functions/functions';
 import messaging from '@react-native-firebase/messaging';
 import notifee from '@notifee/react-native';
-import { FirebaseUser, getDeviceToken, sendPushNotification } from '../functions/firebase';
+import { FirebaseUser, getDeviceToken, sendPushNotification, updateDeviceTokenToFireBase } from '../functions/firebase';
 import { NotiAlert } from '../common/noti_Alert';
 import Animated, { SlideInUp } from 'react-native-reanimated';
 
@@ -91,8 +91,12 @@ export const HomeScreen = ({ navigation }) => {
 
     useEffect(() => {
         const unsubscribeOnMessage = messaging().onMessage(async remoteMessage => {
-            console.log('Message handled in the foreground:');
-            SetErrorAlertToFunction({Title: remoteMessage.notification.title, Body:remoteMessage.notification.body})
+            console.log('Message handled in the foreground:', remoteMessage);
+            SetErrorAlertToFunction({
+                Title: remoteMessage.notification.title,
+                Body: remoteMessage.notification.body,
+                Status: remoteMessage.data.status
+            })
         });
 
         return () => {
@@ -128,7 +132,9 @@ export const HomeScreen = ({ navigation }) => {
 
 
     useEffect(() => {
-        sendPushNotification('hi', 'bye')
+        updateDeviceTokenToFireBase(profile.uid)
+        // sendPushNotification('hi', 'bye',2 )
+
         // getCurrentLocations()
         // const interval = setInterval(() => {
         //     getCurrentLocations()

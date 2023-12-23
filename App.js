@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, SafeAreaView, StatusBar, Platform, TouchableOpacity, StyleSheet, PermissionsAndroid } from 'react-native';
+import { View, Text, SafeAreaView, StatusBar, Platform, TouchableOpacity, StyleSheet, PermissionsAndroid, LogBox } from 'react-native';
 // import { MMKV } from 'react-native-mmkv';
 import { myColors } from './ultils/myColors';
 import { myHeight, NotiAlertNew, printWithPlat } from './components/common';
@@ -66,10 +66,12 @@ export default function App() {
     // }
 
   }, [])
- 
+
   useEffect(() => {
     printWithPlat('Started Successfully')
     SplashScreen.hide()
+    LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+    LogBox.ignoreAllLogs();
     // const dispatch = useDispatch()
     // dispatch(setCart(getCartLocal()))
     // console.log(typeof getCartLocal())
@@ -86,7 +88,7 @@ export default function App() {
       }
       <Provider store={storeRedux}>
         <AppNavigator />
-      <NotiAlertNew />
+        <NotiAlertNew />
       </Provider>
 
     </>

@@ -4,7 +4,7 @@ import { MMKV } from 'react-native-mmkv';
 import { myColors } from '../ultils/myColors';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { myFontSize, myFonts, myLetSpacing } from '../ultils/myFonts';
-import Animated, { BounceInUp, FadeInUp, FadeOutUp, SlideInUp } from 'react-native-reanimated';
+import Animated, { BounceInUp, FadeInUp, FadeOutUp, SlideInUp, SlideOutUp } from 'react-native-reanimated';
 const { height, width } = Dimensions.get('window')
 export const ios = Platform.OS == 'ios'
 export const stutusH = StatusBar.currentHeight
@@ -118,13 +118,13 @@ export const NotiAlertNew = () => {
     const { Title, Body, Status } = error
     return (
         <View style={{ position: 'absolute', zIndex: 10, width: '100%', backgroundColor: 'transparent' }}>
-            <Animated.View entering={SlideInUp.duration(500)}>
+            <Animated.View entering={SlideInUp.duration(500)} exiting={SlideOutUp}>
 
                 <StatusbarH />
                 <Spacer paddingT={myHeight(2)} />
                 <TouchableOpacity disabled activeOpacity={0.8} style={{
                     // height: myHeight(11),
-                    backgroundColor: myColors.background, marginHorizontal: myWidth(4),
+                    backgroundColor: myColors.background, marginHorizontal: myWidth(5),
                     borderRadius: myWidth(3), borderWidth: 1, borderColor: myColors.offColor7, elevation: 3,
                     flexDirection: 'row', overflow: 'hidden',
                 }}>
