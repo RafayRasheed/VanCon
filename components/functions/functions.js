@@ -1,4 +1,7 @@
 import { Base64 } from 'js-base64';
+import storeRedux from '../../redux/store_redux';
+import { setCurrentLocation } from '../../redux/location_reducer';
+import Geolocation from '@react-native-community/geolocation';
 
 export function verificationCode() {
     return Math.floor(Math.random() * 899999 + 100000);
@@ -33,7 +36,7 @@ export function dataFullData() {
     const minutes = adjustSting(date.getUTCMinutes().toString(), 2)
     const seconds = adjustSting(date.getUTCSeconds().toString(), 2)
     const mili = adjustSting(date.getUTCMilliseconds().toString(), 3)
-    const extra = verificationCode().toString().slice(0, 3)
+    const extra = verificationCode().toString().slice(0, 1)
     const code = year + month + day + hours + minutes + seconds + mili + extra
 
 
@@ -48,3 +51,36 @@ export function dataFullData() {
 
 
 }
+
+export function getCurrentLocations() {
+    Geolocation.getCurrentPosition(info => {
+      if (info) {
+        const { coords } = info
+        const { latitude, longitude } = coords
+        const detail = ({  latitude, longitude });
+        storeRedux.dispatch(setCurrentLocation(detail))
+        const apiUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${24.8168778}&lon=${67.0345444}`;
+
+        fetch(apiUrl, {
+          headers: {
+            'Accept-Language': 'en',
+          },
+        })
+          .then(response => response.json())
+          .then(data => {
+
+            // Handle the response data
+            const { display_name, address } = data
+            const { road, neighbourhood } = address
+            const detail = ({ fullName: display_name, shortName: `${road}, ${neighbourhood}`, latitude, longitude });
+            storeRedux.dispatch(setCurrentLocation(detail))
+
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      } else {
+
+      }
+    });
+  }

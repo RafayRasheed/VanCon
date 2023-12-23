@@ -130,11 +130,11 @@ export const HomeScreen = ({ navigation }) => {
     }
     useEffect(() => {
         console.log(profile.ready)
-        // const interval = setInterval(() => {
-        //     getCurrentLocations()
+        const interval = setInterval(() => {
+            getCurrentLocations()
 
-        // }, 120000);
-        // return () => clearInterval(interval);
+        }, 120000);
+        return () => clearInterval(interval);
 
     }, [])
 
