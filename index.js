@@ -9,32 +9,10 @@ import messaging from '@react-native-firebase/messaging';
 import { navigateNoti, navigationRef, notificationListeners } from './components/RootNavigation';
 import NavigationService from './components/NavigationService';
 
+// Initialize Firebase
 messaging().setBackgroundMessageHandler(async remoteMessage => {
-    // setTimeout(() => {
-    //     NavigationService.navigate("OrderDetails", {})
-    // }
-    //     , 1000)
-    // messaging().onNotificationOpenedApp(async remoteMessage => {
-    //     console.log(
-    //         ' bACK Notification caused app to open from background state:',
-    //         remoteMessage,
-    //     );
+    console.log('Message handled in the background!');
+  });
 
-    // });
-
-    messaging().sendMessage({
-        data: {
-
-        }
-    })
-});
-messaging().getInitialNotification(async remoteMessage => {
-    // navigateNoti('OrderDetails', {})
-
-
-    console.log('Message handled in the kill!', remoteMessage)
-
-
-});
 
 AppRegistry.registerComponent(appName, () => App);

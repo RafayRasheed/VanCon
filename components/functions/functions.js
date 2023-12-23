@@ -2,6 +2,7 @@ import { Base64 } from 'js-base64';
 import storeRedux from '../../redux/store_redux';
 import { setCurrentLocation } from '../../redux/location_reducer';
 import Geolocation from '@react-native-community/geolocation';
+import { setErrorAlert } from '../../redux/error_reducer';
 
 export function verificationCode() {
     return Math.floor(Math.random() * 899999 + 100000);
@@ -83,4 +84,8 @@ export function getCurrentLocations() {
 
       }
     });
+  }
+  export const SetErrorAlertToFunction=({Title, Body, Status})=>{
+    storeRedux.dispatch(setErrorAlert({Title, Body, Status}))
+
   }

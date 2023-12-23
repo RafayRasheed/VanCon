@@ -1,14 +1,16 @@
-import React from 'react';
-import { Dimensions, View, Platform, StatusBar, Text } from 'react-native'
+import React, { useEffect } from 'react';
+import { Dimensions, View, Platform, StatusBar, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { MMKV } from 'react-native-mmkv';
 import { myColors } from '../ultils/myColors';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { myFontSize, myFonts, myLetSpacing } from '../ultils/myFonts';
-import Animated, { BounceInUp, FadeInUp, FadeOutUp } from 'react-native-reanimated';
+import Animated, { BounceInUp, FadeInUp, FadeOutUp, SlideInUp } from 'react-native-reanimated';
 const { height, width } = Dimensions.get('window')
 export const ios = Platform.OS == 'ios'
 export const stutusH = StatusBar.currentHeight
 import { Chase, Fold, Grid, Swing } from "react-native-animated-spinkit"
+import { useDispatch, useSelector } from 'react-redux';
+import { setErrorAlert } from '../redux/error_reducer';
 
 export function printWithPlat(print) {
     console.log(`${Platform.OS} => ${print} ${height} ${StatusBar.currentHeight}`)
@@ -98,4 +100,79 @@ export const StatusbarH = () => (
     <View style={{ height: StatusBar.currentHeight }} />
 )
 
+
 export const errorTime = 2000
+export const NotiAlertNew = () => {
+    const { error } = useSelector(state => state.error)
+    const dispatch = useDispatch()
+    useEffect(() => {
+        if (error) {
+            setTimeout(() => {
+                dispatch(setErrorAlert(null))
+            }, 4000)
+        }
+    }, [error])
+    if (error == null) {
+        return null
+    }
+    const { Title, Body, Status } = error
+    return (
+        <View style={{ position: 'absolute', zIndex: 10, width: '100%', backgroundColor: 'transparent' }}>
+            <Animated.View entering={SlideInUp.duration(500)}>
+
+                <StatusbarH />
+                <Spacer paddingT={myHeight(2)} />
+                <TouchableOpacity disabled activeOpacity={0.8} style={{
+                    // height: myHeight(11),
+                    backgroundColor: myColors.background, marginHorizontal: myWidth(4),
+                    borderRadius: myWidth(3), borderWidth: 1, borderColor: myColors.offColor7, elevation: 3,
+                    flexDirection: 'row', overflow: 'hidden',
+                }}>
+                    <View style={{
+                        width: myWidth(2), height: '100%',
+                        backgroundColor: Status == 0 ? myColors.red : Status == 1 ? myColors.offColor : myColors.primary
+                    }} />
+                    <View style={{
+                        paddingHorizontal: myWidth(2.4),
+                        paddingVertical: myHeight(1.2)
+                    }}>
+                        {
+                            Title &&
+                            <Text style={[styles.textCommon, {
+                                fontSize: myFontSize.body,
+                                fontFamily: myFonts.bodyBold,
+
+                            }]}>{Title}</Text>
+                        }
+
+                        {
+                            Body &&
+                            <Text style={[styles.textCommon, {
+                                fontSize: myFontSize.xxSmall,
+                                fontFamily: myFonts.body,
+
+                            }]}>{Body}</Text>
+                        }
+                    </View>
+                </TouchableOpacity>
+            </Animated.View>
+        </View>
+    )
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: myColors.background
+    },
+
+
+    //Text
+    textCommon: {
+        color: myColors.text,
+        letterSpacing: myLetSpacing.common,
+        includeFontPadding: false,
+        padding: 0,
+    },
+
+})

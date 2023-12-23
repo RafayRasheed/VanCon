@@ -1655,6 +1655,13 @@
   resolved "https://registry.npmjs.org/@react-native-community/geolocation/-/geolocation-3.1.0.tgz"
   integrity sha512-Aj76wMeCLz9kczpe7W2IXxSRNj+hRR7sqyfXq9ZaJIWNH23jeJfzMpovclg+e1uM8Vr8jCYEcZyD4rKub6Vc/Q==
 
+"@react-native-community/push-notification-ios@^1.10.1":
+  version "1.11.0"
+  resolved "https://registry.npmjs.org/@react-native-community/push-notification-ios/-/push-notification-ios-1.11.0.tgz"
+  integrity sha512-nfkUs8P2FeydOCR4r7BNmtGxAxI22YuGP6RmqWt6c8EEMUpqvIhNKWkRSFF3pHjkgJk2tpRb9wQhbezsqTyBvA==
+  dependencies:
+    invariant "^2.2.4"
+
 "@react-native-firebase/app@^17.5.0", "@react-native-firebase/app@17.5.0", "@react-native-firebase/app@18.1.0", "@react-native-firebase/app@18.3.0", "@react-native-firebase/app@18.3.1":
   version "17.5.0"
   resolved "https://registry.npmjs.org/@react-native-firebase/app/-/app-17.5.0.tgz"
@@ -6228,6 +6235,11 @@ react-native-modalize@^2.1.1:
   resolved "https://registry.npmjs.org/react-native-modalize/-/react-native-modalize-2.1.1.tgz"
   integrity sha512-4/7EZWsrUqAAkkAVEnOsSdpAPQaEBewX7TvwFuzgvGDzxKpq3O58I9SnSeU8QtG/r91XYHJNaU5dAuDrcLjUaQ==
 
+react-native-push-notification@^8.1.1:
+  version "8.1.1"
+  resolved "https://registry.npmjs.org/react-native-push-notification/-/react-native-push-notification-8.1.1.tgz"
+  integrity sha512-XpBtG/w+a6WXTxu6l1dNYyTiHnbgnvjoc3KxPTxYkaIABRmvuJZkFxqruyGvfCw7ELAlZEAJO+dthdTabCe1XA==
+
 react-native-reanimated@^3.1.0, react-native-reanimated@>=2.x.x:
   version "3.1.0"
   resolved "https://registry.npmjs.org/react-native-reanimated/-/react-native-reanimated-3.1.0.tgz"
@@ -6295,7 +6307,7 @@ react-native-uuid@^2.0.1:
   resolved "https://registry.npmjs.org/react-native-uuid/-/react-native-uuid-2.0.1.tgz"
   integrity sha512-cptnoIbL53GTCrWlb/+jrDC6tvb7ypIyzbXNJcpR3Vab0mkeaaVd5qnB3f0whXYzS+SMoSQLcUUB0gEWqkPC0g==
 
-react-native@*, react-native@^0.41.2, "react-native@> 0.50.0", react-native@>=0.41.2, react-native@>=0.42.0, react-native@>=0.46, react-native@>=0.48.4, react-native@>=0.50.1, react-native@>=0.57, react-native@>=0.57.0, react-native@>=0.59, react-native@>=0.62.x, react-native@>=0.71.0, react-native@0.71.7:
+react-native@*, react-native@^0.41.2, "react-native@> 0.50.0", react-native@>=0.33, react-native@>=0.41.2, react-native@>=0.42.0, react-native@>=0.46, react-native@>=0.48.4, react-native@>=0.50.1, react-native@>=0.57, react-native@>=0.57.0, react-native@>=0.58.4, react-native@>=0.59, react-native@>=0.62.x, react-native@>=0.71.0, react-native@0.71.7:
   version "0.71.7"
   resolved "https://registry.npmjs.org/react-native/-/react-native-0.71.7.tgz"
   integrity sha512-Id6iRLS581fJMFGbBl1jP5uSmjExtGOvw5Gvh7694zISXjsRAsFMmU+izs0pyCLqDBoHK7y4BT7WGPGw693nYw==
@@ -6369,7 +6381,7 @@ react-test-renderer@18.2.0:
     react-shallow-renderer "^16.15.0"
     scheduler "^0.23.0"
 
-react@*, "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8 || ^17.0 || ^18.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.9.0 || ^17.0.0 || ^18", react@^18.2.0, "react@> 15.0.0", react@>=0.14.8, react@>=16, react@>=16.8, react@>=16.x.x, react@>=17.0.0, react@18.2.0:
+react@*, "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8 || ^17.0 || ^18.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.9.0 || ^17.0.0 || ^18", react@^18.2.0, "react@> 15.0.0", react@>=0.14.8, react@>=16, react@>=16.6.3, react@>=16.8, react@>=16.x.x, react@>=17.0.0, react@18.2.0:
   version "18.2.0"
   resolved "https://registry.npmjs.org/react/-/react-18.2.0.tgz"
   integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==
@@ -7612,10 +7624,10 @@ yargs@^17.3.1, yargs@^17.5.1:
     y18n "^5.0.5"
     yargs-parser "^21.1.1"
 
-yarn@^1.22.19:
-  version "1.22.19"
-  resolved "https://registry.npmjs.org/yarn/-/yarn-1.22.19.tgz"
-  integrity sha512-/0V5q0WbslqnwP91tirOvldvYISzaqhClxzyUKXYxs07yUILIs5jx/k6CFe8bvKSkds5w+eiOqta39Wk3WxdcQ==
+yarn@^1.22.21:
+  version "1.22.21"
+  resolved "https://registry.npmjs.org/yarn/-/yarn-1.22.21.tgz"
+  integrity sha512-ynXaJsADJ9JiZ84zU25XkPGOvVMmZ5b7tmTSpKURYwgELdjucAOydqIOrOfTxVYcNXe91xvLZwcRh68SR3liCg==
 
 yocto-queue@^0.1.0:
   version "0.1.0"
