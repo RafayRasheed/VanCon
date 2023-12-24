@@ -158,6 +158,23 @@ export const ProfileInfo = ({ navigation }) => {
             <Spacer paddingT={myHeight(1.5)} />
 
             <View style={{ flex: 1, paddingHorizontal: myWidth(4) }}>
+                {/* email Portion */}
+                <View>
+                    <Text style={[styles.heading, { color: myColors.text }]}>Email</Text>
+                    <View style={[styles.containerInput, { borderColor: myColors.textL4 }]}>
+
+                        <TextInput placeholder="Full Name"
+                            placeholderTextColor={myColors.textL4}
+                            autoCorrect={false}
+                            editable={false}
+
+                            style={[styles.input,]} cursorColor={myColors.primary}
+                            value={profile.email}
+                        />
+                    </View>
+                </View>
+
+                <Spacer paddingT={myHeight(0.98)} />
                 {/* name Portion */}
                 <View>
                     <Text style={[styles.heading, { color: myColors.text }]}>Name</Text>

@@ -8,7 +8,7 @@ import { ResturantH } from './home.component/resturant_hori';
 import { Banners } from './home.component/banner';
 import { RestaurantInfo } from './home.component/restaurant_info';
 import { RestRating } from './rest_rating_screen';
-import { getCartLocal, getLogin } from '../functions/storageMMKV';
+import { getCartLocal, getLogin, setLogin } from '../functions/storageMMKV';
 import { setCart } from '../../redux/cart_reducer';
 import { useDispatch, useSelector } from 'react-redux';
 import firestore, { Filter } from '@react-native-firebase/firestore';
@@ -26,6 +26,7 @@ import notifee from '@notifee/react-native';
 import { FirebaseUser, getDeviceToken, sendPushNotification, updateDeviceTokenToFireBase } from '../functions/firebase';
 import { NotiAlert } from '../common/noti_Alert';
 import Animated, { SlideInUp } from 'react-native-reanimated';
+import { setProfile } from '../../redux/profile_reducer';
 
 if (!ios && UIManager.setLayoutAnimationEnabledExperimental) {
     UIManager.setLayoutAnimationEnabledExperimental(true)
@@ -91,7 +92,7 @@ export const HomeScreen = ({ navigation }) => {
 
     useEffect(() => {
         const unsubscribeOnMessage = messaging().onMessage(async remoteMessage => {
-            console.log('Message handled in the foreground:', remoteMessage);
+            console.log('Message handled in the foreground:');
             SetErrorAlertToFunction({
                 Title: remoteMessage.notification.title,
                 Body: remoteMessage.notification.body,
@@ -130,8 +131,18 @@ export const HomeScreen = ({ navigation }) => {
         });
     }
 
+    function getProfileFromFirebase() {
+        FirebaseUser.doc(profile.uid).get().then((documentSnapshot) => {
+            const prf = documentSnapshot.data()
+            dispatch(setProfile(prf))
 
+
+        }).catch(err => {
+            console.log('Internal error while  getProfileFrom')
+        });
+    }
     useEffect(() => {
+        getProfileFromFirebase()
         updateDeviceTokenToFireBase(profile.uid)
         // sendPushNotification('hi', 'bye',2 )
 
@@ -194,7 +205,7 @@ export const HomeScreen = ({ navigation }) => {
                             fontFamily: myFonts.heading,
                             alignSelf: 'center',
 
-                        }]}>Van<Text style={{ color: myColors.primaryT }}>Con</Text></Text>
+                        }]}>VanCon<Text style={{ color: myColors.primaryT }}> Captain</Text></Text>
 
 
 
@@ -218,7 +229,7 @@ export const HomeScreen = ({ navigation }) => {
                                         color: myColors.text, fontSize: myFontSize.body,
                                         fontFamily: myFonts.bodyBold
                                     }]
-                                    }>Please click on Apply & fill the form to get rides</Text>
+                                    }>Click on Apply & fill the form to get rides</Text>
                                     <Spacer paddingT={myHeight(1.5)} />
 
                                     <TouchableOpacity onPress={null}
