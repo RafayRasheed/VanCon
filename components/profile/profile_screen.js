@@ -53,9 +53,19 @@ export const Profile = ({ navigation }) => {
             <Spacer paddingT={myHeight(2.5)} />
         </View>
     )
+
     function onLogout() {
-        dispatch(deleteProfile())
-        navigation.navigate('AccountNavigator')
+        FirebaseUser.doc(profile.uid)
+            .update({
+                deviceToken: null
+            }).then((data) => {
+                navigation.navigate('AccountNavigator')
+                dispatch(deleteProfile())
+
+                console.log('Token delete To Firebase Succesfully')
+            }).catch(err => {
+                console.log('Internal error while Updating a Token', err)
+            });
     }
 
     return (

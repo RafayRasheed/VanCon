@@ -143,7 +143,7 @@ export const HomeScreen = ({ navigation }) => {
     }
     useEffect(() => {
         getProfileFromFirebase()
-        updateDeviceTokenToFireBase(profile.uid)
+        // updateDeviceTokenToFireBase(profile.uid)
         // sendPushNotification('hi', 'bye',2 )
 
         // getCurrentLocations()
