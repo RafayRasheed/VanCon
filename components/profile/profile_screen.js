@@ -10,6 +10,7 @@ import { myFontSize, myFonts, myLetSpacing } from '../../ultils/myFonts';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteLogin } from '../functions/storageMMKV';
 import { deleteProfile } from '../../redux/profile_reducer';
+import { FirebaseUser } from '../functions/firebase';
 
 
 export const Profile = ({ navigation }) => {
