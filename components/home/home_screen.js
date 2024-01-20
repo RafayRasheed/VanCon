@@ -143,7 +143,7 @@ export const HomeScreen = ({ navigation }) => {
     }
     useEffect(() => {
         getProfileFromFirebase()
-        updateDeviceTokenToFireBase(profile.uid)
+        // updateDeviceTokenToFireBase(profile.uid)
         // sendPushNotification('hi', 'bye',2 )
 
         // getCurrentLocations()
@@ -207,14 +207,14 @@ export const HomeScreen = ({ navigation }) => {
                             fontFamily: myFonts.heading,
                             alignSelf: 'center',
 
-                        }]}>VanCon<Text style={{ color: myColors.primaryT }}> Captain</Text></Text>
+                        }]}>Van<Text style={{ color: myColors.primaryT }}>Con</Text></Text>
 
 
 
                         <Spacer paddingT={myHeight(3)} />
 
                         {/* Banner */}
-                        <Banners />
+                        {/* <Banners />
 
 
 
@@ -250,7 +250,7 @@ export const HomeScreen = ({ navigation }) => {
                                     </TouchableOpacity>
                                 </View>
 
-                        }
+                        } */}
                         {/* New Arrival  Complete*/}
                         {/* <View>
                             <View style={{ paddingHorizontal: myWidth(4), alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' }}>

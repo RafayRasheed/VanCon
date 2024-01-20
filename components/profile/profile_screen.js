@@ -10,6 +10,7 @@ import { myFontSize, myFonts, myLetSpacing } from '../../ultils/myFonts';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteLogin } from '../functions/storageMMKV';
 import { deleteProfile } from '../../redux/profile_reducer';
+import { FirebaseUser } from '../functions/firebase';
 
 
 export const Profile = ({ navigation }) => {
@@ -53,9 +54,19 @@ export const Profile = ({ navigation }) => {
             <Spacer paddingT={myHeight(2.5)} />
         </View>
     )
+
     function onLogout() {
-        dispatch(deleteProfile())
-        navigation.navigate('AccountNavigator')
+        FirebaseUser.doc(profile.uid)
+            .update({
+                deviceToken: null
+            }).then((data) => {
+                navigation.navigate('AccountNavigator')
+                dispatch(deleteProfile())
+
+                console.log('Token delete To Firebase Succesfully')
+            }).catch(err => {
+                console.log('Internal error while Updating a Token', err)
+            });
     }
 
     return (
