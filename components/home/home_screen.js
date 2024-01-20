@@ -23,7 +23,7 @@ import database from '@react-native-firebase/database';
 import { SetErrorAlertToFunction, deccodeInfo, getCurrentLocations } from '../functions/functions';
 import messaging from '@react-native-firebase/messaging';
 import notifee from '@notifee/react-native';
-import { FirebaseUser, getDeviceToken, sendPushNotification, updateDeviceTokenToFireBase } from '../functions/firebase';
+import { FirebaseUser, getAreasLocations, getDeviceToken, sendPushNotification, updateDeviceTokenToFireBase } from '../functions/firebase';
 import { NotiAlert } from '../common/noti_Alert';
 import Animated, { SlideInUp } from 'react-native-reanimated';
 import { setProfile } from '../../redux/profile_reducer';
@@ -157,7 +157,9 @@ export const HomeScreen = ({ navigation }) => {
 
     // Realtime
     useEffect(() => {
-
+        if (profile.city) {
+            getAreasLocations(profile.city)
+        }
         // database()
         //     .ref(`/orders/${profile.uid}`)
         //     .on('value', snapshot => {
@@ -187,7 +189,7 @@ export const HomeScreen = ({ navigation }) => {
         //         console.log('User data: ', pending.length, progress.length, history.length);
         //     });
 
-    }, []);
+    }, [profile.city]);
 
 
     return (

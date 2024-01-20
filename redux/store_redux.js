@@ -7,6 +7,7 @@ import profile_reducer from './profile_reducer';
 import location_reducer from './location_reducer';
 import { getDefaultMiddleware } from '@reduxjs/toolkit';
 import error_reducer from './error_reducer';
+import areas_reducer from './areas_reducer';
 
 const storeRedux = configureStore({
     reducer: {
@@ -19,6 +20,8 @@ const storeRedux = configureStore({
 
         locations: location_reducer,
         error: error_reducer,
+        areas: areas_reducer,
+
 
     }
 })
