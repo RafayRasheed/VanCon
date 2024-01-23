@@ -28,7 +28,7 @@ export const getTokenAndServerKey = async () => {
     console.log('serverKey', serverKey)
     return { deviceToken, serverKey }
 }
-export const sendPushNotification = async (title, body, status) => {
+export const sendPushNotification = async (title, body, status, tokens) => {
     const { deviceToken, serverKey } = await getTokenAndServerKey()
 
     const fcmEndpoint = 'https://fcm.googleapis.com/fcm/send';
@@ -39,7 +39,7 @@ export const sendPushNotification = async (title, body, status) => {
     };
 
     const data = {
-        to: deviceToken,
+        registration_ids: tokens,
         notification: {
             title: title,
             body: body,
@@ -49,7 +49,6 @@ export const sendPushNotification = async (title, body, status) => {
 
         }
     };
-
     try {
         const response = await fetch(fcmEndpoint, {
             method: 'POST',
@@ -61,7 +60,7 @@ export const sendPushNotification = async (title, body, status) => {
         if (response.ok) {
             console.log('Notification sent successfully');
         } else {
-            console.error('Error sending notification:');
+            console.error('Error sending notification:', response);
         }
     } catch (error) {
         console.error('Error sending notification:', error.message);
