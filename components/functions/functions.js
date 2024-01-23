@@ -27,6 +27,7 @@ function adjustSting(string, size) {
 
 }
 
+
 export function dataFullData() {
   const date = new Date()
 
@@ -54,6 +55,22 @@ export function dataFullData() {
 
 }
 
+export function statusDate(YDate, time) {
+  const today = new Date()
+  const todayDate = today.toLocaleDateString()
+  const yesterday = new Date(today - 86400000);
+  var yesterdayDate = yesterday.toLocaleDateString()
+  if (todayDate == YDate) {
+    return (time ? time : 'Today')
+
+  } else if (yesterdayDate == YDate) {
+    return ('Yesterday')
+
+  } else {
+
+    return (YDate)
+  }
+}
 export function getCurrentLocations() {
   Geolocation.getCurrentPosition(info => {
     if (info) {

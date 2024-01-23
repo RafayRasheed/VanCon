@@ -20,13 +20,14 @@ import storage from '@react-native-firebase/storage';
 import { setAllItems, setAllRest, setNearby, setRecommend } from '../../redux/data_reducer';
 import { setHistoryOrderse, setPendingOrderse, setProgressOrderse } from '../../redux/order_reducer';
 import database from '@react-native-firebase/database';
-import { SetErrorAlertToFunction, deccodeInfo, getCurrentLocations } from '../functions/functions';
+import { SetErrorAlertToFunction, deccodeInfo, getCurrentLocations, statusDate } from '../functions/functions';
 import messaging from '@react-native-firebase/messaging';
 import notifee from '@notifee/react-native';
-import { FirebaseUser, getAreasLocations, getDeviceToken, sendPushNotification, updateDeviceTokenToFireBase } from '../functions/firebase';
+import { FirebaseUser, getDeviceToken, sendPushNotification, updateDeviceTokenToFireBase } from '../functions/firebase';
 import { NotiAlert } from '../common/noti_Alert';
 import Animated, { SlideInUp } from 'react-native-reanimated';
 import { setProfile } from '../../redux/profile_reducer';
+import { setChats, setTotalUnread } from '../../redux/chat_reducer';
 
 if (!ios && UIManager.setLayoutAnimationEnabledExperimental) {
     UIManager.setLayoutAnimationEnabledExperimental(true)
@@ -157,40 +158,62 @@ export const HomeScreen = ({ navigation }) => {
 
     // Realtime
     useEffect(() => {
-        if (profile.city) {
-            getAreasLocations(profile.city)
-        }
-        // database()
-        //     .ref(`/orders/${profile.uid}`)
-        //     .on('value', snapshot => {
-        //         let pending = []
-        //         let progress = []
-        //         let history = []
-        //         snapshot.forEach(documentSnapshot1 => {
-        //             const order = documentSnapshot1.val()
-        //             if (order.status == -1 || order.status == 100 || order.status == -2) {
-        //                 history.push(order)
-        //             }
-        //             else if (order.status == 0) {
-        //                 pending.push(order)
-        //             }
-        //             else {
-        //                 progress.push(order)
-        //             }
+        const onValueChange = database()
+            .ref(`/chats`)
+            .on('value', snapshot => {
+                if (snapshot.exists()) {
+                    let Chats = []
+                    let totalUnread = 0
+                    snapshot.forEach((documentSnapshot1, i) => {
+                        const key = documentSnapshot1.key.toString()
+                        if (key.includes(profile.uid)) {
+                            const val = documentSnapshot1.val()
+                            if (val.captain && val.user) {
 
-        //         });
-        //         pending.sort((a, b) => b.dateInt - a.dateInt);
-        //         progress.sort((a, b) => b.dateInt - a.dateInt);
-        //         history.sort((a, b) => b.dateInt - a.dateInt);
-        //         dispatch(setPendingOrderse(pending))
-        //         dispatch(setHistoryOrderse(history))
-        //         dispatch(setProgressOrderse(progress))
+                                let messages = { ...val.messages }
+                                let latest = null
+                                let unreadmasseges = 0
+                                let allMessages = []
+                                let allUnreadMessagesToRead = {}
+                                // messages = Object.keys(messages).sort(function (a, b) { return messages[a].dateInt - messages[b].dateInt })
+                                Object.keys(messages).map((it, i) => {
+                                    const mm = messages[it]
+                                    allMessages.push(mm)
+                                    if (latest == null || mm.dateInt > latest.dateInt) {
+                                        latest = mm
+                                    }
+                                    if (mm.senderId != profile.uid && mm.read == false) {
+                                        unreadmasseges += 1
+                                        allUnreadMessagesToRead[it] = { ...mm, read: true }
 
-        //         console.log('User data: ', pending.length, progress.length, history.length);
-        //     });
+                                    }
+                                })
+                                if (unreadmasseges) {
 
-    }, [profile.city]);
+                                    totalUnread += 1
+                                }
+                                const chat = {
+                                    ...latest, unreadmasseges, chatId: key,
+                                    user2: val.captain,
+                                    statusTime: statusDate(latest.date, latest.time),
+                                    allMessages, allUnreadMessagesToRead
+                                }
+                                Chats.push(chat)
+                            }
+                        }
 
+                    });
+                    dispatch(setChats(Chats.sort(function (a, b) { return b.dateInt - a.dateInt })))
+                    dispatch(setTotalUnread(totalUnread))
+                } else {
+                    dispatch(setChats([]))
+                    dispatch(setTotalUnread(0))
+                }
+            });
+
+        // Stop listening for updates when no longer required
+        return () => database().ref(`/chats`).off('value', onValueChange);
+    }, []);
 
     return (
 
