@@ -35,7 +35,7 @@ const Icons = {
 
     // WALLET: require('../assets/home_main/navigator/wallet.png'),
     CHATS: {
-        image: require('../assets/home_main/home/navigator/bell.png'),
+        image: require('../assets/home_main/home/navigator/chat.png'),
         style: { width: myHeight(2.8), height: myHeight(2.8) }
     },
     PROFILE: {

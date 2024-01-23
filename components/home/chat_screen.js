@@ -33,13 +33,24 @@ const MyMessage = ({ item }) => {
             }]}>{item.message}</Text>
 
             <Spacer paddingT={myHeight(0.2)} />
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
 
-            <Text style={[styles.textCommon, {
-                textAlign: 'right',
-                fontSize: myFontSize.small3,
-                fontFamily: myFonts.bodyBold,
-                color: myColors.background
-            }]}>{item.time}</Text>
+                <Image style={{
+                    height: myHeight(1.5),
+                    tintColor: item.read ? myColors.background : myColors.offColor2,
+                    width: myHeight(1.5),
+                    resizeMode: "contain",
+                }} source={require('../assets/home_main/home/checkF.png')} />
+                <Spacer paddingEnd={myWidth(0.8)} />
+
+                <Text style={[styles.textCommon, {
+                    textAlign: 'right',
+                    fontSize: myFontSize.small3,
+                    fontFamily: myFonts.bodyBold,
+                    color: myColors.background
+                }]}>{item.time}</Text>
+            </View>
+
             <Spacer paddingT={myHeight(0.5)} />
         </View>
     )
@@ -201,43 +212,6 @@ export const Chat = ({ navigation, route }) => {
     }, [chats])
 
 
-    // useEffect(() => {
-    //     const onValueChange = database()
-    //         .ref(`/chats/${chatId}`).child('messages').orderByChild('dateInt')
-    //         .on('value', snapshot => {
-
-    //             if (snapshot.exists()) {
-
-    //                 let lastDate = null
-    //                 const data = []
-    //                 snapshot.forEach((documentSnapshot1, i) => {
-    //                     const msg = documentSnapshot1.val()
-    //                     if (msg.date != lastDate) {
-    //                         lastDate = msg.date
-    //                         data.push(statusDate(msg.date))
-
-    //                     }
-    //                     data.push(msg)
-    //                     if (i == snapshot.numChildren() - 1) {
-    //                         // console.log(chatss.length != 0, chatss.length, data.length)
-    //                         // if (chatss.length != 0) {
-    //                         //     console.log(unreadCount)
-    //                         //     const s = unreadCount + 1
-    //                         //     setUnreadCount(s)
-    //                         // }
-    //                         setChatss(data.reverse())
-
-    //                     }
-
-    //                 });
-    //             } else {
-    //                 setChatss([])
-    //             }
-    //         });
-
-    //     // Stop listening for updates when no longer required
-    //     return () => database().ref(`/chats/${chatId}`).off('value', onValueChange);
-    // }, []);
     function onSendMsg() {
 
         if (message === null) {
@@ -289,7 +263,7 @@ export const Chat = ({ navigation, route }) => {
                             .ref(`/chats/${chatId}`).update(otherUpdates).then(() => { })
                             .catch((er) => { console.log('error on send message333', er) })
                     }
-                    sendPushNotification(profile.name, message, 0, [token])
+                    sendPushNotification(profile.name, message, 2, [token])
                 })
 
                 // database().ref(`/chats/${chatId}`).child('lastUpdate')
@@ -423,31 +397,7 @@ export const Chat = ({ navigation, route }) => {
                     <View style={{ height: myHeight(0.2), backgroundColor: myColors.divider, marginHorizontal: myWidth(0) }} />
 
                     <View style={{ backgroundColor: myColors.background, paddingHorizontal: myWidth(4) }}>
-                        {
-                            (unreadCount && showScrollToLast) ?
-                                <View style={{
-                                    width: myHeight(5.2),
-                                    height: myHeight(5.2),
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    position: 'absolute', zIndex: 100,
-                                    right: myWidth(5), top: - myHeight(12)
-                                }}>
-                                    <Text style={[styles.textCommon, {
-                                        fontSize: myFontSize.small3,
-                                        fontFamily: myFonts.body,
-                                        color: myColors.background,
-                                        // padding: myHeight(0.5),
-                                        width: RFValue(15),
-                                        height: RFValue(15),
-                                        textAlign: 'center',
-                                        textAlignVertical: 'center',
-                                        borderRadius: 5000,
-                                        backgroundColor: myColors.primaryT
-                                    }]}>{''}</Text>
-                                </View>
-                                : null
-                        }
+
                         {
                             showScrollToLast ?
                                 <View style={{
@@ -455,6 +405,29 @@ export const Chat = ({ navigation, route }) => {
                                     right: myWidth(5), top: - myHeight(7)
                                 }}>
 
+                                    {unreadCount ?
+                                        <View style={{
+
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            position: 'absolute', zIndex: 100,
+                                            right: myWidth(0.5), top: myHeight(0.3),
+                                        }}>
+                                            <Text style={[styles.textCommon, {
+                                                fontSize: myFontSize.small3,
+                                                fontFamily: myFonts.body,
+                                                color: myColors.background,
+                                                // padding: myHeight(0.5),
+                                                width: RFValue(9),
+                                                height: RFValue(9),
+                                                textAlign: 'center',
+                                                textAlignVertical: 'center',
+                                                borderRadius: 5000,
+                                                backgroundColor: myColors.primaryT
+                                            }]}>{''}</Text>
+                                        </View>
+                                        : null
+                                    }
 
 
                                     <TouchableOpacity style={{
