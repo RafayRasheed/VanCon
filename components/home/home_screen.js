@@ -194,7 +194,7 @@ export const HomeScreen = ({ navigation }) => {
                                 }
                                 const chat = {
                                     ...latest, unreadmasseges, chatId: key,
-                                    user2: val.user,
+                                    user2: val.captain,
                                     statusTime: statusDate(latest.date, latest.time),
                                     allMessages, allUnreadMessagesToRead
                                 }
