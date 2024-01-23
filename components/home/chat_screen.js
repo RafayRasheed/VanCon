@@ -278,7 +278,6 @@ export const Chat = ({ navigation, route }) => {
 
     return (
         <>
-
             <SafeAreaView style={{ flex: 1, backgroundColor: myColors.background, }}>
                 <StatusbarH />
 
@@ -330,183 +329,185 @@ export const Chat = ({ navigation, route }) => {
                 <KeyboardAwareScrollView
                     keyboardShouldPersistTaps={'handled'} bounces={false}
                     showsVerticalScrollIndicator={false} contentContainerStyle={{ flex: 1 }}>
-
                     {/* Chats */}
-                    <FlashList
+                    <ImageBackground style={{ flex: 1 }} source={require('../assets/home_main/home/cb2.jpg')}>
 
-                        ref={scrollRef}
-                        onScrollBeginDrag={() => {
-                            setFromTouch(true)
-                        }}
-                        showsVerticalScrollIndicator={false}
-                        onScrollEndDrag={() => {
-                        }}
-                        onScroll={handleScrollView}
-                        extraData={chatss}
-                        data={chatss}
-                        inverted
-                        contentContainerStyle={{
-                            flex: 1, paddingHorizontal: myWidth(5),
-                            justifyContent: 'flex-end', paddingVertical: myHeight(0.5)
-                        }}
-                        keyExtractor={(item, index) => index.toString()}
-                        estimatedItemSize={200}
+                        <FlashList
 
-                        renderItem={({ item }) => {
-                            if (typeof item == 'string') {
-                                return (
+                            ref={scrollRef}
+                            onScrollBeginDrag={() => {
+                                setFromTouch(true)
+                            }}
+                            showsVerticalScrollIndicator={false}
+                            onScrollEndDrag={() => {
+                            }}
+                            onScroll={handleScrollView}
+                            extraData={chatss}
+                            data={chatss}
+                            inverted
+                            contentContainerStyle={{
+                                flex: 1, paddingHorizontal: myWidth(2),
+                                justifyContent: 'flex-end', paddingVertical: myHeight(0.5)
+                            }}
+                            keyExtractor={(item, index) => index.toString()}
+                            estimatedItemSize={200}
 
-                                    <View style={{
-                                        backgroundColor: myColors.offColor7, borderRadius: 1000,
-                                        alignSelf: 'center', marginVertical: myHeight(0.6),
-                                        paddingVertical: myHeight(0.5), paddingHorizontal: myWidth(5)
-                                    }}>
-                                        <Text style={[styles.textCommon, {
-                                            fontSize: myFontSize.xxSmall,
-                                            fontFamily: myFonts.body,
-                                        }]}>{item}</Text>
-                                    </View>
-                                )
+                            renderItem={({ item }) => {
+                                if (typeof item == 'string') {
+                                    return (
 
-                            }
-                            if (item.senderId == profile.uid) {
-                                return (
-                                    <MyMessage item={item} />
-                                )
-                            } else {
-
-                                return (
-                                    <OtherMessage item={item} />
-                                )
-                            }
-
-                        }
-
-                        } />
-                    {
-                        loader ?
-                            <View style={{ height: '100%', width: '100%', position: 'absolute', backgroundColor: myColors.background, justifyContent: 'center', alignItems: 'center' }}>
-
-                                <ActivityIndicator size={myHeight(10)} />
-                            </View>
-                            : null
-                    }
-
-                    {/* Bottom */}
-
-                    <View style={{ height: myHeight(0.2), backgroundColor: myColors.divider, marginHorizontal: myWidth(0) }} />
-
-                    <View style={{ backgroundColor: myColors.background, paddingHorizontal: myWidth(4) }}>
-
-                        {
-                            showScrollToLast ?
-                                <View style={{
-                                    position: 'absolute', zIndex: 100,
-                                    right: myWidth(5), top: - myHeight(7)
-                                }}>
-
-                                    {unreadCount ?
                                         <View style={{
-
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                            position: 'absolute', zIndex: 100,
-                                            right: myWidth(0.5), top: myHeight(0.3),
+                                            backgroundColor: myColors.offColor7, borderRadius: 1000,
+                                            alignSelf: 'center', marginVertical: myHeight(0.6),
+                                            paddingVertical: myHeight(0.5), paddingHorizontal: myWidth(5)
                                         }}>
                                             <Text style={[styles.textCommon, {
-                                                fontSize: myFontSize.small3,
+                                                fontSize: myFontSize.xxSmall,
                                                 fontFamily: myFonts.body,
-                                                color: myColors.background,
-                                                // padding: myHeight(0.5),
-                                                width: RFValue(9),
-                                                height: RFValue(9),
-                                                textAlign: 'center',
-                                                textAlignVertical: 'center',
-                                                borderRadius: 5000,
-                                                backgroundColor: myColors.primaryT
-                                            }]}>{''}</Text>
+                                            }]}>{item}</Text>
                                         </View>
-                                        : null
-                                    }
+                                    )
 
+                                }
+                                if (item.senderId == profile.uid) {
+                                    return (
+                                        <MyMessage item={item} />
+                                    )
+                                } else {
 
-                                    <TouchableOpacity style={{
-                                        height: myHeight(5.2),
-                                        width: myHeight(5.2),
-                                        borderRadius: myHeight(7),
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        backgroundColor: myColors.offColor7
-                                    }}
-                                        onPress={() => scrollToBottom()} activeOpacity={0.7}>
-                                        <Image style={{
-                                            height: myHeight(2.3),
-                                            width: myHeight(2.3),
-                                            resizeMode: "contain",
-                                            tintColor: myColors.text,
-                                            transform: [{ rotate: '270deg' }]
-                                        }} source={require('../assets/home_main/home/back.png')} />
-                                    </TouchableOpacity>
+                                    return (
+                                        <OtherMessage item={item} />
+                                    )
+                                }
+
+                            }
+
+                            } />
+                        {
+                            loader ?
+                                <View style={{ height: '100%', width: '100%', position: 'absolute', backgroundColor: myColors.background, justifyContent: 'center', alignItems: 'center' }}>
+
+                                    <ActivityIndicator size={myHeight(10)} />
                                 </View>
                                 : null
                         }
-                        <Spacer paddingT={myHeight(1)} />
 
-                        {/*Input &&  Send But*/}
-                        <View style={{ flexDirection: 'row', }}>
-                            {/* Input Container */}
-                            <View style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                flex: 1,
-                                borderRadius: myHeight(2),
-                                paddingHorizontal: myWidth(3.5),
-                                borderWidth: myHeight(0.1),
-                                borderColor: focus ? myColors.primaryT : myColors.text,
-                                backgroundColor: myColors.background,
+                        {/* Bottom */}
 
-                            }}>
+                        {/* <View style={{ height: myHeight(0.2), backgroundColor: myColors.offColor5, marginHorizontal: myWidth(0) }} /> */}
 
-                                <TextInput placeholder="Start typing here ...."
-                                    multiline
-                                    placeholderTextColor={myColors.offColor}
-                                    selectionColor={myColors.primaryT}
-                                    cursorColor={myColors.primaryT}
-                                    value={message} onChangeText={setMessage}
-                                    onFocus={() => setFocus(true)}
-                                    onEndEditing={() => setFocus(false)}
-                                    style={{
-                                        flex: 1,
-                                        textAlignVertical: 'center',
-                                        paddingVertical: ios ? myHeight(1.4) : myHeight(100) > 600 ? myHeight(1) : myHeight(0.2),
-                                        fontSize: myFontSize.body,
-                                        color: myColors.text,
-                                        includeFontPadding: false,
-                                        fontFamily: myFonts.bodyBold,
+                        <View style={{ backgroundColor: 'transparent', paddingHorizontal: myWidth(4) }}>
+
+                            {
+                                showScrollToLast ?
+                                    <View style={{
+                                        position: 'absolute', zIndex: 100,
+                                        right: myWidth(5), top: - myHeight(7)
+                                    }}>
+
+                                        {unreadCount ?
+                                            <View style={{
+
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                                position: 'absolute', zIndex: 100,
+                                                right: myWidth(0.5), top: myHeight(0.3),
+                                            }}>
+                                                <Text style={[styles.textCommon, {
+                                                    fontSize: myFontSize.small3,
+                                                    fontFamily: myFonts.body,
+                                                    color: myColors.background,
+                                                    // padding: myHeight(0.5),
+                                                    width: RFValue(9),
+                                                    height: RFValue(9),
+                                                    textAlign: 'center',
+                                                    textAlignVertical: 'center',
+                                                    borderRadius: 5000,
+                                                    backgroundColor: myColors.primaryT
+                                                }]}>{''}</Text>
+                                            </View>
+                                            : null
+                                        }
+
+
+                                        <TouchableOpacity style={{
+                                            height: myHeight(5.2),
+                                            width: myHeight(5.2),
+                                            borderRadius: myHeight(7),
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            backgroundColor: myColors.offColor7
+                                        }}
+                                            onPress={() => scrollToBottom()} activeOpacity={0.7}>
+                                            <Image style={{
+                                                height: myHeight(2.3),
+                                                width: myHeight(2.3),
+                                                resizeMode: "contain",
+                                                tintColor: myColors.text,
+                                                transform: [{ rotate: '270deg' }]
+                                            }} source={require('../assets/home_main/home/back.png')} />
+                                        </TouchableOpacity>
+                                    </View>
+                                    : null
+                            }
+                            <Spacer paddingT={myHeight(1)} />
+
+                            {/*Input &&  Send But*/}
+                            <View style={{ flexDirection: 'row', }}>
+                                {/* Input Container */}
+                                <View style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    flex: 1,
+                                    borderRadius: myHeight(2),
+                                    paddingHorizontal: myWidth(3.5),
+                                    borderWidth: myHeight(0.1),
+                                    borderColor: focus ? myColors.primaryT : myColors.text,
+                                    backgroundColor: myColors.background,
+
+                                }}>
+
+                                    <TextInput placeholder="Start typing here ...."
+                                        multiline
+                                        placeholderTextColor={myColors.offColor}
+                                        selectionColor={myColors.primaryT}
+                                        cursorColor={myColors.primaryT}
+                                        value={message} onChangeText={setMessage}
+                                        onFocus={() => setFocus(true)}
+                                        onEndEditing={() => setFocus(false)}
+                                        style={{
+                                            flex: 1,
+                                            textAlignVertical: 'center',
+                                            paddingVertical: ios ? myHeight(1.4) : myHeight(100) > 600 ? myHeight(1) : myHeight(0.2),
+                                            fontSize: myFontSize.body,
+                                            color: myColors.text,
+                                            includeFontPadding: false,
+                                            fontFamily: myFonts.bodyBold,
+                                        }}
+                                    />
+                                </View>
+
+                                <Spacer paddingEnd={myWidth(4)} />
+                                {/* Send Button */}
+                                <View>
+                                    <TouchableOpacity style={{
+                                        paddingVertical: myHeight(1.4),
+                                        paddingHorizontal: myWidth(6.5),
+                                        backgroundColor: myColors.primaryT,
+                                        borderRadius: myWidth(2)
                                     }}
-                                />
+                                        onPress={onSendMsg} activeOpacity={0.85}>
+                                        <Image style={{
+                                            height: myHeight(2.6),
+                                            width: myHeight(2.6),
+                                            resizeMode: "contain",
+                                        }} source={require('../assets/home_main/home/send.png')} />
+                                    </TouchableOpacity>
+                                </View>
                             </View>
-
-                            <Spacer paddingEnd={myWidth(4)} />
-                            {/* Send Button */}
-                            <View>
-                                <TouchableOpacity style={{
-                                    paddingVertical: myHeight(1.4),
-                                    paddingHorizontal: myWidth(6.5),
-                                    backgroundColor: myColors.primaryT,
-                                    borderRadius: myWidth(2)
-                                }}
-                                    onPress={onSendMsg} activeOpacity={0.85}>
-                                    <Image style={{
-                                        height: myHeight(2.6),
-                                        width: myHeight(2.6),
-                                        resizeMode: "contain",
-                                    }} source={require('../assets/home_main/home/send.png')} />
-                                </TouchableOpacity>
-                            </View>
+                            <Spacer paddingT={myHeight(1.5)} />
                         </View>
-                        <Spacer paddingT={myHeight(1.5)} />
-                    </View>
+                    </ImageBackground>
 
                 </KeyboardAwareScrollView>
             </SafeAreaView>
