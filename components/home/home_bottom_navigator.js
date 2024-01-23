@@ -13,6 +13,7 @@ import { deleteLogin } from "../functions/storageMMKV";
 import { useSelector } from "react-redux";
 import { ProfileNavigator } from "../profile/profile_navigator";
 import { OrderScreen } from "../orders/orders_screen";
+import { ChatList } from "./chat_all_screen";
 
 const Tab = createBottomTabNavigator()
 
@@ -33,8 +34,8 @@ const Icons = {
     },
 
     // WALLET: require('../assets/home_main/navigator/wallet.png'),
-    ALERT: {
-        image: require('../assets/home_main/home/navigator/bell.png'),
+    CHATS: {
+        image: require('../assets/home_main/home/navigator/chat.png'),
         style: { width: myHeight(2.8), height: myHeight(2.8) }
     },
     PROFILE: {
@@ -75,7 +76,7 @@ const screenOptions = ({ navigator, route }) => {
                     </View>
                 )
             }
-            if (name == 'ALERT') {
+            if (name == 'CHATS') {
                 return (
                     <View>
                         <Image style={[Icons[name].style, { tintColor: color, resizeMode: 'contain', }]}
@@ -154,7 +155,7 @@ export const HomeBottomNavigator = ({ route, navigation }) => {
                 <Tab.Screen name="HOME" component={HomeNavigator} />
                 <Tab.Screen name="RIDES" component={OrderScreen} />
                 {/* <Tab.Screen name="HOT" component={OrderScreen} /> */}
-                <Tab.Screen name="ALERT" component={CartNavigator} />
+                <Tab.Screen name="CHATS" component={ChatList} />
                 <Tab.Screen name="PROFILE" component={ProfileNavigator} />
 
             </Tab.Navigator>
