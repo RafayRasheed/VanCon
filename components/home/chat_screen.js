@@ -330,7 +330,7 @@ export const Chat = ({ navigation, route }) => {
                     keyboardShouldPersistTaps={'handled'} bounces={false}
                     showsVerticalScrollIndicator={false} contentContainerStyle={{ flex: 1 }}>
                     {/* Chats */}
-                    <ImageBackground style={{ flex: 1 }} source={require('../assets/home_main/home/cb2.jpg')}>
+                    <ImageBackground style={{ flex: 1 }} source={require('../assets/home_main/home/cb3.jpg')}>
 
                         <FlashList
 
@@ -357,13 +357,13 @@ export const Chat = ({ navigation, route }) => {
                                     return (
 
                                         <View style={{
-                                            backgroundColor: myColors.offColor7, borderRadius: 1000,
-                                            alignSelf: 'center', marginVertical: myHeight(0.6),
-                                            paddingVertical: myHeight(0.5), paddingHorizontal: myWidth(5)
+                                            backgroundColor: myColors.offColor5, borderRadius: 1000,
+                                            alignSelf: 'center', marginVertical: myHeight(1.5), borderWidth: 1, borderColor: myColors.offColor2,
+                                            paddingVertical: myHeight(0.3), paddingHorizontal: myWidth(5)
                                         }}>
                                             <Text style={[styles.textCommon, {
                                                 fontSize: myFontSize.xxSmall,
-                                                fontFamily: myFonts.body,
+                                                fontFamily: myFonts.bodyBold,
                                             }]}>{item}</Text>
                                         </View>
                                     )
@@ -385,7 +385,10 @@ export const Chat = ({ navigation, route }) => {
                             } />
                         {
                             loader ?
-                                <View style={{ height: '100%', width: '100%', position: 'absolute', backgroundColor: myColors.background, justifyContent: 'center', alignItems: 'center' }}>
+                                <View style={{
+                                    height: '100%', width: '100%', position: 'absolute',
+                                    backgroundColor: myColors.background, justifyContent: 'center', alignItems: 'center'
+                                }}>
 
                                     <ActivityIndicator size={myHeight(10)} />
                                 </View>
