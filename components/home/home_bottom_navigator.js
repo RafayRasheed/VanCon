@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import { ProfileNavigator } from "../profile/profile_navigator";
 import { OrderScreen } from "../orders/orders_screen";
 import { ChatList } from "./chat_all_screen";
+import { RFValue } from "react-native-responsive-fontsize";
 
 const Tab = createBottomTabNavigator()
 
@@ -35,8 +36,8 @@ const Icons = {
 
     // WALLET: require('../assets/home_main/navigator/wallet.png'),
     CHATS: {
-        image: require('../assets/home_main/home/navigator/chat.png'),
-        style: { width: myHeight(2.8), height: myHeight(2.8) }
+        image: require('../assets/home_main/home/navigator/chat2.png'),
+        style: { width: myHeight(3), height: myHeight(3) }
     },
     PROFILE: {
         image: require('../assets/home_main/home/navigator/account.png'),
@@ -46,9 +47,8 @@ const Icons = {
 
 
 const screenOptions = ({ navigator, route }) => {
-    const { cart } = useSelector(state => state.cart)
+    const { totalUnread } = useSelector(state => state.chats)
     const { progress } = useSelector(state => state.orders)
-
     const name = route.name
     return {
         headerShown: false,
@@ -82,12 +82,17 @@ const screenOptions = ({ navigator, route }) => {
                         <Image style={[Icons[name].style, { tintColor: color, resizeMode: 'contain', }]}
                             source={Icons[name].image} />
                         {
-                            cart.length ?
+                            totalUnread ?
                                 <View style={{
-                                    position: 'absolute', top: -myHeight(0.6), right: -myHeight(1.4), backgroundColor: myColors.red, borderRadius: 100,
-                                    paddingVertical: myHeight(0.35), paddingHorizontal: myHeight(1)
+                                    position: 'absolute', top: -myHeight(0.6), right: -myHeight(2), backgroundColor: myColors.red, borderRadius: 100,
+                                    // paddingVertical: myHeight(0.35), paddingHorizontal: myHeight(1)
+                                    minWidth: RFValue(18),
+                                    minHeight: RFValue(18), justifyContent: 'center', alignItems: 'center'
                                 }}>
-                                    <Text style={[styles.textCommon, { fontSize: myFontSize.tiny, fontFamily: myFonts.bodyBold, color: myColors.background }]}>{cart.length}</Text>
+                                    <Text style={[styles.textCommon, {
+                                        fontSize: myFontSize.tiny, fontFamily: myFonts.bodyBold,
+                                        color: myColors.background
+                                    }]}>{totalUnread > 9 ? "9+" : totalUnread}</Text>
                                 </View>
                                 : null
                         }
