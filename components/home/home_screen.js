@@ -20,7 +20,7 @@ import storage from '@react-native-firebase/storage';
 import { setAllItems, setAllRest, setNearby, setRecommend } from '../../redux/data_reducer';
 import { setHistoryOrderse, setPendingOrderse, setProgressOrderse } from '../../redux/order_reducer';
 import database from '@react-native-firebase/database';
-import { SetErrorAlertToFunction, deccodeInfo, getCurrentLocations, statusDate } from '../functions/functions';
+import { SetErrorAlertToFunction, deccodeInfo, getAreasLocations, getCurrentLocations, statusDate } from '../functions/functions';
 import messaging from '@react-native-firebase/messaging';
 import notifee from '@notifee/react-native';
 import { FirebaseUser, getDeviceToken, sendPushNotification, updateDeviceTokenToFireBase } from '../functions/firebase';
@@ -144,6 +144,14 @@ export const HomeScreen = ({ navigation }) => {
     }
     useEffect(() => {
         getProfileFromFirebase()
+
+
+    }, [])
+    useEffect(() => {
+        if (profile.city) {
+            getAreasLocations(profile.city)
+        }
+
         // updateDeviceTokenToFireBase(profile.uid)
         // sendPushNotification('hi', 'bye',2 )
 
@@ -154,7 +162,7 @@ export const HomeScreen = ({ navigation }) => {
         // }, 120000);
         // return () => clearInterval(interval);
 
-    }, [])
+    }, [profile.city])
 
     // Realtime
     useEffect(() => {
