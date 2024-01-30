@@ -242,9 +242,10 @@ export const HomeScreen = ({ navigation }) => {
 
 
 
-                        <Spacer paddingT={myHeight(3)} />
+                        <Spacer paddingT={myHeight(1.5)} />
 
                         {/* Banner */}
+                        <Banners />
                         {/* <Banners />
 
 

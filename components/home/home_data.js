@@ -65,7 +65,13 @@ export const Categories = [
     image: require('../assets/home_main/home/category/drink2.png'),
   },
 ];
+export const offers2 = [
+  { image: require('../assets/home_main/daily_special/BannerA.jpg') },
+  { image: require('../assets/home_main/daily_special/BannerB.jpg') },
+  { image: require('../assets/home_main/daily_special/BannerC.jpg') },
+  { image: require('../assets/home_main/daily_special/BannerD.jpg') },
 
+]
 export const offers = [
   {
     id: 1,
