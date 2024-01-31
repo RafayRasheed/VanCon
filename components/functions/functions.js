@@ -5,6 +5,8 @@ import Geolocation from '@react-native-community/geolocation';
 import { setErrorAlert } from '../../redux/error_reducer';
 import { getDistance } from 'geolib';
 import { FirebaseLocation } from './firebase';
+import firestore from '@react-native-firebase/firestore';
+
 import { setAreasLocation } from '../../redux/areas_reducer';
 export function verificationCode() {
   return Math.floor(Math.random() * 899999 + 100000);
@@ -143,8 +145,8 @@ export function updateAndNewLocation(coords) {
         const detail = {}
         detail[id] = ({ id, name, latitude, longitude });
 
-        storeRedux.dispatch(setCurrentLocation({ id, name, latitude, longitude }))
-        FirebaseLocation.doc(profile.city).update(detail)
+        storeRedux.dispatch(setAreasLocation({ id, name, latitude, longitude }))
+        firestore().collection('locations').doc(profile.city).update(detail)
           .then(() => {
             getAreasLocations()
             console.log('New Location Update', detail)
@@ -178,7 +180,7 @@ export const SetErrorAlertToFunction = ({ Title, Body, Status }) => {
 export const getAreasLocations = () => {
   const { profile } = storeRedux.getState().profile
 
-  FirebaseLocation.doc(profile.city).get().then((result) => {
+  firestore().collection('locations').doc(profile.city).get().then((result) => {
     if (result.exists) {
 
       const areas = result.data()

@@ -4,6 +4,7 @@ import { Spacer, myHeight, myWidth } from "../../common"
 import { myFontSize, myFonts, myLetSpacing } from "../../../ultils/myFonts"
 import { myColors } from "../../../ultils/myColors"
 import { offers2 } from "../home_data";
+import { FlashList } from "@shopify/flash-list";
 
 export const Banners = () => {
     const [i, setI] = useState(0)
@@ -11,6 +12,43 @@ export const Banners = () => {
     const scrollRef = useRef(null)
     const offerWidthSScroll = myWidth(95)
     const lenOffers = offers2.length
+    const slideIntervalRef = useRef(null);
+
+    const autoSlide = () => {
+        if (typeof slideIntervalRef.current !== 'undefined') {
+            clearInterval(slideIntervalRef.current);
+        }
+
+        slideIntervalRef.current = setInterval(() => {
+            setI((prevI) => {
+                console.log(prevI);
+                const maxLength = lenOffers;
+
+                if (prevI + 1 === maxLength) {
+                    // scrollRef.current?.scrollTo({ x: 0, y: 0, animated: true });
+                    scrollRef.current?.scrollToOffset({ offset: 0, y: 0, animated: true });
+                    return prevI;
+                } else {
+
+                    scrollRef.current?.scrollToOffset({ offset: (prevI + 1) * offerWidthSScroll, y: 0, animated: true });
+
+                    return prevI;
+                }
+            });
+        }, 3 * 1000);
+    };
+
+    useEffect(() => {
+        // Start auto-slide on component mount
+        autoSlide();
+
+        // Cleanup interval on component unmount
+        return () => {
+            if (slideIntervalRef.current) {
+                clearInterval(slideIntervalRef.current);
+            }
+        };
+    }, []);
 
     // Loop for dots
     for (let j = 0; j < lenOffers; j++) {
@@ -20,21 +58,23 @@ export const Banners = () => {
             backgroundColor: j == i ? myColors.primary : myColors.dot,
         }]} />)
     }
-    useEffect(() => {
-        //  setInterval(() => {
-        //     scrollRef.current.scrollTo({ x: myWidth(95) * (i + 1), animated: true });
-        //     console.log(i, i == lenOffers - 1 ? 0 : i + 1)
-        //     setI(i == lenOffers - 1 ? 0 : i + 1)
-        // }, 2000)
 
-        // const intervalId = setInterval(() => {
-        //     setI(prevI => (prevI === lenOffers - 1 ? 0 : prevI + 1));
-        //     scrollRef.current?.scrollTo({ x: myWidth(95) * (i + 1), animated: true });
-        // }, 2000);
+    // useEffect(() => {
+    //     const dis = i * myWidth(95)
 
-        // return () => clearInterval(intervalId); // Clear the interval on component unmount
+    //     scrollRef.current.scrollTo({ x: dis, animated: true });
 
-    }, [i])
+
+    // }, [i])
+    // useEffect(() => {
+
+    //     const timer = setTimeout(() => {
+    //         setI(i == lenOffers - 1 ? 0 : i + 1);
+
+    //     }, 5000)
+    //     return () => clearTimeout(timer);
+
+    // }, [i])
     //Offer Scroll
     function handleScroll(event) {
         const a = (event.nativeEvent.contentOffset.x) / offerWidthSScroll
@@ -46,8 +86,7 @@ export const Banners = () => {
 
     return (
         <View>
-            <ScrollView
-                onScroll={handleScroll}
+            {/* <ScrollView onScroll={handleScroll}
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={{
@@ -55,14 +94,58 @@ export const Banners = () => {
                     paddingHorizontal: myWidth(5)
                 }}
                 ref={scrollRef}
+                onMomentumScrollEnd={() => console.log('hn')}
+                onsc
+                pagingEnabled
+                snapToInterval={offerWidthSScroll}
+                scrollEventThrottle={1} >
+                {offers2.map((item, i) => <View key={i} style={{ flex: 1, }}>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            width: myWidth(90), height: myWidth(90) * 0.47,
+                            borderRadius: myHeight(5), borderWidth: 1, borderColor: myColors.offColor2,
+                            marginEnd: myWidth(5), overflow: 'hidden'
+                        }}
+
+                    >
+                        <Image style={{
+                            maxWidth: '100%', maxHeight: '100%', justifyContent: 'flex-end',
+                            resizeMode: 'stretch',
+                            // resizeMode: 'cover',
+                        }} source={item.image} />
+                    </View>
+
+                </View>)}
+
+            </ScrollView> */}
+
+            <FlashList
+                onScroll={handleScroll}
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{
+                    flexGrow: 1, justifyContent: 'center',
+                    paddingHorizontal: myWidth(5)
+                }}
+                onScrollBeginDrag={() => { console.log('j') }}
+                ref={scrollRef}
                 pagingEnabled
                 snapToInterval={offerWidthSScroll}
                 scrollEventThrottle={1}
-            >
-                {offers2.map((item, i) => {
+                onScrollEndDrag={() => { console.log('res2') }}
+                onScrollAnimationEnd={() => { console.log('res') }}
+                extraData={[i]}
+                data={offers2}
+                keyExtractor={(item, index) => index.toString()}
+                estimatedItemSize={87}
+                ItemSeparatorComponent={() => (
+                    <View style={{ height: myHeight(0.35), backgroundColor: myColors.divider, marginHorizontal: myWidth(0) }} />
+                )}
+                renderItem={({ item }) => {
                     return (
+
                         <View key={i} style={{ flex: 1, }}>
-                            {/* Offers */}
                             <View
                                 style={{
                                     flexDirection: 'row',
@@ -72,7 +155,6 @@ export const Banners = () => {
                                 }}
 
                             >
-                                {/* Image Offers */}
                                 <Image style={{
                                     maxWidth: '100%', maxHeight: '100%', justifyContent: 'flex-end',
                                     resizeMode: 'stretch',
@@ -83,9 +165,12 @@ export const Banners = () => {
                         </View>
                     )
                 }
-                )
                 }
-            </ScrollView>
+
+
+            />
+
+
             <Spacer paddingT={myHeight(1.6)} />
             {/*Dots */}
             <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
