@@ -21,6 +21,7 @@ import { setErrorAlert } from '../../redux/error_reducer';
 import { Search } from './locations_screen';
 import { CalenderDate } from './home.component/calender';
 import { RFValue } from 'react-native-responsive-fontsize';
+import { offers } from './home_data';
 const allDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 export const RequestRide = ({ navigation, route }) => {
     const disptach = useDispatch()
@@ -73,14 +74,16 @@ export const RequestRide = ({ navigation, route }) => {
 
     const [pickup, setPickup] = useState(preReq ? preReq.pickup : null)
     const [dropoff, setDropoff] = useState(preReq ? preReq.dropoff : null)
+    const [twoWay, setTwoWay] = useState(preReq ? preReq.twoWay : true)
+
     const [pickupTime, setPickupTime] = useState(preReq ? preReq.pickupTime : null)
     const [dropoffTime, setDropoffTime] = useState(preReq ? preReq.dropoffTime : null)
 
 
-    const [selectedDays, setSelectedDays] = useState(preReq ? [...preReq.selectedDays] : allDays)
+    const [selectedDays, setSelectedDays] = useState(preReq ? [...preReq.selectedDays] : [])
     const [seats, setSeats] = useState(preReq ? preReq.seats : 1)
     const [packages, setPackages] = useState(preReq ? preReq.packages : null)
-    const [amount, setAmount] = useState(preReq ? preReq.amount : null)
+    const [offer, setOffer] = useState(preReq ? preReq.offer : null)
 
     const [instruction, setInstruction] = useState(preReq ? preReq.instruction : null)
 
@@ -177,19 +180,46 @@ export const RequestRide = ({ navigation, route }) => {
         setErrorMsg('Please Add at Least 1 Route')
         return false
     }
-    function checkDepartCharges() {
-        if (departCharges) {
-            if (isNaN(departCharges) || departCharges < 0) {
-                setErrorMsg('Invalid Depart Charges')
+    function checkOffer() {
+        if (offer) {
+            if (isNaN(offer) || offer < 0) {
+                setErrorMsg('Invalid Offer Value')
                 return false
             }
             return true
         }
-        setErrorMsg('Please Enter Depart Charges')
+        setErrorMsg('Please Enter Your Offer')
         return false
 
     }
     function checkData() {
+        if (!pickup) {
+            setErrorMsg('Please Select Pickup Address')
+            return false
+        }
+        if (!pickupTime) {
+            setErrorMsg('Please Select Pickup Time')
+            return false
+        }
+        if (!dropoff) {
+            setErrorMsg('Please Select Dropoff Address')
+            return false
+        }
+        if (twoWay && !dropoffTime) {
+            setErrorMsg('Please Select Dropoff Time')
+            return false
+        }
+        if (!selectedDays.length) {
+            setErrorMsg('Please Select Days')
+            return false
+        }
+        if (!packages) {
+            setErrorMsg('Please Select Paid')
+            return false
+        }
+        if (!checkOffer()) {
+            return false
+        }
 
 
 
@@ -209,14 +239,15 @@ export const RequestRide = ({ navigation, route }) => {
     function onSave() {
         if (checkData()) {
 
-            setIsLoading(true)
             const newProfile = {
-
+                pickup, pickupTime, dropoff, dropoffTime, seats, selectedDays, packages, offer, instruction,
 
 
 
             }
+            console.log('New Profile', newProfile)
             return
+            setIsLoading(true)
             // setAddress(JSON.stringify(newProfile))
             FirebaseUser.doc(profile.uid)
                 .update(newProfile)
@@ -707,6 +738,7 @@ export const RequestRide = ({ navigation, route }) => {
 
                         }]}>Dropoff Details</Text>
                         <Spacer paddingT={myHeight(0.6)} />
+
                         <TouchableOpacity onPress={() => { setShowLoc(2) }}
                             activeOpacity={0.8}
                             style={{
@@ -729,30 +761,68 @@ export const RequestRide = ({ navigation, route }) => {
 
 
                         </TouchableOpacity>
+
                         <Spacer paddingT={myHeight(0.8)} />
+                        {/* Time */}
+                        <Collapsible collapsed={!twoWay}>
+                            <TouchableOpacity onPress={() => { setShowTimeModal(2) }}
+                                activeOpacity={0.8}
+                                style={{
+                                    width: '100%',
+                                    flexDirection: 'row',
+                                    // borderWidth: myHeight(0.15), borderColor: myColors.primaryT
+                                }}>
+                                <Text style={[styles.textCommon, {
+                                    fontFamily: myFonts.heading,
+                                    fontSize: myFontSize.body3,
+                                    color: myColors.text
+                                }]}>Time: </Text>
 
-                        <TouchableOpacity onPress={() => { setShowTimeModal(2) }}
-                            activeOpacity={0.8}
-                            style={{
-                                width: '100%',
-                                flexDirection: 'row',
-                                // borderWidth: myHeight(0.15), borderColor: myColors.primaryT
+                                <Text numberOfLines={3} style={[styles.textCommon, {
+                                    flex: 1,
+                                    fontFamily: myFonts.bodyBold,
+                                    fontSize: myFontSize.body,
+                                    paddingTop: RFValue(1.5),
+                                    color: dropoffTime ? myColors.text : myColors.textL5,
+                                }]}>{dropoffTime ? `${dropoffTime.time}` : 'Tap to Select'}</Text>
+
+                            </TouchableOpacity>
+                            <Spacer paddingT={myHeight(0.5)} />
+                        </Collapsible>
+
+                        {/* Two Way */}
+                        <TouchableOpacity activeOpacity={0.75}
+                            onPress={() => {
+                                setTwoWay(!twoWay)
                             }}>
-                            <Text style={[styles.textCommon, {
-                                fontFamily: myFonts.heading,
-                                fontSize: myFontSize.body3,
-                                color: myColors.text
-                            }]}>Time: </Text>
+                            <View style={{ paddingStart: myWidth(0.5), flexDirection: 'row', alignItems: 'center', }}>
+                                <View style={{
+                                    height: myHeight(3.5),
+                                    width: myHeight(3.5),
+                                    paddingTop: myHeight(0.75)
+                                }}>
+                                    <View style={{ width: myHeight(2), height: myHeight(2), borderWidth: 1.5, borderColor: myColors.textL4 }} />
+                                    {
+                                        twoWay &&
+                                        <Image style={{
+                                            height: myHeight(2.8),
+                                            width: myHeight(2.8),
+                                            resizeMode: 'contain',
+                                            tintColor: myColors.primaryT,
+                                            marginTop: -myHeight(2.8)
+                                        }} source={require('../assets/home_main/home/check.png')} />
+                                    }
+                                </View>
+                                {/* <Spacer paddingEnd={myWidth(0.3)} /> */}
+                                <Text style={[styles.textCommon,
+                                {
+                                    fontFamily: myFonts.bodyBold,
+                                    fontSize: myFontSize.body2,
 
-                            <Text numberOfLines={3} style={[styles.textCommon, {
-                                flex: 1,
-                                fontFamily: myFonts.bodyBold,
-                                fontSize: myFontSize.body,
-                                paddingTop: RFValue(1.5),
-                                color: dropoffTime ? myColors.text : myColors.textL5,
-                            }]}>{dropoffTime ? `${dropoffTime.time}` : 'Tap to Select'}</Text>
-
+                                }]}>{'Drop to Pickup'}</Text>
+                            </View>
                         </TouchableOpacity>
+
                     </View>
 
                     <Spacer paddingT={myHeight(0.3)} />
@@ -783,7 +853,7 @@ export const RequestRide = ({ navigation, route }) => {
                                 }} source={require('../assets/home_main/home/minusBtn.png')} />
                             </TouchableOpacity>
 
-                            <View style={{ minWidth: myWidth(20), alignItems: 'center' }}>
+                            <View style={{ minWidth: myWidth(17), alignItems: 'center' }}>
 
                                 <Text numberOfLines={1} style={[styles.textCommon, {
                                     fontSize: myFontSize.medium,
@@ -809,7 +879,7 @@ export const RequestRide = ({ navigation, route }) => {
 
 
                     </View>
-                    <Spacer paddingT={myHeight(0.6)} />
+                    <Spacer paddingT={myHeight(0.2)} />
                     {/* Days */}
                     <View>
                         <Text style={[styles.textCommon,
@@ -826,7 +896,7 @@ export const RequestRide = ({ navigation, route }) => {
 
                             {
 
-                                allDays.map(it => <CommonFaciDays dailyDays={selectedDays} setDailyDays={setSelectedDays} name={it} />)
+                                allDays.map((it, i) => <CommonFaciDays key={i} dailyDays={selectedDays} setDailyDays={setSelectedDays} name={it} />)
                             }
 
                         </View>
@@ -852,9 +922,8 @@ export const RequestRide = ({ navigation, route }) => {
                             <CommonFaciPackage name={'Yearly'} />
                         </View>
                     </View>
-                    <Spacer paddingT={myHeight(2)} />
 
-                    <Collapsible style={{ flexDirection: 'row', alignItems: 'center' }} collapsed={!packages}>
+                    <Collapsible style={{ paddingTop: myHeight(2), flexDirection: 'row', alignItems: 'center' }} collapsed={!packages}>
 
                         <Text style={[styles.textCommon,
                         {
@@ -900,7 +969,7 @@ export const RequestRide = ({ navigation, route }) => {
                                 placeholderTextColor={myColors.offColor}
                                 selectionColor={myColors.primary}
                                 cursorColor={myColors.primaryT}
-                                value={amount} onChangeText={setAmount}
+                                value={offer} onChangeText={setOffer}
                                 keyboardType='numeric'
                                 style={{
                                     fontFamily: myFonts.body,
@@ -936,7 +1005,7 @@ export const RequestRide = ({ navigation, route }) => {
 
                     </Collapsible>
 
-                    <Spacer paddingT={myHeight(1.6)} />
+                    <Spacer paddingT={myHeight(1.2)} />
 
                     {/* Instruction */}
                     <View>
