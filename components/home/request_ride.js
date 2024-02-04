@@ -8,6 +8,7 @@ import { Loader, MyError, NotiAlertNew, Spacer, StatusbarH, errorTime, ios, myHe
 import { myColors } from '../../ultils/myColors';
 import { myFontSize, myFonts, myLetSpacing } from '../../ultils/myFonts';
 import { useDispatch, useSelector } from 'react-redux';
+import database from '@react-native-firebase/database';
 
 
 import storage from '@react-native-firebase/storage';
@@ -22,6 +23,7 @@ import { Search } from './locations_screen';
 import { CalenderDate } from './home.component/calender';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { offers } from './home_data';
+import { dataFullData, getDistanceFromRes } from '../functions/functions';
 const allDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 export const RequestRide = ({ navigation, route }) => {
     const disptach = useDispatch()
@@ -237,17 +239,46 @@ export const RequestRide = ({ navigation, route }) => {
         return newArr
     }
     function onSave() {
+
         if (checkData()) {
+            setIsLoading(true)
 
+            const { date, time, dateInt, actualDate, smallCode } = dataFullData()
+            const id = preReq ? preReq.id : smallCode
+            const { distance, string } = getDistanceFromRes(
+                { latitude: pickup.latitude, longitude: pickup.longitude },
+                { latitude: dropoff.latitude, longitude: dropoff.longitude },
+                true
+            )
             const newProfile = {
-                pickup, pickupTime, dropoff, dropoffTime, seats, selectedDays, packages, offer, instruction,
-
-
+                id, dateInt, actualDate,
+                date, time, distance: string, actualDistance: distance,
+                pickup, pickupTime, dropoff,
+                dropoffTime, seats, selectedDays,
+                packages, offer, instruction,
+                status: preReq ? preReq.status : 1,
+                name: profile.name,
+                uid: profile.uid,
+                sendDrivers: preReq ? preReq.sendDrivers : [],
+                did: null,
+                driverName: null,
+                driverContact: null,
 
             }
             console.log('New Profile', newProfile)
+
+            database()
+                .ref(`/requests/${profile.uid}/${id}`).update(newProfile).then(() => {
+                    setIsLoading(false)
+                    navigation.goBack()
+                })
+                .catch((er) => {
+                    setIsLoading(false)
+
+                    console.log('error on save newProfile', er)
+                    setErrorMsg('Something Wrong')
+                })
             return
-            setIsLoading(true)
             // setAddress(JSON.stringify(newProfile))
             FirebaseUser.doc(profile.uid)
                 .update(newProfile)

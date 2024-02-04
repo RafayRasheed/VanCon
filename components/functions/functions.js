@@ -44,7 +44,7 @@ export function dataFullData() {
   const mili = adjustSting(date.getUTCMilliseconds().toString(), 3)
   const extra = verificationCode().toString().slice(0, 1)
   const code = year + month + day + hours + minutes + seconds + mili + extra
-
+  const smallCode = hours + minutes + seconds + mili + verificationCode().toString().slice(0, 2)
 
   const hoursN = adjustSting(date.getHours().toString(), 2)
   const minutesN = adjustSting(date.getMinutes().toString(), 2)
@@ -53,6 +53,7 @@ export function dataFullData() {
     time: hoursN + ":" + minutesN,
     dateInt: parseInt(code),
     actualDate: date,
+    smallCode,
   }
   return (dateData)
 
@@ -75,9 +76,12 @@ export function statusDate(YDate, time) {
     return (YDate)
   }
 }
-export function getDistanceFromRes(from, to) {
+export function getDistanceFromRes(from, to, extra) {
   try {
-    const dis = getDistance(from, to, 1)
+    let dis = getDistance(from, to, 1)
+    if (extra) {
+      dis = dis * 1.44
+    }
     let d = dis
     // alert(d)
     // alert(typeof d == 'NaN')
