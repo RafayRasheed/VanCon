@@ -21,7 +21,6 @@ export const Banners = () => {
 
         slideIntervalRef.current = setInterval(() => {
             setI((prevI) => {
-                console.log(prevI);
                 const maxLength = lenOffers;
 
                 if (prevI + 1 === maxLength) {
@@ -128,13 +127,11 @@ export const Banners = () => {
                     flexGrow: 1, justifyContent: 'center',
                     paddingHorizontal: myWidth(5)
                 }}
-                onScrollBeginDrag={() => { console.log('j') }}
                 ref={scrollRef}
                 pagingEnabled
                 snapToInterval={offerWidthSScroll}
                 scrollEventThrottle={1}
-                onScrollEndDrag={() => { console.log('res2') }}
-                onScrollAnimationEnd={() => { console.log('res') }}
+
                 extraData={[i]}
                 data={offers2}
                 keyExtractor={(item, index) => index.toString()}

@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
-    ScrollView, StyleSheet, TouchableOpacity, Image,
+    ScrollView, StyleSheet,
+    //  TouchableOpacity,
+    Image,
     View, Text, StatusBar, TextInput,
     Linking, Platform, ImageBackground, SafeAreaView, Alert,
 } from 'react-native';
@@ -16,63 +18,53 @@ import { ItemInfo } from './home.component/item_info';
 import { FlashList } from '@shopify/flash-list';
 import { fromBase64 } from 'js-base64';
 import { FirebaseLocation } from '../functions/firebase';
-const CommonFaci = ({ name, fac, setFAc }) => (
-    <TouchableOpacity activeOpacity={0.75}
-        onPress={() => {
-            setFAc(!fac)
-        }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', }}>
-            <View style={{
-                height: myHeight(3.5),
-                width: myHeight(3.5),
-                paddingTop: myHeight(0.75)
-            }}>
-                <View style={{ width: myHeight(2.2), height: myHeight(2.2), borderWidth: 1.5, borderColor: myColors.textL4 }} />
-                {
-                    fac &&
-                    <Image style={{
-                        height: myHeight(3.5),
-                        width: myHeight(3.5),
-                        resizeMode: 'contain',
-                        tintColor: myColors.primaryT,
-                        marginTop: -myHeight(3.3)
-                    }} source={require('../assets/home_main/home/check2.png')} />
-                }
-            </View>
-            <Spacer paddingEnd={myWidth(1)} />
-            <Text style={[styles.textCommon,
-            {
-                fontFamily: myFonts.bodyBold,
-                fontSize: myFontSize.xBody,
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
-            }]}>{name}</Text>
-        </View>
-    </TouchableOpacity>
-)
+
 function containString(contain, thiss) {
     return (contain.toLowerCase().includes(thiss.toLowerCase()))
 }
 
-export const Search = ({ navigation }) => {
+export const Search = ({ locat, selected, index, setSelected, setShowLoc }) => {
     // const { location } = useSelector(state => state.location)
     const { areas, profile } = useSelector(state => state)
     const location = areas.areas
 
     const [search, setSearch] = useState(null)
-    const [longEnable, setLongEnable] = useState(false)
+    const [longEnable, setLongEnable] = useState(locat ? locat.length != 0 : 0)
     const [filterItems, setFilterItems] = useState([])
-    const [selectedItem, setSelectedItems] = useState([])
+    const [selectedItem, setSelectedItems] = useState(locat ? [...locat] : [])
 
     // const [fullRest, setFullRest] = useState([])
     function onLongPress(item) {
 
         if (!longEnable) {
-            console.log(longEnable, item,)
 
             setLongEnable(true)
             onSinglePress(item, true)
 
         }
+    }
+    function onDone(single) {
+        // selected[index].locations = [single]
+        const newArr = []
+        selected.map((it, i) => {
+
+            const { id, time, show, locations } = it
+            if (i == index) {
+
+                newArr.push({ id, time, show, locations: single ? [single] : [...selectedItem] })
+            } else {
+                newArr.push({ id, time, show, locations })
+            }
+        })
+        setSelected([...newArr])
+        setShowLoc(false)
+
+    }
+    function onSelect(item) {
+        setSelected(item)
+        setShowLoc(false)
     }
     function onSinglePress(item, fromLong) {
         if (longEnable || fromLong) {
@@ -85,6 +77,10 @@ export const Search = ({ navigation }) => {
                 }
                 setSelectedItems(selectedItem.filter(it => it.id != item.id))
             }
+        } else {
+
+
+            onDone(item)
         }
     }
     const Loader = () => (
@@ -128,7 +124,6 @@ export const Search = ({ navigation }) => {
     //             newLoc.push({ id: i + 1, name: resultString, latitude, longitude })
     //         })
     //         FirebaseLocation.doc('Karachi').set({ areas: newLoc })
-    //         console.log(newLoc.length)
     //     }
 
 
@@ -141,12 +136,10 @@ export const Search = ({ navigation }) => {
 
         if (search) {
             const newR = location.filter(item => (containString(item.name, search)))
-            console.log(1, newR.length)
             setFilterItems(newR)
         }
 
         else {
-            console.log(2, location.length)
 
             setFilterItems(location)
 
@@ -173,13 +166,68 @@ export const Search = ({ navigation }) => {
 
         <>
             <SafeAreaView style={{
-                position: 'absolute', height: '100%', width: '100%',
+                position: 'absolute', zIndex: 1, height: '100%', width: '100%',
+                // flex: 1,
                 backgroundColor: myColors.background,
+                paddingTop: StatusBar.currentHeight
             }}>
-                <StatusbarH />
+                {/* <StatusbarH /> */}
                 <Spacer paddingT={myHeight(1.5)} />
                 {/* Top */}
                 {/* Search */}
+
+                {
+                    longEnable ?
+                        <View style={{ paddingHorizontal: myWidth(4), flexDirection: 'row', alignItems: 'center', }}>
+
+
+                            <View style={{
+                                flex: 1,
+
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                paddingHorizontal: myWidth(longEnable ? 0 : 4),
+                                // paddingVertical: myHeight(0.5),
+                                height: myHeight(5),
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                borderRadius: myWidth(2.5),
+                                backgroundColor: longEnable ? myColors.background : myColors.offColor7,
+
+                                // marginHorizontal: myWidth(4)
+                            }}>
+
+
+                                <TouchableOpacity activeOpacity={0.7} onPress={clearLongPress} style={{}}>
+                                    <Image style={{
+                                        height: myHeight(2.3),
+                                        width: myHeight(2.3),
+                                        resizeMode: 'contain',
+                                        tintColor: myColors.textL0
+                                    }} source={require('../assets/home_main/home/back.png')} />
+                                </TouchableOpacity>
+                                <Spacer paddingEnd={myWidth(3.5)} />
+                                <Text style={[styles.textCommon, {
+                                    fontFamily: myFonts.bodyBold,
+                                    fontSize: myFontSize.xBody2,
+                                    flex: 1
+                                }]}>Select {selectedItem.length}</Text>
+
+                                <TouchableOpacity activeOpacity={0.7} onPress={() => onDone()} style={{}}>
+                                    <Text style={[styles.textCommon, {
+                                        fontFamily: myFonts.bodyBold,
+                                        fontSize: myFontSize.body4,
+                                        color: myColors.primaryT,
+                                    }]}>Done</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+
+                        :
+                        null
+                }
+
+
                 <View style={{ paddingHorizontal: myWidth(4), flexDirection: 'row', alignItems: 'center', }}>
 
                     {/* Search */}
@@ -188,80 +236,55 @@ export const Search = ({ navigation }) => {
 
                         flexDirection: 'row',
                         alignItems: 'center',
-                        paddingHorizontal: myWidth(longEnable ? 0 : 4),
+                        paddingHorizontal: myWidth(4),
                         // paddingVertical: myHeight(0.5),
                         height: myHeight(5),
-                        justifyContent: 'center',
                         alignItems: 'center',
                         borderRadius: myWidth(2.5),
-                        backgroundColor: longEnable ? myColors.background : myColors.offColor7,
+                        backgroundColor: myColors.offColor7,
 
                         // marginHorizontal: myWidth(4)
                     }}>
 
+                        {/* Arrow */}
                         {
-                            longEnable ?
-                                <>
-                                    <TouchableOpacity activeOpacity={0.7} onPress={clearLongPress} style={{}}>
-                                        <Image style={{
-                                            height: myHeight(2.3),
-                                            width: myHeight(2.3),
-                                            resizeMode: 'contain',
-                                            tintColor: myColors.textL0
-                                        }} source={require('../assets/home_main/home/back.png')} />
-                                    </TouchableOpacity>
-                                    <Spacer paddingEnd={myWidth(3.5)} />
-                                    <Text style={[styles.textCommon, {
-                                        fontFamily: myFonts.bodyBold,
-                                        fontSize: myFontSize.xBody2,
-                                        flex: 1
-                                    }]}>Select {selectedItem.length}</Text>
+                            !longEnable &&
 
-                                    <TouchableOpacity activeOpacity={0.7} onPress={() => {
+                            <>
+                                <TouchableOpacity activeOpacity={0.7} onPress={() => { setShowLoc(false) }} style={{}}>
+                                    <Image style={{
+                                        height: myHeight(2.3),
+                                        width: myHeight(2.3),
+                                        resizeMode: 'contain',
+                                        tintColor: myColors.textL0
+                                    }} source={require('../assets/home_main/home/back.png')} />
+                                </TouchableOpacity>
+                                <Spacer paddingEnd={myWidth(2.5)} />
+                            </>
 
-                                    }} style={{}}>
-                                        <Text style={[styles.textCommon, {
-                                            fontFamily: myFonts.bodyBold,
-                                            fontSize: myFontSize.body4,
-                                            color: myColors.primaryT,
-                                        }]}>Done</Text>
-                                    </TouchableOpacity>
-                                </>
-                                :
-                                <>
-
-                                    {/* Arrow */}
-                                    <TouchableOpacity activeOpacity={0.7} onPress={() => null} style={{}}>
-                                        <Image style={{
-                                            height: myHeight(2.3),
-                                            width: myHeight(2.3),
-                                            resizeMode: 'contain',
-                                            tintColor: myColors.textL0
-                                        }} source={require('../assets/home_main/home/back.png')} />
-                                    </TouchableOpacity>
-                                    <Spacer paddingEnd={myWidth(2.5)} />
-                                    <TextInput placeholder=" Search location"
-                                        placeholderTextColor={myColors.textL5}
-                                        autoCorrect={false}
-                                        selectionColor={myColors.primaryT}
-                                        style={{
-                                            flex: 1,
-                                            textAlignVertical: 'center',
-                                            paddingVertical: ios ? myHeight(0.6) : myHeight(100) > 600 ? myHeight(0.5) : myHeight(0.1),
-                                            fontSize: myFontSize.body,
-                                            color: myColors.text,
-                                            includeFontPadding: false,
-                                            fontFamily: myFonts.bodyBold,
-                                        }}
-                                        cursorColor={myColors.primaryT}
-                                        value={search} onChangeText={setSearch}
-                                    // value={search} onChangeText={(val) => null}
-                                    />
-                                </>
                         }
+                        <TextInput placeholder=" Search location"
+                            placeholderTextColor={myColors.textL5}
+                            autoCorrect={false}
+                            selectionColor={myColors.primaryT}
+                            style={{
+                                flex: 1,
+                                textAlignVertical: 'center',
+                                paddingVertical: ios ? myHeight(0.6) : myHeight(100) > 600 ? myHeight(0.5) : myHeight(0.1),
+                                fontSize: myFontSize.body,
+                                color: myColors.text,
+                                includeFontPadding: false,
+                                fontFamily: myFonts.bodyBold,
+                            }}
+                            cursorColor={myColors.primaryT}
+                            value={search} onChangeText={setSearch}
+                        // value={search} onChangeText={(val) => null}
+                        />
+
                     </View>
                 </View>
                 <Spacer paddingT={myHeight(1)} />
+
                 <View style={{ width: '100%', height: 1, backgroundColor: myColors.divider }} />
 
                 {/* <View style={{ marginHorizontal: myWidth(5), flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -300,8 +323,8 @@ export const Search = ({ navigation }) => {
                                     const selItisSlected = selectedItem.findIndex(it => it.id == item.id) != -1
                                     return (
 
-                                        <TouchableOpacity activeOpacity={0.75} style={{ paddingVertical: myHeight(1), paddingHorizontal: myWidth(4.5), backgroundColor: selItisSlected ? myColors.dot : myColors.background }} onLongPress={() => { onLongPress(item) }}
-                                            onPress={() => onSinglePress(item)}>
+                                        <TouchableOpacity activeOpacity={0.75} style={{ paddingVertical: myHeight(1), paddingHorizontal: myWidth(4.5), backgroundColor: selItisSlected ? myColors.dot : myColors.background }}
+                                            onPress={() => onSelect(item)}>
                                             <Text style={[styles.textCommon, {
                                                 fontFamily: myFonts.bodyBold,
                                                 fontSize: myFontSize.xBody,

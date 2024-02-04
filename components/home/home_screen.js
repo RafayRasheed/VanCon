@@ -222,7 +222,17 @@ export const HomeScreen = ({ navigation }) => {
         // Stop listening for updates when no longer required
         return () => database().ref(`/chats`).off('value', onValueChange);
     }, []);
-
+    function Greeting() {
+        let greet = '';
+        const myDate = new Date();
+        const hrs = myDate.getHours();
+        if (hrs >= 5 && hrs < 12) greet = 'Good Morning';
+        else if (hrs >= 12 && hrs < 16) greet = 'Good Afternoon';
+        else if (hrs >= 16 && hrs < 20) greet = 'Good Evening';
+        else if (hrs >= 20 && hrs < 24) greet = 'Good Night';
+        else if (hrs >= 0 && hrs < 5) greet = 'Mid Night Owl...';
+        return greet;
+    }
     return (
 
         <SafeAreaView style={styles.container}>
@@ -232,20 +242,46 @@ export const HomeScreen = ({ navigation }) => {
                     :
                     <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false} >
 
-                        <Spacer paddingT={myHeight(1.4)} />
-                        <Text style={[styles.textCommon, {
+                        <Spacer paddingT={myHeight(2)} />
+                        {/* <Text style={[styles.textCommon, {
                             fontSize: myFontSize.medium2,
                             fontFamily: myFonts.heading,
                             alignSelf: 'center',
 
-                        }]}>Van<Text style={{ color: myColors.primaryT }}>Con</Text></Text>
+                        }]}>Van<Text style={{ color: myColors.primaryT }}>Con</Text></Text> */}
 
+                        <View style={{ paddingHorizontal: myWidth(6) }}>
+                            <Text
+                                numberOfLines={1}
+                                style={{
+                                    color: myColors.text, fontSize: myFontSize.xxBody,
+                                    fontFamily: myFonts.bodyBold
+                                }}>
+
+                                {Greeting()}, <Text style={{ color: myColors.primaryT }}>{profile.name}</Text>
+                            </Text>
+                        </View>
 
 
                         <Spacer paddingT={myHeight(1.5)} />
 
                         {/* Banner */}
                         <Banners />
+                        <TouchableOpacity activeOpacity={0.75}
+                            onPress={() => {
+                                console.log('21')
+                                navigation.navigate('RequestRide')
+                            }}>
+
+
+                            <Text style={[styles.textCommon,
+                            {
+                                fontFamily: myFonts.bodyBold,
+                                fontSize: myFontSize.xBody,
+
+                            }]}>Book Now</Text>
+
+                        </TouchableOpacity>
                         {/* <Banners />
 
 
