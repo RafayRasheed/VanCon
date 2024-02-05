@@ -566,7 +566,44 @@ export const DriverDetail = ({ navigation, route }) => {
                 ))
               }
             </View>
-            <Spacer paddingEnd={myWidth(1.5)} />
+          </View>
+
+
+          <Spacer paddingT={myHeight(1.5)} />
+          {/* Daily */}
+          <View style={{}}>
+            <Text
+
+              style={{
+                fontSize: myFontSize.body4,
+                fontFamily: myFonts.bodyBold,
+                color: myColors.text,
+                letterSpacing: myLetSpacing.common,
+                includeFontPadding: false,
+                padding: 0,
+              }}>Pick & Drop Days</Text>
+
+            <Spacer paddingT={myHeight(0.5)} />
+            <View style={{ width: '100%', flexWrap: 'wrap', flexDirection: 'row', alignItems: 'center' }}>
+              {
+                driver.oneRideDays.map((it, i) => (
+
+
+                  <Text key={i}
+                    style={{
+
+                      fontSize: myFontSize.body3,
+                      fontFamily: myFonts.bodyBold,
+                      color: myColors.primaryT,
+                      letterSpacing: myLetSpacing.common,
+                      includeFontPadding: false,
+                      padding: 0,
+                    }}>{`● ${it}    `}</Text>
+
+                ))
+              }
+            </View>
+
           </View>
 
           <Spacer paddingT={myHeight(1.5)} />
