@@ -370,7 +370,7 @@ export const DriverDetail = ({ navigation, route }) => {
                 width: myHeight(2.28),
                 height: myHeight(2.28),
                 resizeMode: 'contain',
-                tintColor: myColors.textL4
+                tintColor: myColors.text
               }}
             />
             <Spacer paddingEnd={myWidth(3)} />
@@ -397,7 +397,7 @@ export const DriverDetail = ({ navigation, route }) => {
                 width: myHeight(2.38),
                 height: myHeight(2.38),
                 resizeMode: 'contain',
-                tintColor: myColors.textL4
+                tintColor: myColors.text
               }}
             />
             <Spacer paddingEnd={myWidth(3)} />
