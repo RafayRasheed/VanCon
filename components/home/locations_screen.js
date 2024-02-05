@@ -10,7 +10,7 @@ import { MyError, Spacer, StatusbarH, ios, myHeight, myWidth } from '../common';
 import { myColors } from '../../ultils/myColors';
 import { myFontSize, myFonts, myLetSpacing } from '../../ultils/myFonts';
 import { Restaurants } from './home_data';
-import { RestaurantInfoFull } from './home.component/restaurant_info_full';
+import { DriverInfoFull } from './home.component/driver_info_full';
 import Lottie from 'lottie-react-native';
 import { Filter } from './home.component/filter';
 import { useSelector } from 'react-redux';

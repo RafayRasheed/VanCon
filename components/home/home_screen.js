@@ -12,12 +12,12 @@ import { getCartLocal, getLogin, setLogin } from '../functions/storageMMKV';
 import { setCart } from '../../redux/cart_reducer';
 import { useDispatch, useSelector } from 'react-redux';
 import firestore, { Filter } from '@react-native-firebase/firestore';
-import { setFavoriteItem, setFavoriteRest } from '../../redux/favorite_reducer';
+import { setFavoriteDrivers, } from '../../redux/favorite_reducer';
 import { RestaurantInfoSkeleton } from '../common/skeletons';
 import { HomeSkeleton } from './home.component/home_skeleton';
 import { ImageUri } from '../common/image_uri';
 import storage from '@react-native-firebase/storage';
-import { setAllItems, setAllRest, setNearby, setRecommend } from '../../redux/data_reducer';
+import { setAllDriver, } from '../../redux/data_reducer';
 import { setHistoryOrderse, setPendingOrderse, setProgressOrderse } from '../../redux/order_reducer';
 import database from '@react-native-firebase/database';
 import { SetErrorAlertToFunction, deccodeInfo, getAreasLocations, getCurrentLocations, statusDate } from '../functions/functions';
@@ -28,6 +28,7 @@ import { NotiAlert } from '../common/noti_Alert';
 import Animated, { SlideInUp } from 'react-native-reanimated';
 import { setProfile } from '../../redux/profile_reducer';
 import { setChats, setTotalUnread } from '../../redux/chat_reducer';
+import { DriverInfoFull } from './home.component/driver_info_full';
 
 if (!ios && UIManager.setLayoutAnimationEnabledExperimental) {
     UIManager.setLayoutAnimationEnabledExperimental(true)
@@ -35,6 +36,7 @@ if (!ios && UIManager.setLayoutAnimationEnabledExperimental) {
 export const HomeScreen = ({ navigation }) => {
     const name = "Someone";
     const { profile } = useSelector(state => state.profile)
+    const { AllDrivers } = useSelector(state => state.data)
 
     const [isLoading, setIsLoading] = useState(false)
     const [categories, setCategories] = useState([])
@@ -50,28 +52,20 @@ export const HomeScreen = ({ navigation }) => {
 
 
     function getAllRestuarant() {
-        firestore().collection('restaurants')
-            .where('update', '==', true)
+        firestore().collection('drivers')
+            .where('ready', '==', true)
             .where('city', '==', profile.city)
             .get().then((result) => {
                 if (!result.empty) {
-                    let rest = []
-                    let items = []
+                    let drivers = []
 
                     result.forEach((res, i) => {
-                        const restaurant = res.data()
-                        rest.push(restaurant)
-                        restaurant.foodCategory.map((subCat, ind) => {
-                            subCat.items?.map((item, i) => {
-                                items.push(item)
-                            })
-
-                        })
-                        // catArray.push(cat.data())
+                        const driver = res.data()
+                        drivers.push(driver)
 
                     })
 
-                    dispatch(setAllRest(rest))
+                    dispatch(setAllDriver(drivers))
 
                 }
                 else {
@@ -136,7 +130,9 @@ export const HomeScreen = ({ navigation }) => {
         FirebaseUser.doc(profile.uid).get().then((documentSnapshot) => {
             const prf = documentSnapshot.data()
             dispatch(setProfile(prf))
-
+            if (prf.favoriteDrivers && prf.favoriteDrivers.length) {
+                dispatch(setFavoriteDrivers(prf.favoriteDrivers))
+            }
 
         }).catch(err => {
             console.log('Internal error while  getProfileFrom')
@@ -144,7 +140,7 @@ export const HomeScreen = ({ navigation }) => {
     }
     useEffect(() => {
         getProfileFromFirebase()
-
+        getAllRestuarant()
 
     }, [])
     useEffect(() => {
@@ -282,6 +278,10 @@ export const HomeScreen = ({ navigation }) => {
                             }]}>Book Now</Text>
 
                         </TouchableOpacity>
+
+                        {AllDrivers.map((item, i) => {
+                            return (<DriverInfoFull key={i} driver={item} />)
+                        })}
                         {/* <Banners />
 
 

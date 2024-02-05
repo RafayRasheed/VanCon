@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { ItemSkeleton, RestaurantInfoSkeleton, RestaurantInfoSkeletonHori } from '../common/skeletons';
 import { ItemInfo } from '../home/home.component/item_info';
-import { RestaurantInfoFull } from '../home/home.component/restaurant_info_full';
+import { DriverInfoFull } from '../home/home.component/driver_info_full';
 
 
 export const Favourite = ({ navigation }) => {
@@ -182,7 +182,7 @@ export const Favourite = ({ navigation }) => {
 
                             <TouchableOpacity activeOpacity={0.95}
                                 onPress={() => navigation.navigate('RestaurantDetail', { item })} >
-                                <RestaurantInfoFull restaurant={item} />
+                                <DriverInfoFull restaurant={item} />
                             </TouchableOpacity>
                         )
                     } else {

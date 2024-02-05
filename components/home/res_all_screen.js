@@ -5,7 +5,7 @@ import { myColors } from "../../ultils/myColors"
 import { Categories, offers } from "./home_data";
 import { Spacer, StatusbarH, myHeight, myWidth } from "../common";
 import { RestaurantInfo } from "./home.component/restaurant_info";
-import { RestaurantInfoFull } from "./home.component/restaurant_info_full";
+import { DriverInfoFull } from "./home.component/driver_info_full";
 import { useSelector } from "react-redux";
 const CommonFaci = ({ name, fac, setFAc }) => (
     <TouchableOpacity activeOpacity={0.75}
@@ -169,7 +169,7 @@ export const RestaurantAll = ({ navigation, route }) => {
                 renderItem={({ item }) =>
                     <TouchableOpacity activeOpacity={0.95}
                         onPress={() => navigation.navigate('RestaurantDetail', { item })} >
-                        <RestaurantInfoFull restaurant={item} />
+                        <DriverInfoFull restaurant={item} />
                     </TouchableOpacity>}
             />
             {/* <ScrollView showsVerticalScrollIndicator={false}>
@@ -177,7 +177,7 @@ export const RestaurantAll = ({ navigation, route }) => {
                 {filterRes.map((item, i) =>
                     <TouchableOpacity key={i} activeOpacity={0.95}
                         onPress={() => navigation.navigate('RestaurantDetail', { item })} >
-                        <RestaurantInfoFull restaurant={item} />
+                        <DriverInfoFull restaurant={item} />
                     </TouchableOpacity>
                 )}
             </ScrollView> */}

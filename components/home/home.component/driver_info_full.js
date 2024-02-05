@@ -6,18 +6,18 @@ import { myColors } from "../../../ultils/myColors"
 import { useDispatch, useSelector } from 'react-redux'
 import { addFavoriteRest, removeFavoriteRest } from '../../../redux/favorite_reducer'
 import { ImageUri } from '../../common/image_uri'
-export const RestaurantInfoFull = ({ restaurant }) => {
-    const { favoriteRestuarnt } = useSelector(state => state.favorite)
+export const DriverInfoFull = ({ driver }) => {
+    const { favoriteDrivers } = useSelector(state => state.favorite)
     const dispatch = useDispatch()
 
-    const checkFav = favoriteRestuarnt.find(redID => redID == restaurant.uid)
+    const checkFav = favoriteDrivers.find(redID => redID == driver.uid)
     const [isFav, setIsFav] = useState(checkFav != null)
 
     function changeFav() {
         if (!isFav) {
-            dispatch(addFavoriteRest({ resId: restaurant.uid }))
+            dispatch(addFavoriteRest({ resId: driver.uid }))
         } else {
-            dispatch(removeFavoriteRest({ resId: restaurant.uid }))
+            dispatch(removeFavoriteRest({ resId: driver.uid }))
         }
         setIsFav(!isFav)
     }
@@ -39,16 +39,16 @@ export const RestaurantInfoFull = ({ restaurant }) => {
                     borderTopRightRadius: myWidth(3.5),
                     borderTopLeftRadius: myWidth(3.5),
                     overflow: 'hidden'
-                }} source={restaurant.images[0]}>
+                }}>
 
-                    <ImageUri width={'100%'} height={'100%'} resizeMode='cover' uri={restaurant.images[0].toString()} />
+                    <ImageUri width={'100%'} height={'100%'} resizeMode='cover' uri={driver.vehicleImage} />
 
                     <View style={{ flexDirection: 'row', alignItems: 'center', position: 'absolute', top: myHeight(0.8) }}>
 
                         <View style={{ flex: 1 }}>
 
                             {
-                                restaurant.deal &&
+                                driver.deal &&
 
                                 <View style={{
                                     backgroundColor: myColors.primaryT,
@@ -56,7 +56,7 @@ export const RestaurantInfoFull = ({ restaurant }) => {
                                     borderTopEndRadius: myWidth(1.5), paddingVertical: myHeight(0.3),
                                     borderBottomEndRadius: myWidth(1.5), alignSelf: 'flex-start'
                                 }}>
-                                    <Text numberOfLines={1} style={styles.textDeal}>{restaurant.deal}</Text>
+                                    <Text numberOfLines={1} style={styles.textDeal}>{driver.deal}</Text>
                                 </View>
 
                             }
@@ -74,100 +74,119 @@ export const RestaurantInfoFull = ({ restaurant }) => {
                     </View>
 
                 </View>
-
-
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    {/* Icon */}
-                    <View style={styles.containerIcon}>
-                        <View style={styles.imageIcon}>
-                            {/* {console.log(restaurant)} */}
-
-                            <ImageUri width={'100%'} height={'100%'} resizeMode='cover' uri={restaurant.icon} />
-                        </View>
-
-                        {/* <Image style={styles.imageIcon} source={restaurant.icon} /> */}
-                    </View>
-
-
-                    {/* Types */}
-                    <View style={{
-                        paddingTop: myHeight(0.5), flexDirection: 'row',
-                        alignItems: "center"
-                    }}>
-                        {/* Bike */}
-                        {/* <Image style={{
-                            height: myHeight(3.2),
-                            width: myHeight(3.2),
-                            resizeMode: 'contain',
-                            tintColor: myColors.primaryT
-                        }} source={require('../../assets/home_main/home/bike.png')} /> */}
-
-                        <Spacer paddingEnd={myWidth(1.2)} />
-                        {/* Time */}
-                        {/* <Text numberOfLines={2} style={{
-                            fontSize: myFontSize.xBody,
-                            fontFamily: myFonts.bodyBold,
-                            color: myColors.text,
-                            letterSpacing: myLetSpacing.common,
-                            includeFontPadding: false,
-                            padding: 0
-                        }}
-                        >{restaurant.delivery} min</Text> */}
-                        {/* Type */}
-
-                        <Text numberOfLines={1} style={[styles.textCommon, {
-                            fontSize: myFontSize.body,
-                            fontFamily: myFonts.bodyBold,
-                            color: myColors.primaryT,
-
-                        }]}>{restaurant.dineIn && '● Dine In    '}{restaurant.takeAway && '● Take Away    '}{restaurant.homeDelivery && '● Delivery'}</Text>
-
-                        <Spacer paddingEnd={myWidth(3)} />
-                    </View>
-                </View>
-
                 <Spacer paddingT={myHeight(0.5)} />
+
                 {/* Detals */}
                 <View style={{ paddingHorizontal: myWidth(2) }}>
 
                     {/* Name & Rating */}
-                    <View style={{ flexDirection: 'row', }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
 
                         {/* Name */}
                         <Text numberOfLines={1}
-                            style={styles.textName}>{restaurant.name}</Text>
+                            style={styles.textName}>{driver.vehicleName} <Text style={{
+                                fontSize: myFontSize.body4,
+                                color: myColors.text, fontFamily: myFonts.body
+                            }}>({driver.vehicleModal})</Text></Text>
 
-                        <Spacer paddingEnd={myWidth(1)} />
+                        <Spacer paddingEnd={myWidth(1.5)} />
+
+                        <Image style={{
+                            width: myHeight(2.9), height: myHeight(2.9),
+                            resizeMode: 'contain', marginTop: myHeight(0.2), tintColor: myColors.texts
+                        }}
+                            source={require('../../assets/home_main/home/ac.png')} />
+                        <Spacer paddingEnd={myWidth(2.5)} />
+
+                        <Text
+
+                            style={{
+                                fontSize: myFontSize.body3,
+                                fontFamily: myFonts.bodyBold,
+                                color: myColors.text,
+                                letterSpacing: myLetSpacing.common,
+                                includeFontPadding: false,
+                                padding: 0,
+                            }}>{driver.ac ? 'AC' : 'Non AC'}</Text>
+                        <Spacer paddingEnd={myWidth(1.5)} />
 
                         {/* Rating */}
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <Image style={styles.imageStar} source={require('../../assets/home_main/home/star.png')} />
+                        {/* <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Image style={styles.imageStar} source={require('../../assets/home_main/home/star.png')} />
 
-                            <Spacer paddingEnd={myWidth(1.6)} />
-                            <Text style={styles.textRating}>{restaurant.rating}</Text>
-                        </View>
+        <Spacer paddingEnd={myWidth(1.6)} />
+        <Text style={styles.textRating}>{driver.rating}</Text>
+    </View> */}
                     </View>
                     <Spacer paddingT={myHeight(0.3)} />
 
-                    {/* Location */}
-                    <View style={{ flexDirection: 'row', }}>
-                        <Image style={styles.imageLoc}
-                            source={require('../../assets/home_main/home/loc.png')} />
-                        <Spacer paddingEnd={myWidth(0.8)} />
-                        <Text numberOfLines={1} style={[styles.textCommon, {
-                            flex: 1,
-                            fontSize: myFontSize.body,
-                            fontFamily: myFonts.bodyBold,
-                            color: myColors.text,
+                    {/* Name & Rating */}
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Image style={{
+                            width: myHeight(2), height: myHeight(2),
+                            resizeMode: 'contain', marginTop: myHeight(0.0), tintColor: myColors.text
+                        }}
+                            source={require('../../assets/home_main/home/driver.png')} />
+                        <Spacer paddingEnd={myWidth(1.5)} />
 
-                        }]}>{restaurant.location}</Text>
+                        {/* Name */}
+                        <Text numberOfLines={1}
+                            style={{
+                                flex: 1,
+                                fontSize: myFontSize.body2,
+                                fontFamily: myFonts.bodyBold,
+                                color: myColors.text,
+                                letterSpacing: myLetSpacing.common,
+                                includeFontPadding: false,
+                                padding: 0,
+                            }}>{driver.name}</Text>
+
+                        <Spacer paddingEnd={myWidth(1.5)} />
+
+                        <Image style={{
+                            width: myHeight(2), height: myHeight(2),
+                            resizeMode: 'contain', marginTop: myHeight(0.0), tintColor: myColors.textL
+                        }}
+                            source={require('../../assets/home_main/home/seatSF.png')} />
+                        <Spacer paddingEnd={myWidth(1.5)} />
+
+                        <Text
+
+                            style={{
+                                fontSize: myFontSize.body3,
+                                fontFamily: myFonts.bodyBold,
+                                color: myColors.text,
+                                letterSpacing: myLetSpacing.common,
+                                includeFontPadding: false,
+                                padding: 0,
+                            }}>{driver.vehicleSeats} Seats</Text>
+                        <Spacer paddingEnd={myWidth(1.5)} />
                     </View>
+                    {/* Location */}
+                    {/* <View style={{ flexDirection: 'row', }}>
+    <Image style={styles.imageLoc}
+        source={require('../../assets/home_main/home/loc.png')} />
+    <Spacer paddingEnd={myWidth(0.8)} />
+    <Text numberOfLines={1} style={[styles.textCommon, {
+        flex: 1,
+        fontSize: myFontSize.body,
+        fontFamily: myFonts.bodyBold,
+        color: myColors.text,
+
+    }]}>{driver.location}</Text>
+</View> */}
 
                     {/* restaurants */}
                     {/* <Text numberOfLines={1} style={styles.textrestaurants}>{restaurants}</Text> */}
                     <Spacer paddingT={myHeight(1)} />
 
                 </View>
+
+
+
+
+
+
             </View>
         </View>
     )
@@ -227,7 +246,7 @@ const styles = StyleSheet.create({
     //Text
     textName: {
         flex: 1,
-        fontSize: myFontSize.xxBody,
+        fontSize: myFontSize.xBody,
         fontFamily: myFonts.heading,
         color: myColors.text,
         letterSpacing: myLetSpacing.common,

@@ -4,25 +4,25 @@ import { uploadFavouriteFirebase } from "../components/functions/firebase";
 const favoriteReducer = createSlice({
     name: "favorite",
     initialState: {
-        favoriteRestuarnt: [],
+        favoriteDrivers: [],
         favoriteItem: [],
     },
     reducers: {
         addFavoriteRest(state, action) {
-            const s = state.favoriteRestuarnt
+            const s = state.favoriteDrivers
             s.push(action.payload.resId)
             s.reverse()
-            state.favoriteRestuarnt = s
-            uploadFavouriteFirebase(state.favoriteRestuarnt, 'res')
+            state.favoriteDrivers = s
+            uploadFavouriteFirebase(state.favoriteDrivers, 'res')
 
         },
         removeFavoriteRest(state, action) {
-            state.favoriteRestuarnt = state.favoriteRestuarnt.filter(resId => action.payload.resId != resId)
-            uploadFavouriteFirebase(state.favoriteRestuarnt, 'res')
+            state.favoriteDrivers = state.favoriteDrivers.filter(resId => action.payload.resId != resId)
+            uploadFavouriteFirebase(state.favoriteDrivers, 'res')
 
         },
-        setFavoriteRest(state, action) {
-            state.favoriteRestuarnt = action.payload
+        setFavoriteDrivers(state, action) {
+            state.favoriteDrivers = action.payload
         },
 
 
@@ -46,6 +46,6 @@ const favoriteReducer = createSlice({
     },
 });
 
-export const { addFavoriteRest, removeFavoriteRest, setFavoriteRest,
+export const { addFavoriteRest, removeFavoriteRest, setFavoriteDrivers,
     addFavoriteItem, removeFavoriteItem, setFavoriteItem } = favoriteReducer.actions;
 export default favoriteReducer.reducer;

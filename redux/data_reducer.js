@@ -7,7 +7,7 @@ const dataReducer = createSlice({
         nearby: [],
         recommend: [],
         AllItems: [],
-        AllRest: [],
+        AllDrivers: [],
     },
     reducers: {
 
@@ -20,13 +20,13 @@ const dataReducer = createSlice({
         setAllItems(state, action) {
             state.AllItems = action.payload
         },
-        setAllRest(state, action) {
-            state.AllRest = action.payload
+        setAllDriver(state, action) {
+            state.AllDrivers = action.payload
         },
 
 
     },
 });
 
-export const { setNearby, setRecommend, setAllItems, setAllRest } = dataReducer.actions;
+export const { setNearby, setRecommend, setAllItems, setAllDriver } = dataReducer.actions;
 export default dataReducer.reducer;

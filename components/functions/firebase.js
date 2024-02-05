@@ -10,9 +10,8 @@ export function uploadFavouriteFirebase(newFav, type) {
     const profile = getLogin()
 
     firestore().collection('users').doc(profile.uid).update(
-        type == 'res' ?
-            { favoriteRes: newFav } :
-            { favoriteItem: newFav }
+
+        { favoriteDrivers: newFav }
     ).then(() => {
     }).catch((err) => {
         console.log('err uploadFavouriteFirebase', err)
