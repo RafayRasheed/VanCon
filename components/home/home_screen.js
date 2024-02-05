@@ -395,5 +395,11 @@ const styles = StyleSheet.create({
         includeFontPadding: false,
         padding: 0,
     },
+    star: {
+        width: myHeight(4.2),
+        height: myHeight(4.2),
+        marginEnd: myWidth(0.5),
+        resizeMode: 'contain',
+    }
 
 })
