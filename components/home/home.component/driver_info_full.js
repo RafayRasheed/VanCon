@@ -171,7 +171,7 @@ export const DriverInfoFull = ({ driver }) => {
                                 letterSpacing: myLetSpacing.common,
                                 includeFontPadding: false,
                                 padding: 0,
-                            }}>{driver.vehicleSeats} Seats</Text>
+                            }}>{driver.vehicleSeats} Seater</Text>
                         <Spacer paddingEnd={myWidth(1.5)} />
                     </View>
                     {/* Location */}

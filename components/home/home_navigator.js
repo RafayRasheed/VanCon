@@ -6,13 +6,13 @@ import { CategoryFull } from './category_full_screen';
 import { myColors } from '../../ultils/myColors';
 import { StatusBar } from 'react-native';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
-import { RestaurantDetail } from './restaurant_detail_screen';
 import { RestaurantMoreDetails } from './rest_more_info_screen';
 import { RestaurantAll } from './res_all_screen';
 import { ItemDetails } from './item_detail_screen';
 import { bottomTab } from '../common';
 import { Search } from './search_screen';
 import { ItemSearch } from './item_search_screen';
+import { DriverDetail } from './driver_detail_screen';
 
 
 
@@ -20,7 +20,6 @@ const HomeTAB = createNativeStackNavigator();
 const hideStatusScreens = ['RestaurantDetail', 'RestaurantMoreDetails', 'ItemDetails']
 const hideBottom = ['RestaurantMoreDetails',
     'ItemDetails', 'ItemSearch', 'Search']
-const showBottom = ['RestaurantDetail']
 
 export const HomeNavigator = ({ navigation, route }) => {
     const [hideStatus, setHideState] = useState(false)
@@ -51,7 +50,7 @@ export const HomeNavigator = ({ navigation, route }) => {
             >
                 <HomeTAB.Screen component={HomeScreen} name="HomeScreen" />
                 <HomeTAB.Screen component={CategoryFull} name="CategoryFull" />
-                <HomeTAB.Screen component={RestaurantDetail} name="RestaurantDetail" />
+                <HomeTAB.Screen component={DriverDetail} name="DriverDetail" />
                 <HomeTAB.Screen component={RestaurantAll} name="RestaurantAll" />
 
                 {/* <HomeTAB.Screen component={RestaurantMoreDetails} name="RestaurantMoreDetails" />

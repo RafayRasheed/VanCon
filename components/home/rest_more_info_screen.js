@@ -367,7 +367,7 @@ export const RestaurantMoreDetails = ({ navigation, route }) => {
                                         width: myHeight(2.8),
                                         resizeMode: 'contain',
                                         tintColor: myColors.primaryT
-                                    }} source={require('../assets/home_main/home/menu1.png')} />
+                                    }} />
                                 </View>
 
                                 {/* Menu */}

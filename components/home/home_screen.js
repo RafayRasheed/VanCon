@@ -280,7 +280,12 @@ export const HomeScreen = ({ navigation }) => {
                         </TouchableOpacity>
 
                         {AllDrivers.map((item, i) => {
-                            return (<DriverInfoFull key={i} driver={item} />)
+                            return (
+                                <TouchableOpacity key={i} onPress={() => navigation.navigate('DriverDetail', { driver: item })}>
+
+                                    <DriverInfoFull driver={item} />
+                                </TouchableOpacity>
+                            )
                         })}
                         {/* <Banners />
 
