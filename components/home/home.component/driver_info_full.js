@@ -22,6 +22,7 @@ export const DriverInfoFull = ({ driver }) => {
         setIsFav(!isFav)
     }
     useEffect(() => {
+        // console.log(driver)
         setIsFav(checkFav != null)
     }, [checkFav])
 
@@ -47,19 +48,23 @@ export const DriverInfoFull = ({ driver }) => {
 
                         <View style={{ flex: 1 }}>
 
-                            {
-                                driver.deal &&
 
-                                <View style={{
-                                    backgroundColor: myColors.primaryT,
-                                    paddingHorizontal: myWidth(3),
-                                    borderTopEndRadius: myWidth(1.5), paddingVertical: myHeight(0.3),
-                                    borderBottomEndRadius: myWidth(1.5), alignSelf: 'flex-start'
-                                }}>
-                                    <Text numberOfLines={1} style={styles.textDeal}>{driver.deal}</Text>
+
+                            <View style={{
+                                backgroundColor: myColors.primaryT,
+                                paddingHorizontal: myWidth(3.5),
+                                borderTopEndRadius: myWidth(1.5), paddingVertical: myHeight(0.5),
+                                borderBottomEndRadius: myWidth(1.5), alignSelf: 'flex-start'
+                            }}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', }}>
+                                    <Image style={styles.imageStar} source={require('../../assets/home_main/home/star.png')} />
+
+                                    <Spacer paddingEnd={myWidth(1.6)} />
+                                    <Text style={styles.textRating}>{driver.rating} ({driver.noOfRatings})</Text>
                                 </View>
+                            </View>
 
-                            }
+
                         </View>
 
                         {/* Heart */}
@@ -81,6 +86,13 @@ export const DriverInfoFull = ({ driver }) => {
 
                     {/* Name & Rating */}
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Image style={{
+                            width: myHeight(2.3), height: myHeight(2.3),
+                            marginLeft: -myWidth(0.3),
+                            resizeMode: 'contain', marginTop: myHeight(0.2), tintColor: myColors.primaryT
+                        }}
+                            source={require('../../assets/home_main/home/navigator/van2.png')} />
+                        <Spacer paddingEnd={myWidth(1.1)} />
 
                         {/* Name */}
                         <Text numberOfLines={1}
@@ -93,7 +105,7 @@ export const DriverInfoFull = ({ driver }) => {
 
                         <Image style={{
                             width: myHeight(2.9), height: myHeight(2.9),
-                            resizeMode: 'contain', marginTop: myHeight(0.2), tintColor: myColors.texts
+                            resizeMode: 'contain', marginTop: myHeight(0.2), tintColor: myColors.primaryT
                         }}
                             source={require('../../assets/home_main/home/ac.png')} />
                         <Spacer paddingEnd={myWidth(2.5)} />
@@ -124,7 +136,7 @@ export const DriverInfoFull = ({ driver }) => {
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Image style={{
                             width: myHeight(2), height: myHeight(2),
-                            resizeMode: 'contain', marginTop: myHeight(0.0), tintColor: myColors.text
+                            resizeMode: 'contain', marginTop: myHeight(0.0), tintColor: myColors.primaryT
                         }}
                             source={require('../../assets/home_main/home/driver.png')} />
                         <Spacer paddingEnd={myWidth(1.5)} />
@@ -145,7 +157,7 @@ export const DriverInfoFull = ({ driver }) => {
 
                         <Image style={{
                             width: myHeight(2), height: myHeight(2),
-                            resizeMode: 'contain', marginTop: myHeight(0.0), tintColor: myColors.textL
+                            resizeMode: 'contain', marginTop: myHeight(0.0), tintColor: myColors.primaryT
                         }}
                             source={require('../../assets/home_main/home/seatSF.png')} />
                         <Spacer paddingEnd={myWidth(1.5)} />
@@ -272,9 +284,9 @@ const styles = StyleSheet.create({
     },
     textRating: {
         // flex: 1,
-        fontSize: myFontSize.xBody,
-        fontFamily: myFonts.bodyBold,
-        color: myColors.text,
+        fontSize: myFontSize.body,
+        fontFamily: myFonts.body,
+        color: myColors.background,
         letterSpacing: myLetSpacing.common,
         includeFontPadding: false,
         padding: 0,
@@ -321,8 +333,8 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
     },
     imageStar: {
-        height: myHeight(2.1),
-        width: myHeight(2.1),
+        height: myHeight(1.85),
+        width: myHeight(1.85), marginTop: -myHeight(0.2),
         tintColor: myColors.star,
         resizeMode: 'contain',
     },
