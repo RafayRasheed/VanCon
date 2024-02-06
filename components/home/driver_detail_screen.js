@@ -314,6 +314,8 @@ export const DriverDetail = ({ navigation, route }) => {
               color: myColors.text, fontFamily: myFonts.body
             }}>({driver.vehicleModal})</Text></Text>
 
+
+
           <Spacer paddingEnd={myWidth(1.5)} />
 
           <Image style={{
@@ -333,8 +335,14 @@ export const DriverDetail = ({ navigation, route }) => {
               includeFontPadding: false,
               padding: 0,
             }}>{driver.ac ? 'AC' : 'Non AC'}</Text>
-          <Spacer paddingEnd={myWidth(1.5)} />
+          <Spacer paddingEnd={myWidth(2.5)} />
 
+          <Image style={{
+            width: myHeight(2.8), height: myHeight(2.8),
+            resizeMode: 'contain', marginTop: myHeight(0),
+            tintColor: driver.isWifi ? myColors.primaryT : myColors.offColor
+          }}
+            source={driver.isWifi ? require('../assets/home_main/home/wifi.png') : require('../assets/home_main/home/wifiO.png')} />
 
         </View>
         <View
@@ -446,7 +454,7 @@ export const DriverDetail = ({ navigation, route }) => {
         <View style={{
           flexDirection: 'row',
           borderTopWidth: myWidth(0.2), borderWidth: myWidth(0.2),
-          borderColor: myColors.primaryT, marginHorizontal: myWidth(4),
+          borderColor: myColors.textL, marginHorizontal: myWidth(4),
           borderRadius: myWidth(50)
         }}>
           {/* Phone */}
@@ -454,7 +462,7 @@ export const DriverDetail = ({ navigation, route }) => {
             style={{
               width: '50%', flexDirection: 'row', paddingVertical: myHeight(1.2),
               alignItems: 'center', justifyContent: 'center', borderEndWidth: myWidth(0.2),
-              borderColor: myColors.primaryT,
+              borderColor: myColors.textL,
             }}>
             <Image source={require('../assets/home_main/home/phone.png')}
               style={{
@@ -763,7 +771,6 @@ export const DriverDetail = ({ navigation, route }) => {
               estimatedItemSize={myHeight(10)}
               renderItem={({ item, index }) => {
                 // const item = data
-                console.log('ftdjtjthth', item)
 
                 return (
                   <View key={index}>

@@ -120,7 +120,14 @@ export const DriverInfoFull = ({ driver }) => {
                                 includeFontPadding: false,
                                 padding: 0,
                             }}>{driver.ac ? 'AC' : 'Non AC'}</Text>
-                        <Spacer paddingEnd={myWidth(1.5)} />
+                        <Spacer paddingEnd={myWidth(2.5)} />
+                        <Image style={{
+                            width: myHeight(2.5), height: myHeight(2.5),
+                            resizeMode: 'contain', marginTop: myHeight(0),
+                            tintColor: driver.isWifi ? myColors.primaryT : myColors.offColor
+                        }}
+                            source={driver.isWifi ? require('../../assets/home_main/home/wifi.png') : require('../../assets/home_main/home/wifiO.png')} />
+                        <Spacer paddingEnd={myWidth(1)} />
 
                         {/* Rating */}
                         {/* <View style={{ flexDirection: 'row', alignItems: 'center' }}>
