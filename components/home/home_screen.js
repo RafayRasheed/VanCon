@@ -20,7 +20,7 @@ import storage from '@react-native-firebase/storage';
 import { setAllDriver, } from '../../redux/data_reducer';
 import { setHistoryOrderse, setPendingOrderse, setProgressOrderse } from '../../redux/order_reducer';
 import database from '@react-native-firebase/database';
-import { SetErrorAlertToFunction, deccodeInfo, getAreasLocations, getCurrentLocations, statusDate } from '../functions/functions';
+import { SetErrorAlertToFunction, deccodeInfo, getAllRestuarant, getAreasLocations, getCurrentLocations, statusDate } from '../functions/functions';
 import messaging from '@react-native-firebase/messaging';
 import notifee from '@notifee/react-native';
 import { FirebaseUser, getDeviceToken, sendPushNotification, updateDeviceTokenToFireBase } from '../functions/firebase';
@@ -51,36 +51,6 @@ export const HomeScreen = ({ navigation }) => {
 
 
 
-    function getAllRestuarant() {
-        firestore().collection('drivers')
-            .where('ready', '==', true)
-            .where('city', '==', profile.city)
-            .get().then((result) => {
-                if (!result.empty) {
-                    let drivers = []
-
-                    result.forEach((res, i) => {
-                        const driver = res.data()
-                        drivers.push(driver)
-
-                    })
-
-                    dispatch(setAllDriver(drivers))
-
-                }
-                else {
-
-                    console.log('empty')
-
-
-                    // setCategories(catArray)
-                }
-            }).catch((er) => {
-                // Alert.alert(er.toString())
-
-                console.log('Error on Get all Restaurant', er)
-            })
-    }
 
 
 
@@ -140,12 +110,13 @@ export const HomeScreen = ({ navigation }) => {
     }
     useEffect(() => {
         getProfileFromFirebase()
-        getAllRestuarant()
 
     }, [])
     useEffect(() => {
         if (profile.city) {
             getAreasLocations(profile.city)
+            getAllRestuarant(profile)
+
         }
 
         // updateDeviceTokenToFireBase(profile.uid)

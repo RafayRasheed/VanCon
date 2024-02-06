@@ -8,6 +8,7 @@ import { FirebaseLocation } from './firebase';
 import firestore from '@react-native-firebase/firestore';
 
 import { setAreasLocation } from '../../redux/areas_reducer';
+import { setAllDriver } from '../../redux/data_reducer';
 export function verificationCode() {
   return Math.floor(Math.random() * 899999 + 100000);
 }
@@ -203,4 +204,37 @@ export const getAreasLocations = () => {
   })
 
 
+}
+
+
+export function getAllRestuarant(profile) {
+
+  firestore().collection('drivers')
+    .where('ready', '==', true)
+    .where('city', '==', profile.city)
+    .get().then((result) => {
+      if (!result.empty) {
+        let drivers = []
+
+        result.forEach((res, i) => {
+          const driver = res.data()
+          drivers.push(driver)
+
+        })
+
+        storeRedux.dispatch(setAllDriver(drivers))
+
+      }
+      else {
+
+        console.log('empty')
+
+
+        // setCategories(catArray)
+      }
+    }).catch((er) => {
+      // Alert.alert(er.toString())
+
+      console.log('Error on Get all Restaurant', er)
+    })
 }

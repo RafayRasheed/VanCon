@@ -4,7 +4,7 @@ import {
   View, Text, StatusBar,
   Linking, Platform, ImageBackground, BackHandler, TextInput,
 } from 'react-native';
-import { Loader, MyError, Spacer, StatusBarHide, ios, myHeight, myWidth } from '../common';
+import { Loader, MyError, Spacer, StatusBarHide, errorTime, ios, myHeight, myWidth } from '../common';
 import { myColors } from '../../ultils/myColors';
 import { myFontSize, myFonts, myLetSpacing } from '../../ultils/myFonts';
 import { ItemInfo } from './home.component/item_info';
@@ -12,31 +12,69 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addFavoriteRest, removeFavoriteRest } from '../../redux/favorite_reducer';
 import { useFocusEffect } from '@react-navigation/native';
 import { ImageUri } from '../common/image_uri';
-import { dataFullData, deccodeInfo } from '../functions/functions';
+import { dataFullData, deccodeInfo, getAllRestuarant } from '../functions/functions';
 import Collapsible from 'react-native-collapsible';
 import Animated, { ZoomIn, ZoomOut } from 'react-native-reanimated';
 import { FlashList } from '@shopify/flash-list';
 import { Stars } from './home.component/star';
 import firestore from '@react-native-firebase/firestore';
+import { all } from 'axios';
+import { setErrorAlert } from '../../redux/error_reducer';
 
 export const DriverDetail = ({ navigation, route }) => {
-  const driver = route.params.driver;
   const backScreen = route.params.backScreen
-  const [inside, setInside] = useState(true);
+
+  const [driver, setDriver] = useState(route.params.driver);
+  const [inside, setInside] = useState(false);
   const [RatingModal, setRatinModal] = useState(false)
   const [starI, setStarI] = useState(undefined)
   const [review, setReview] = useState(null)
   const [errorMsg, setErrorMsg] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [reviews, setReviews] = useState(driver.reviews)
+  const [myReview, setMyRewiew] = useState()
+
+  const dispatch = useDispatch()
   //Back Functions
   const { profile } = useSelector(state => state.profile)
+  useEffect(() => {
+    if (errorMsg) {
+      setTimeout(() => {
+        setIsLoading(false)
+        setErrorMsg(null)
+      }
+        , errorTime)
+    }
+  }, [errorMsg])
+  useEffect(() => {
+    let myRew = null
+    let allReviews = []
+    driver.reviews.map(it => {
+      if (it.id == profile.uid) {
+        myRew = it
+      }
+      else {
+        allReviews.push(it)
+      }
 
+    })
+    if (myRew) {
+      setMyRewiew(myRew)
+      setReview(myRew.review)
+      setStarI(myRew.rating - 1)
+      setReviews([myRew, ...allReviews])
+    }
 
+  }, [driver])
+
+  useEffect(() => {
+    setIsFav(checkFav != null)
+  }, [checkFav])
   function hideModal() {
     setRatinModal(false)
   }
   function onDone() {
-    if (starI && review) {
+    if ((starI || starI == 0) && review) {
       setIsLoading(true)
       firestore().collection('drivers').doc(driver.uid).get()
         .then((data) => {
@@ -45,25 +83,48 @@ export const DriverDetail = ({ navigation, route }) => {
           const ratingTotal = res.ratingTotal ? res.ratingTotal : 0
           const reviews = res.reviews ? res.reviews : []
 
-          const newRatingTotal = ratingTotal + starI + 1
-          const newnoOfRatings = noOfRatings + 1
+          let newRatingTotal = ratingTotal
+          if (myReview) {
+            newRatingTotal += starI + 1 - myReview.rating
+          }
+          else {
+
+            newRatingTotal += starI + 1
+          }
+
+
+          const newnoOfRatings = myReview ? noOfRatings : noOfRatings + 1
           const newrating = newRatingTotal / newnoOfRatings
 
 
+
           const date = dataFullData()
-          const reviewNew =
-          {
-            dateInt: date.dateInt,
-            id: profile.uid,
-            name: profile.name,
-            rating: starI + 1,
-            date: date.date,
-            review: review,
+          let reviewNew = {}
+
+          if (myReview) {
+            reviewNew = {
+              ...myReview,
+              rating: starI + 1,
+              review: review,
+              edited: true
+            }
           }
-          // console.log(reviewNew)
-          // return
+          else {
+            reviewNew =
+            {
+              dateInt: date.dateInt,
+              id: profile.uid,
+              name: profile.name,
+              rating: starI + 1,
+              date: date.date,
+              review: review,
+            }
+
+          }
+
+          const OtherReview = reviews.filter(it => it.id != profile.uid)
           const newReview = [
-            ...reviews,
+            ...OtherReview,
             reviewNew
           ]
 
@@ -78,6 +139,11 @@ export const DriverDetail = ({ navigation, route }) => {
             .then((data) => {
               setIsLoading(false)
               hideModal()
+              dispatch(setErrorAlert({ Title: myReview ? "Review Updated Successfully" : "Review Added Successfully", Status: 2 }))
+              setDriver({ ...driver, ...update })
+              getAllRestuarant(profile)
+
+
             }).catch((er) => {
               console.log('Error on Get Users for fav', er)
               setErrorMsg('Something Wrong')
@@ -132,7 +198,6 @@ export const DriverDetail = ({ navigation, route }) => {
   }
 
   const { favoriteDrivers } = useSelector(state => state.favorite)
-  const dispatch = useDispatch()
 
   const checkFav = favoriteDrivers.find(redID => redID == driver.uid)
   const [isFav, setIsFav] = useState(checkFav != null)
@@ -145,10 +210,8 @@ export const DriverDetail = ({ navigation, route }) => {
     }
     setIsFav(!isFav)
   }
-  useEffect(() => {
-    // console.log(driver)
-    setIsFav(checkFav != null)
-  }, [checkFav])
+
+
   return (
     <View style={{ flex: 1, backgroundColor: myColors.background }}>
 
@@ -398,7 +461,7 @@ export const DriverDetail = ({ navigation, route }) => {
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={{ paddingHorizontal: myWidth(2.5) }} activeOpacity={1} onPress={() => setRatinModal(true)}>
+            <TouchableOpacity style={{ paddingHorizontal: myWidth(2) }} activeOpacity={1} onPress={() => setRatinModal(true)}>
               <Text
                 numberOfLines={2}
                 style={[
@@ -408,9 +471,7 @@ export const DriverDetail = ({ navigation, route }) => {
                     fontFamily: myFonts.heading,
                     color: myColors.primaryT,
                   },
-                ]}>
-                Rate
-              </Text>
+                ]}> {myReview ? 'Edit Rating' : 'Rate'} </Text>
             </TouchableOpacity>
           </View>
 
@@ -718,8 +779,24 @@ export const DriverDetail = ({ navigation, route }) => {
 
 
             </View>
+
             <Collapsible style={{ paddingHorizontal: myWidth(1) }} collapsed={!inside}>
+              <Spacer paddingT={myHeight(0.5)} />
+
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Text
+                  style={{
+
+                    fontSize: myFontSize.body,
+                    fontFamily: myFonts.bodyBold,
+                    color: myColors.text,
+                    letterSpacing: myLetSpacing.common,
+                    includeFontPadding: false,
+                    padding: 0,
+                  }}>{`Estimate Charges: ${driver.departCharges} Rs`}</Text>
+              </View>
               {driver.insideUniversities.map((it, j) => (
+
                 <View style={{ flexDirection: 'row', paddingVertical: myHeight(0.65) }}>
                   <Text style={[styles.textCommon, {
                     width: myWidth(0.2) + myFontSize.body * 2,
@@ -762,7 +839,7 @@ export const DriverDetail = ({ navigation, route }) => {
             <FlashList
               showsVerticalScrollIndicator={false}
               scrollEnabled={false}
-              data={driver.reviews}
+              data={reviews}
 
               contentContainerStyle={{ flexGrow: 1 }}
               ItemSeparatorComponent={() =>
@@ -788,9 +865,9 @@ export const DriverDetail = ({ navigation, route }) => {
                       <Text style={[styles.textCommon, {
                         flex: 1,
                         // textAlign: 'right',
-                        fontSize: myFontSize.body2,
+                        fontSize: myFontSize.body,
                         fontFamily: myFonts.body,
-                      }]}>{item.date}</Text>
+                      }]}>{item.date}  <Text style={{ fontSize: myFontSize.body, color: myColors.textL4 }}>{item.edited ? 'Edited' : ''}</Text> </Text>
                       {item.rating &&
                         <Stars num={item.rating} />
                       }
