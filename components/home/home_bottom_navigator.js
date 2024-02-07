@@ -12,7 +12,7 @@ import { createStackNavigator } from "@react-navigation/stack"
 import { deleteLogin } from "../functions/storageMMKV";
 import { useSelector } from "react-redux";
 import { ProfileNavigator } from "../profile/profile_navigator";
-import { OrderScreen } from "../orders/orders_screen";
+import { RidesScreen } from "../orders/orders_screen";
 import { ChatList } from "./chat_all_screen";
 import { RFValue } from "react-native-responsive-fontsize";
 
@@ -158,7 +158,7 @@ export const HomeBottomNavigator = ({ route, navigation }) => {
                 initialRouteName="HOME"
             >
                 <Tab.Screen name="HOME" component={HomeNavigator} />
-                <Tab.Screen name="RIDES" component={OrderScreen} />
+                <Tab.Screen name="RIDES" component={RidesScreen} />
                 {/* <Tab.Screen name="HOT" component={OrderScreen} /> */}
                 <Tab.Screen name="CHATS" component={ChatList} />
                 <Tab.Screen name="PROFILE" component={ProfileNavigator} />

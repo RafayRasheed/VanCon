@@ -189,6 +189,47 @@ export const HomeScreen = ({ navigation }) => {
         // Stop listening for updates when no longer required
         return () => database().ref(`/chats`).off('value', onValueChange);
     }, []);
+
+    // Realtime
+    useEffect(() => {
+        const onValueChange = database()
+            .ref(`/requests/${profile.uid}`).orderByChild('dateInt')
+            .on('value', snapshot => {
+                if (snapshot.exists()) {
+                    let Pending = []
+                    let InProgress = []
+                    let History = []
+
+                    snapshot.forEach((documentSnapshot1, i) => {
+                        const val = documentSnapshot1.val()
+                        if (val.status == 1) {
+                            Pending.push(val)
+                        }
+                        else if (val.status == 2) {
+
+                            InProgress.push(val)
+                        }
+                        else {
+                            History.push(val)
+                        }
+
+
+                    });
+                    dispatch(setPendingOrderse(Pending))
+                    dispatch(setProgressOrderse(InProgress))
+                    dispatch(setHistoryOrderse(History))
+
+                } else {
+                    dispatch(setPendingOrderse([]))
+                    dispatch(setProgressOrderse([]))
+                    dispatch(setHistoryOrderse([]))
+
+                }
+            });
+
+        // Stop listening for updates when no longer required
+        return () => database().ref(`/requests/${profile.uid}`).off('value', onValueChange);
+    }, []);
     function Greeting() {
         let greet = '';
         const myDate = new Date();

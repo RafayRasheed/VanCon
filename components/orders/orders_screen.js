@@ -7,9 +7,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { History_Order } from './order_component/order_history';
 import { setHistoryOrderse, setPendingOrderse, setProgressOrderse } from '../../redux/order_reducer';
 import firestore, { Filter } from '@react-native-firebase/firestore';
+import { RequestInfo } from '../home/home.component/request_info';
 
 
-export const OrderScreen = ({ navigation }) => {
+export const RidesScreen = ({ navigation }) => {
     const { pending, progress, history } = useSelector(state => state.orders)
     console.log(pending.length, progress.length, history.length)
     const [i, setI] = useState(0);
@@ -27,10 +28,10 @@ export const OrderScreen = ({ navigation }) => {
             <View style={styles.containerTop}>
                 {/* containerActivity_Ic */}
                 <View style={styles.containerActivity_Ic}>
-                    <Text style={styles.textActivity}>Orders</Text>
+                    <Text style={styles.textActivity}>Rides</Text>
                 </View>
 
-                <Spacer paddingT={myHeight(1.5)} />
+                {/* <Spacer paddingT={myHeight(1.5)} /> */}
                 {/* Search */}
                 {/* <View style={{
                     flexDirection: 'row',
@@ -91,13 +92,12 @@ export const OrderScreen = ({ navigation }) => {
             <Spacer paddingT={myHeight(2)} />
             <View style={styles.containerLine} />
             {/* <Spacer paddingT={myHeight(0.86)} /> */}
-
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.containerContentScroll}>
                 {i == 0 &&
                     progress.map((item, ind) =>
-                        <TouchableOpacity key={ind} activeOpacity={0.85}
+                        <TouchableOpacity key={ind} activeOpacity={0.95}
                             onPress={() => navigation.navigate('OrderDetails', { item })}>
-                            {console.log('dg')}
+
                             {ind != 0 &&
                                 <View style={{
 
@@ -106,14 +106,14 @@ export const OrderScreen = ({ navigation }) => {
                                 }} />
                             }
 
-                            <History_Order item={item} />
+                            <RequestInfo item={item} />
                         </TouchableOpacity>
                     )
                 }
 
                 {i == 1 &&
                     pending.map((item, ind) =>
-                        <TouchableOpacity key={ind} activeOpacity={0.85}
+                        <TouchableOpacity key={ind} activeOpacity={0.95}
                             onPress={() => navigation.navigate('OrderDetails', { item })}>
                             {ind != 0 &&
                                 <View style={{
@@ -121,14 +121,14 @@ export const OrderScreen = ({ navigation }) => {
                                     backgroundColor: myColors.divider,
                                 }} />
                             }
-                            <History_Order item={item} />
+                            <RequestInfo item={item} />
                         </TouchableOpacity>
 
                     )
                 }
                 {i == 2 &&
                     history.map((item, ind) =>
-                        <TouchableOpacity key={ind} activeOpacity={0.85}
+                        <TouchableOpacity key={ind} activeOpacity={0.95}
                             onPress={() => navigation.navigate('OrderDetails', { item })}>
                             {ind != 0 &&
                                 <View style={{
@@ -136,7 +136,7 @@ export const OrderScreen = ({ navigation }) => {
                                     backgroundColor: myColors.divider,
                                 }} />
                             }
-                            <History_Order item={item} />
+                            <RequestInfo item={item} />
                         </TouchableOpacity>
 
                     )
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     },
 
     containerContentScroll: {
-        paddingHorizontal: myWidth(6.5),
+        paddingHorizontal: myWidth(3.5),
     },
 
 
