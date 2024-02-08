@@ -21,67 +21,93 @@ export const RequestInfo = ({ item, navigation, code }) => {
             }}>
             <Spacer paddingT={myHeight(1)} />
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                {
-                    code != 2 &&
-                    <>
-                        <Image
-                            style={{
-                                width: myHeight(2),
-                                height: myHeight(2),
-                                resizeMode: 'contain',
-                                tintColor: myColors.primaryT
-                            }}
-                            source={require('../../assets/home_main/home/driver.png')}
-                        />
-                        <Spacer paddingEnd={myWidth(2.8)} />
-                        <Text
-                            style={[
-                                styles.textCommon,
-                                {
-                                    flex: 1,
-                                    fontSize: myFontSize.body4,
-                                    fontFamily: myFonts.bodyBold,
-                                },
-                            ]}
-                        >{item.name}
-                        </Text>
-                    </>
-                }
+                <Image
+                    style={{
+                        width: myHeight(2.3),
+                        height: myHeight(2.3),
+                        resizeMode: 'contain',
+                        tintColor: myColors.primaryT
+                    }} source={item.twoWay ? require('../../assets/home_main/home/twoArrow.png') : require('../../assets/home_main/home/oneArrow.png')}
+                />
 
-                <Text
-                    style={[
-                        styles.textCommon,
-                        {
-                            flex: code == 2 ? 1 : null,
-                            fontSize: myFontSize.body2,
-                            fontFamily: myFonts.body,
-                        },
-                    ]}
-                >ID: {item.id}  <Image
+                <Spacer paddingEnd={myWidth(2.4)} />
+                <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+
+                    <Text
+                        style={[
+                            styles.textCommon,
+                            {
+
+                                fontSize: myFontSize.body,
+                                fontFamily: myFonts.body,
+                            },
+                        ]}
+                    >ID: {item.id} </Text>
+                    <Spacer paddingEnd={myWidth(2)} />
+  
+                    <Image
                         style={{
-                            width: myHeight(2.5),
-                            height: myHeight(2.5),
+                            width: myHeight(2),
+                            height: myHeight(2),
                             resizeMode: 'contain',
                             tintColor: myColors.primaryT
-                        }} source={item.twoWay ? require('../../assets/home_main/home/twoArrow.png') : require('../../assets/home_main/home/oneArrow.png')}
-                    /></Text>
+                        }} source={require('../../assets/home_main/home/distance.png')}
+                    />
+                    <Spacer paddingEnd={myWidth(1.2)} />
+
+                    <Text
+                        style={[
+                            styles.textCommon,
+                            {
+
+                                fontSize: myFontSize.xSmall,
+                                fontFamily: myFonts.bodyBold,
+                            },
+                        ]}
+                    >{item.distance} </Text>
+                </View>
 
                 {
-                    code == 2 &&
-                    <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('RequestRide', { preReq: item })}>
-                        <Text
-                            style={[
-                                styles.textCommon,
-                                {
-                                    fontSize: myFontSize.body2,
-                                    fontFamily: myFonts.heading,
-                                    color: myColors.primaryT,
-                                    paddingStart: myWidth(3)
-                                },
-                            ]}
-                        >{'EDIT'}</Text>
-                    </TouchableOpacity>
+                    code == 2 ?
+                        <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('RequestRide', { preReq: item })}>
+                            <Text
+                                style={[
+                                    styles.textCommon,
+                                    {
+                                        fontSize: myFontSize.body2,
+                                        fontFamily: myFonts.heading,
+                                        color: myColors.primaryT,
+                                        paddingStart: myWidth(3)
+                                    },
+                                ]}
+                            >{'EDIT'}</Text>
+                        </TouchableOpacity>
+                        :
+                        <>
+                            <Image
+                                style={{
+                                    width: myHeight(2),
+                                    height: myHeight(2),
+                                    resizeMode: 'contain',
+                                    tintColor: myColors.primaryT
+                                }}
+                                source={require('../../assets/home_main/home/driver.png')}
+                            />
+                            <Spacer paddingEnd={myWidth(2)} />
+                            <Text
+                                style={[
+                                    styles.textCommon,
+                                    {
+
+                                        fontSize: myFontSize.body2,
+                                        fontFamily: myFonts.bodyBold,
+                                    },
+                                ]}
+                            >{item.driverName}
+                            </Text>
+                        </>
                 }
+
 
 
             </View>
