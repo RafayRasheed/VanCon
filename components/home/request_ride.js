@@ -271,6 +271,7 @@ export const RequestRide = ({ navigation, route }) => {
                 did: null,
                 driverName: null,
                 driverContact: null,
+                twoWay,
 
             }
             console.log('New Profile', newProfile)

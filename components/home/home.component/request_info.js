@@ -9,6 +9,7 @@ import { addFavoriteRest, removeFavoriteRest } from '../../../redux/favorite_red
 import { ImageUri } from '../../common/image_uri'
 
 export const RequestInfo = ({ item, navigation, code }) => {
+    console.log(item)
     return (
         <View
 
@@ -56,7 +57,15 @@ export const RequestInfo = ({ item, navigation, code }) => {
                             fontFamily: myFonts.body,
                         },
                     ]}
-                >ID: {item.id}</Text>
+                >ID: {item.id}  <Image
+                        style={{
+                            width: myHeight(2.5),
+                            height: myHeight(2.5),
+                            resizeMode: 'contain',
+                            tintColor: myColors.primaryT
+                        }} source={item.twoWay ? require('../../assets/home_main/home/twoArrow.png') : require('../../assets/home_main/home/oneArrow.png')}
+                    /></Text>
+
                 {
                     code == 2 &&
                     <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('RequestRide', { preReq: item })}>
@@ -120,44 +129,93 @@ export const RequestInfo = ({ item, navigation, code }) => {
                 {/* Text Pick & Desti */}
                 <View style={{ flex: 1 }}>
                     {/* Pick */}
-                    <View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Text
                             style={[
                                 styles.textCommon,
                                 {
+                                    flex: 1,
                                     fontSize: myFontSize.xxSmall,
                                     fontFamily: myFonts.bodyBold,
                                 },
                             ]}
                         >
-                            PickUp
+                            PickUp</Text>
+                        <Image
+                            style={{
+                                width: myHeight(2),
+                                height: myHeight(2),
+                                resizeMode: 'contain',
+                                tintColor: myColors.primaryT
+                            }} source={require('../../assets/home_main/home/clock.png')}
+                        />
+                        <Spacer paddingEnd={myWidth(1.3)} />
+
+                        <Text style={[
+                            styles.textCommon,
+                            {
+                                fontSize: myFontSize.xxSmall,
+                                fontFamily: myFonts.body,
+                            },
+                        ]}>{item.pickupTime.time}
                         </Text>
-                        <Text numberOfLines={2}
-                            style={[
-                                styles.textCommon,
-                                {
-                                    fontSize: myFontSize.small,
-                                    fontFamily: myFonts.body,
-                                },
-                            ]}
-                        >{item.pickup.name}</Text>
                     </View>
+                    <Text numberOfLines={2}
+                        style={[
+                            styles.textCommon,
+                            {
+                                fontSize: myFontSize.small,
+                                fontFamily: myFonts.body,
+                            },
+                        ]}
+                    >{item.pickup.name}</Text>
 
                     <Spacer paddingT={myHeight(1.3)} />
 
                     {/* Destination */}
                     <View>
-                        <Text
-                            style={[
-                                styles.textCommon,
-                                {
-                                    fontSize: myFontSize.xxSmall,
-                                    fontFamily: myFonts.bodyBold,
-                                },
-                            ]}
-                        >
-                            DropOff
-                        </Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+
+                            <Text
+                                style={[
+                                    styles.textCommon,
+                                    {
+                                        flex: 1,
+                                        fontSize: myFontSize.xxSmall,
+                                        fontFamily: myFonts.bodyBold,
+                                    },
+                                ]}
+                            >
+                                DropOff
+                            </Text>
+
+
+
+                            {
+                                item.twoWay &&
+                                <>
+                                    <Image
+                                        style={{
+                                            width: myHeight(2),
+                                            height: myHeight(2),
+                                            resizeMode: 'contain',
+                                            tintColor: myColors.primaryT
+                                        }} source={require('../../assets/home_main/home/clock.png')}
+                                    />
+                                    <Spacer paddingEnd={myWidth(1.3)} />
+                                    <Text style={[
+                                        styles.textCommon,
+                                        {
+                                            fontSize: myFontSize.xxSmall,
+                                            fontFamily: myFonts.body,
+                                        },
+                                    ]}>{item.dropoffTime.time}
+                                    </Text>
+                                </>
+
+                            }
+                        </View>
+
                         <Text
                             numberOfLines={2}
                             style={[
