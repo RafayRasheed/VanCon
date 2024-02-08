@@ -12,7 +12,7 @@ import { createStackNavigator } from "@react-navigation/stack"
 import { deleteLogin } from "../functions/storageMMKV";
 import { useSelector } from "react-redux";
 import { ProfileNavigator } from "../profile/profile_navigator";
-import { RidesScreen } from "../orders/orders_screen";
+import { RidesScreen } from "../orders/ride_screen";
 import { ChatList } from "./chat_all_screen";
 import { RFValue } from "react-native-responsive-fontsize";
 

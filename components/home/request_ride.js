@@ -243,23 +243,31 @@ export const RequestRide = ({ navigation, route }) => {
         if (checkData()) {
             setIsLoading(true)
 
-            const { date, time, dateInt, actualDate, smallCode } = dataFullData()
+            let { date, time, dateInt, actualDate, smallCode } = dataFullData()
             const id = preReq ? preReq.id : smallCode
+            dateInt = preReq ? preReq.dateInt : dateInt
+            actualDate = preReq ? preReq.actualDate : actualDate
+            date = preReq ? preReq.date : date
+            time = preReq ? preReq.time : time
+
             const { distance, string } = getDistanceFromRes(
                 { latitude: pickup.latitude, longitude: pickup.longitude },
                 { latitude: dropoff.latitude, longitude: dropoff.longitude },
                 true
             )
             const newProfile = {
-                id, dateInt, actualDate,
-                date, time, distance: string, actualDistance: distance,
+                id,
+                dateInt, actualDate,
+                date, time,
+
+                distance: string, actualDistance: distance,
                 pickup, pickupTime, dropoff,
                 dropoffTime, seats, selectedDays,
                 packages, offer, instruction,
                 status: preReq ? preReq.status : 1,
                 name: profile.name,
                 uid: profile.uid,
-                sendDrivers: preReq ? preReq.sendDrivers : [],
+                sendDrivers: (preReq && preReq.sendDrivers) ? preReq.sendDrivers : [],
                 did: null,
                 driverName: null,
                 driverContact: null,

@@ -8,48 +8,73 @@ import { useDispatch, useSelector } from 'react-redux'
 import { addFavoriteRest, removeFavoriteRest } from '../../../redux/favorite_reducer'
 import { ImageUri } from '../../common/image_uri'
 
-export const RequestInfo = ({ item }) => {
+export const RequestInfo = ({ item, navigation, code }) => {
     return (
         <View
 
             style={{
                 backgroundColor: myColors.background, elevation: 5,
-                borderRadius: myWidth(1.5), paddingHorizontal: myWidth(3), marginTop: myHeight(1.5),
+                borderRadius: myWidth(1.5), paddingHorizontal: myWidth(3),
+                marginBottom: myHeight(1), marginTop: myHeight(1),
                 borderBottomWidth: myHeight(0.2), borderColor: myColors.divider
             }}>
             <Spacer paddingT={myHeight(1)} />
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Image
-                    style={{
-                        width: myHeight(2),
-                        height: myHeight(2),
-                        resizeMode: 'contain',
-                        tintColor: myColors.primaryT
-                    }}
-                    source={require('../../assets/home_main/home/navigator/account.png')}
-                />
-                <Spacer paddingEnd={myWidth(2.8)} />
-                <Text
-                    style={[
-                        styles.textCommon,
-                        {
-                            flex: 1,
-                            fontSize: myFontSize.body4,
-                            fontFamily: myFonts.bodyBold,
-                        },
-                    ]}
-                >{item.name}
-                </Text>
+                {
+                    code != 2 &&
+                    <>
+                        <Image
+                            style={{
+                                width: myHeight(2),
+                                height: myHeight(2),
+                                resizeMode: 'contain',
+                                tintColor: myColors.primaryT
+                            }}
+                            source={require('../../assets/home_main/home/driver.png')}
+                        />
+                        <Spacer paddingEnd={myWidth(2.8)} />
+                        <Text
+                            style={[
+                                styles.textCommon,
+                                {
+                                    flex: 1,
+                                    fontSize: myFontSize.body4,
+                                    fontFamily: myFonts.bodyBold,
+                                },
+                            ]}
+                        >{item.name}
+                        </Text>
+                    </>
+                }
 
                 <Text
                     style={[
                         styles.textCommon,
                         {
+                            flex: code == 2 ? 1 : null,
                             fontSize: myFontSize.body2,
                             fontFamily: myFonts.body,
                         },
                     ]}
                 >ID: {item.id}</Text>
+                {
+                    code == 2 &&
+                    <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('RequestRide', { preReq: item })}>
+                        <Text
+                            style={[
+                                styles.textCommon,
+                                {
+                                    fontSize: myFontSize.body2,
+                                    fontFamily: myFonts.heading,
+                                    color: myColors.primaryT,
+                                    paddingStart: myWidth(3)
+                                },
+                            ]}
+                        >{'EDIT'}</Text>
+                    </TouchableOpacity>
+                }
+
+
             </View>
             <Spacer paddingT={myHeight(1.2)} />
 
@@ -146,6 +171,36 @@ export const RequestInfo = ({ item }) => {
                     </View>
                 </View>
             </View>
+            <Spacer paddingT={myHeight(1.2)} />
+
+            {
+                code == 2 &&
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text
+                        style={[
+                            styles.textCommon,
+                            {
+                                flex: 1,
+                                fontSize: myFontSize.body,
+                                fontFamily: myFonts.body,
+                                color: item.status == 1 ? 'red' : myColors.text
+                            },
+                        ]}
+                    >{item.status == 1 ? 'Not send to any driver yet' : `Send to ${item.sendDrivers.length} drivers yet`}</Text>
+                    <TouchableOpacity activeOpacity={0.7} onPress={() => null}>
+                        <Text
+                            style={[
+                                styles.textCommon,
+                                {
+                                    fontSize: myFontSize.body,
+                                    fontFamily: myFonts.heading,
+                                    color: myColors.primaryT
+                                },
+                            ]}
+                        >{item.status == 1 ? 'Send Now' : 'Send More'}</Text>
+                    </TouchableOpacity>
+                </View>
+            }
             <Spacer paddingT={myHeight(1.5)} />
         </View>
     )

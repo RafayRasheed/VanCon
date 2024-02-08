@@ -96,7 +96,7 @@ export const RidesScreen = ({ navigation }) => {
                 {i == 0 &&
                     progress.map((item, ind) =>
                         <TouchableOpacity key={ind} activeOpacity={0.95}
-                            onPress={() => navigation.navigate('OrderDetails', { item })}>
+                            onPress={() => navigation.navigate('OrderDetails', { item, code: 1 })}>
 
                             {ind != 0 &&
                                 <View style={{
@@ -106,7 +106,7 @@ export const RidesScreen = ({ navigation }) => {
                                 }} />
                             }
 
-                            <RequestInfo item={item} />
+                            <RequestInfo item={item} navigation={navigation} code={1} />
                         </TouchableOpacity>
                     )
                 }
@@ -114,14 +114,14 @@ export const RidesScreen = ({ navigation }) => {
                 {i == 1 &&
                     pending.map((item, ind) =>
                         <TouchableOpacity key={ind} activeOpacity={0.95}
-                            onPress={() => navigation.navigate('OrderDetails', { item })}>
+                            onPress={() => navigation.navigate('OrderDetails', { item, code: 2 })}>
                             {ind != 0 &&
                                 <View style={{
                                     height: myHeight(0.16),
                                     backgroundColor: myColors.divider,
                                 }} />
                             }
-                            <RequestInfo item={item} />
+                            <RequestInfo item={item} navigation={navigation} code={2} />
                         </TouchableOpacity>
 
                     )
@@ -129,14 +129,14 @@ export const RidesScreen = ({ navigation }) => {
                 {i == 2 &&
                     history.map((item, ind) =>
                         <TouchableOpacity key={ind} activeOpacity={0.95}
-                            onPress={() => navigation.navigate('OrderDetails', { item })}>
+                            onPress={() => navigation.navigate('OrderDetails', { item, code: 3 })}>
                             {ind != 0 &&
                                 <View style={{
                                     height: myHeight(0.16),
                                     backgroundColor: myColors.divider,
                                 }} />
                             }
-                            <RequestInfo item={item} />
+                            <RequestInfo item={item} navigation={navigation} code={3} />
                         </TouchableOpacity>
 
                     )

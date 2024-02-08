@@ -202,10 +202,10 @@ export const HomeScreen = ({ navigation }) => {
 
                     snapshot.forEach((documentSnapshot1, i) => {
                         const val = documentSnapshot1.val()
-                        if (val.status == 1) {
+                        if (val.status == 1 || val.status == 2) {
                             Pending.push(val)
                         }
-                        else if (val.status == 2) {
+                        else if (val.status == 3) {
 
                             InProgress.push(val)
                         }
