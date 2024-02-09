@@ -18,7 +18,7 @@ import { HomeSkeleton } from './home.component/home_skeleton';
 import { ImageUri } from '../common/image_uri';
 import storage from '@react-native-firebase/storage';
 import { setAllDriver, } from '../../redux/data_reducer';
-import { setHistoryOrderse, setPendingOrderse, setProgressOrderse } from '../../redux/order_reducer';
+import { setAllRequest, setHistoryOrderse, setPendingOrderse, setProgressOrderse } from '../../redux/order_reducer';
 import database from '@react-native-firebase/database';
 import { SetErrorAlertToFunction, deccodeInfo, getAllRestuarant, getAreasLocations, getCurrentLocations, statusDate } from '../functions/functions';
 import messaging from '@react-native-firebase/messaging';
@@ -199,9 +199,11 @@ export const HomeScreen = ({ navigation }) => {
                     let Pending = []
                     let InProgress = []
                     let History = []
+                    let all = []
 
                     snapshot.forEach((documentSnapshot1, i) => {
                         const val = documentSnapshot1.val()
+                        all.push(val)
                         if (val.status == 1 || val.status == 2) {
                             Pending.push(val)
                         }
@@ -218,11 +220,13 @@ export const HomeScreen = ({ navigation }) => {
                     dispatch(setPendingOrderse(Pending))
                     dispatch(setProgressOrderse(InProgress))
                     dispatch(setHistoryOrderse(History))
+                    dispatch(setAllRequest(all))
 
                 } else {
                     dispatch(setPendingOrderse([]))
                     dispatch(setProgressOrderse([]))
                     dispatch(setHistoryOrderse([]))
+                    dispatch(setAllRequest([]))
 
                 }
             });

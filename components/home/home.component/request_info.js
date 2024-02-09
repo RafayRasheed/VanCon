@@ -44,7 +44,7 @@ export const RequestInfo = ({ item, navigation, code }) => {
                         ]}
                     >ID: {item.id} </Text>
                     <Spacer paddingEnd={myWidth(2)} />
-  
+
                     <Image
                         style={{
                             width: myHeight(2),
@@ -271,7 +271,7 @@ export const RequestInfo = ({ item, navigation, code }) => {
                             },
                         ]}
                     >{item.status == 1 ? 'Not send to any driver yet' : `Send to ${item.sendDrivers.length} drivers yet`}</Text>
-                    <TouchableOpacity activeOpacity={0.7} onPress={() => null}>
+                    <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('Search', { requestId: item.id, code })}>
                         <Text
                             style={[
                                 styles.textCommon,

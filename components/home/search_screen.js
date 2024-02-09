@@ -49,8 +49,12 @@ const CommonFaci = ({ name, fac, setFAc }) => (
 function containString(contain, thiss) {
     return (contain.toLowerCase().includes(thiss.toLowerCase()))
 }
-export const Search = ({ navigation }) => {
-    const { AllItems, AllRest } = useSelector(State => State.data)
+export const Search = ({ navigation, route }) => {
+    const { AllDrivers } = useSelector(State => State.data)
+    const { allRequest } = useSelector(State => State.orders)
+
+
+    const [request, setRequest] = useState(null)
 
     const [search, setSearch] = useState(null)
     const [load, setLoad] = useState(null)
@@ -59,6 +63,9 @@ export const Search = ({ navigation }) => {
     const [Delivery, setDelivery] = useState(false)
     const [TakeAway, setTakeAway] = useState(false)
     const [filterItems, setFilterItems] = useState([])
+
+
+    const requestId = route.params.requestId
     // const [fullRest, setFullRest] = useState([])
 
     const Loader = () => (
@@ -85,21 +92,34 @@ export const Search = ({ navigation }) => {
             </View>
         </View>
     )
-    function onGoToItem(item) {
-        const restaurant = AllRest.filter(res => res.uid == item.resId)[0]
-        console.log(restaurant)
-        navigation.navigate('ItemDetails', { item, restaurant })
-    }
     useEffect(() => {
+        if (allRequest.length) {
 
-        if (search) {
-            const newR = AllItems?.filter(item => (Delivery ? item.homeDelivery == true : true) && (TakeAway ? item.takeAway == true : true) && (DineIn ? item.dineIn == true : true) && (containString(item.name, search) || containString(item.subCatName, search) || containString(item.catName, search)))
-            setFilterItems(newR)
+            setRequest(allRequest.find(it => it.id == requestId))
         }
-        else {
-            setFilterItems([])
+    }, [allRequest])
+    useEffect(() => {
+        if (request) {
+            // const sss= AllDrivers.filter(it=>{it.})
+            console.log(AllDrivers[0].allRoutes)
         }
-    }, [search, DineIn, TakeAway, Delivery])
+    }, [request])
+
+    function onGoToItem(item) {
+        // const req= AllRest.filter(res => res.uid == item.resId)[0]
+        // console.log(restaurant)
+        // navigation.navigate('ItemDetails', { item, restaurant })
+    }
+    // useEffect(() => {
+
+    //     if (search) {
+    //         const newR = AllItems?.filter(item => (Delivery ? item.homeDelivery == true : true) && (TakeAway ? item.takeAway == true : true) && (DineIn ? item.dineIn == true : true) && (containString(item.name, search) || containString(item.subCatName, search) || containString(item.catName, search)))
+    //         setFilterItems(newR)
+    //     }
+    //     else {
+    //         setFilterItems([])
+    //     }
+    // }, [search, DineIn, TakeAway, Delivery])
 
 
     // useEffect(() => {
