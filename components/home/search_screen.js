@@ -100,8 +100,28 @@ export const Search = ({ navigation, route }) => {
     }, [allRequest])
     useEffect(() => {
         if (request) {
-            // const sss= AllDrivers.filter(it=>{it.})
-            console.log(AllDrivers[0].allRoutes)
+            AllDrivers.map((driver, i) => {
+                let includeDays = true
+                let includePackage = true
+                request.selectedDays.map(it2 => {
+                    if (includeDays && driver.dailyDays.findIndex(it => it == it2) == -1) {
+                        includeDays = false
+                    }
+
+                })
+
+                includePackage = driver.packages.findIndex(it => it == request.packages) != -1
+                if (includeDays && includePackage) {
+
+                    if (driver.packages.findIndex(it => it == request.packages) != -1) {
+
+                        if (driver.allRoutes.findIndex(it => it.id == request.pickup.id) != -1 &&
+                            driver.allRoutes.findIndex(it => it.id == request.dropOff.id) != -1) {
+                        }
+                    }
+                }
+
+            })
         }
     }, [request])
 
