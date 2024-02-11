@@ -6,7 +6,7 @@ import { myColors } from "../../../ultils/myColors"
 import { useDispatch, useSelector } from 'react-redux'
 import { addFavoriteRest, removeFavoriteRest } from '../../../redux/favorite_reducer'
 import { ImageUri } from '../../common/image_uri'
-export const DriverInfoFull = ({ driver }) => {
+export const DriverInfoFull = ({ driver, request = null, onSend }) => {
     const { favoriteDrivers } = useSelector(state => state.favorite)
     const dispatch = useDispatch()
 
@@ -162,24 +162,48 @@ export const DriverInfoFull = ({ driver }) => {
 
                         <Spacer paddingEnd={myWidth(1.5)} />
 
-                        <Image style={{
-                            width: myHeight(2), height: myHeight(2),
-                            resizeMode: 'contain', marginTop: myHeight(0.0), tintColor: myColors.primaryT
-                        }}
-                            source={require('../../assets/home_main/home/seatSF.png')} />
-                        <Spacer paddingEnd={myWidth(1.5)} />
+                        {
+                            request ?
+                                <TouchableOpacity activeOpacity={0.7} onPress={() => onSend(driver)} style={{
+                                    backgroundColor: myColors.primaryT,
+                                    paddingHorizontal: myWidth(5),
+                                    borderRadius: myWidth(1.5), paddingVertical: myHeight(0.25)
+                                }}>
+                                    <Text
+                                        style={[
+                                            styles.textCommon,
+                                            {
+                                                fontSize: myFontSize.xxSmall,
+                                                fontFamily: myFonts.body,
+                                                color: myColors.background,
+                                                textAlign: 'center',
+                                            },
+                                        ]}
+                                    >Send</Text>
+                                </TouchableOpacity>
 
-                        <Text
+                                :
+                                <>
+                                    <Image style={{
+                                        width: myHeight(2), height: myHeight(2),
+                                        resizeMode: 'contain', marginTop: myHeight(0.0), tintColor: myColors.primaryT
+                                    }}
+                                        source={require('../../assets/home_main/home/seatSF.png')} />
+                                    <Spacer paddingEnd={myWidth(1.5)} />
 
-                            style={{
-                                fontSize: myFontSize.body3,
-                                fontFamily: myFonts.bodyBold,
-                                color: myColors.text,
-                                letterSpacing: myLetSpacing.common,
-                                includeFontPadding: false,
-                                padding: 0,
-                            }}>{driver.vehicleSeats} Seater</Text>
-                        <Spacer paddingEnd={myWidth(1.5)} />
+                                    <Text
+
+                                        style={{
+                                            fontSize: myFontSize.body3,
+                                            fontFamily: myFonts.bodyBold,
+                                            color: myColors.text,
+                                            letterSpacing: myLetSpacing.common,
+                                            includeFontPadding: false,
+                                            padding: 0,
+                                        }}>{driver.vehicleSeats} Seater</Text>
+                                    <Spacer paddingEnd={myWidth(1.5)} />
+                                </>
+                        }
                     </View>
                     {/* Location */}
                     {/* <View style={{ flexDirection: 'row', }}>

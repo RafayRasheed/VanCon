@@ -13,6 +13,10 @@ import Lottie from 'lottie-react-native';
 import { Filter } from './home.component/filter';
 import { useSelector } from 'react-redux';
 import { ItemInfo } from './home.component/item_info';
+import { FlashList } from '@shopify/flash-list';
+import database from '@react-native-firebase/database';
+import { sendPushNotification } from '../functions/firebase';
+
 const CommonFaci = ({ name, fac, setFAc }) => (
     <TouchableOpacity activeOpacity={0.75}
         onPress={() => {
@@ -24,23 +28,23 @@ const CommonFaci = ({ name, fac, setFAc }) => (
                 width: myHeight(3.5),
                 paddingTop: myHeight(0.75)
             }}>
-                <View style={{ width: myHeight(2.2), height: myHeight(2.2), borderWidth: 1.5, borderColor: myColors.textL4 }} />
+                <View style={{ width: myHeight(2.1), height: myHeight(2.1), borderWidth: 1.5, borderColor: myColors.textL4 }} />
                 {
                     fac &&
                     <Image style={{
-                        height: myHeight(3.5),
-                        width: myHeight(3.5),
+                        height: myHeight(3.3),
+                        width: myHeight(3.3),
                         resizeMode: 'contain',
                         tintColor: myColors.primaryT,
-                        marginTop: -myHeight(3.3)
+                        marginTop: -myHeight(3.1)
                     }} source={require('../assets/home_main/home/check2.png')} />
                 }
             </View>
-            <Spacer paddingEnd={myWidth(1)} />
+            <Spacer paddingEnd={myWidth(0)} />
             <Text style={[styles.textCommon,
             {
                 fontFamily: myFonts.bodyBold,
-                fontSize: myFontSize.xBody,
+                fontSize: myFontSize.body4,
 
             }]}>{name}</Text>
         </View>
@@ -59,15 +63,16 @@ export const Search = ({ navigation, route }) => {
     const [search, setSearch] = useState(null)
     const [load, setLoad] = useState(null)
     const [filterModal, setFilterModal] = useState(null)
-    const [DineIn, setDineIn] = useState(false)
-    const [Delivery, setDelivery] = useState(false)
-    const [TakeAway, setTakeAway] = useState(false)
+    const [topRated, setTopRated] = useState(false)
+    const [ac, setAc] = useState(false)
+    const [wifi, setWifi] = useState(false)
+
+    const [allItems, setAllItems] = useState([])
     const [filterItems, setFilterItems] = useState([])
 
 
     const requestId = route.params.requestId
     // const [fullRest, setFullRest] = useState([])
-
     const Loader = () => (
         <View style={{ flex: 1, justifyContent: 'center' }}>
             <View style={{
@@ -100,46 +105,86 @@ export const Search = ({ navigation, route }) => {
     }, [allRequest])
     useEffect(() => {
         if (request) {
+            const simple = []
+            const jugaar = []
+
             AllDrivers.map((driver, i) => {
                 let includeDays = true
                 let includePackage = true
+                const alreadySend = request.sendDrivers ? request.sendDrivers.findIndex(it => it.did == driver.uid) != -1 : false
                 request.selectedDays.map(it2 => {
                     if (includeDays && driver.dailyDays.findIndex(it => it == it2) == -1) {
                         includeDays = false
                     }
 
                 })
-
                 includePackage = driver.packages.findIndex(it => it == request.packages) != -1
-                if (includeDays && includePackage) {
 
-                    if (driver.packages.findIndex(it => it == request.packages) != -1) {
+                if (!alreadySend && includeDays && includePackage) {
 
-                        if (driver.allRoutes.findIndex(it => it.id == request.pickup.id) != -1 &&
-                            driver.allRoutes.findIndex(it => it.id == request.dropOff.id) != -1) {
-                        }
+
+
+                    if ((driver.allRoutes.findIndex(it => it.id == request.pickup.id) != -1) &&
+                        (driver.allRoutes.findIndex(it => it.id == request.dropOff.id) != -1)) {
+
+                        simple.push(driver)
+                    }
+
+                    else {
+                        jugaar.push(driver)
+
                     }
                 }
+                setAllItems([...simple, ...jugaar])
 
             })
         }
     }, [request])
 
+    function onSend(driver) {
+        const driverDetail = { status: 1, did: driver.uid, name: driver.name, vehicleName: driver.vehicleName, contact: driver.contact }
+        const sendDrivers = request.sendDrivers ? [...request.sendDrivers, driverDetail] : [driverDetail]
+        const status = request.status == 1 ? 2 : request.status
+        const newUpdate = { status, sendDrivers }
+        database()
+            .ref(`/requests/${request.uid}/${request.id}`)
+            .update(newUpdate).then(() => {
+                database()
+                    .ref(`/requests/${driver.uid}/${request.id}`)
+                    .update({ ...request, ...newUpdate }).then(() => {
+
+                        sendPushNotification('New Request', `You have a ride request from ${request.name}`, 2, [driver.deviceToken])
+
+                    }).catch((err) => {
+                        console.log('error on send request', err)
+                    })
+
+            }).catch((err) => {
+                console.log('error on send request', err)
+            })
+    }
     function onGoToItem(item) {
         // const req= AllRest.filter(res => res.uid == item.resId)[0]
         // console.log(restaurant)
         // navigation.navigate('ItemDetails', { item, restaurant })
     }
-    // useEffect(() => {
+    useEffect(() => {
+        // return
+        if (allItems.length) {
+            const newR = allItems?.filter(item => (ac ? item.ac : true) && (wifi ? item.isWifi : true) && (search ? containString(item.vehicleName, search) : true))
 
-    //     if (search) {
-    //         const newR = AllItems?.filter(item => (Delivery ? item.homeDelivery == true : true) && (TakeAway ? item.takeAway == true : true) && (DineIn ? item.dineIn == true : true) && (containString(item.name, search) || containString(item.subCatName, search) || containString(item.catName, search)))
-    //         setFilterItems(newR)
-    //     }
-    //     else {
-    //         setFilterItems([])
-    //     }
-    // }, [search, DineIn, TakeAway, Delivery])
+            if (topRated) {
+
+                setFilterItems(newR.sort(function (a, b) { return b.rating - a.rating }))
+            } else {
+
+                setFilterItems(newR)
+            }
+        }
+        else {
+            setFilterItems([])
+        }
+    }, [allItems, search, topRated, wifi, ac])
 
 
     // useEffect(() => {
@@ -148,7 +193,7 @@ export const Search = ({ navigation, route }) => {
     //             setLoad(false)
     //             , 3000)
     //     }
-    // }, [DineIn, TakeAway, Delivery])
+    // }, [topRated, wifi, ac])
     return (
 
         <>
@@ -182,7 +227,7 @@ export const Search = ({ navigation, route }) => {
                             }} source={require('../assets/home_main/home/back.png')} />
                         </TouchableOpacity>
                         <Spacer paddingEnd={myWidth(2.5)} />
-                        <TextInput placeholder=" Search Any Item"
+                        <TextInput placeholder=" Search"
                             placeholderTextColor={myColors.textL5}
                             autoCorrect={false}
                             selectionColor={myColors.primaryT}
@@ -214,37 +259,41 @@ export const Search = ({ navigation, route }) => {
 
                 <View style={{ marginHorizontal: myWidth(5), flexDirection: 'row', justifyContent: 'space-between' }}>
 
-                    <CommonFaci name={'Dine In'} fac={DineIn} setFAc={setDineIn} />
-                    <CommonFaci name={'Delivery'} fac={Delivery} setFAc={setDelivery} />
-                    <CommonFaci name={'Take Away'} fac={TakeAway} setFAc={setTakeAway} />
+                    <CommonFaci name={'Top Rated'} fac={topRated} setFAc={setTopRated} />
+                    <CommonFaci name={'With AC'} fac={ac} setFAc={setAc} />
+                    <CommonFaci name={'With Wifi'} fac={wifi} setFAc={setWifi} />
                 </View>
+
+                <Spacer paddingT={myHeight(1.2)} />
+
                 {/* Icon Empty Or Content */}
+                <View style={{ height: myHeight(0.30), marginHorizontal: myWidth(4), backgroundColor: myColors.divider }} />
 
-                {
+                <View style={{ flex: 1 }}>
+                    <FlashList
+                        showsVerticalScrollIndicator={false}
+                        scrollEnabled={false}
+                        data={filterItems}
+                        extraData={request}
+                        // extraData={[ac, wifi, topRated, search]}
+                        // contentContainerStyle={{ flexGrow: 1 }}
+                        ItemSeparatorComponent={() =>
+                            <View style={{ borderTopWidth: myHeight(0.08), borderColor: myColors.offColor, width: "100%" }} />
+                        }
+                        estimatedItemSize={myHeight(10)}
+                        renderItem={({ item, index }) => {
+                            return (
+                                <TouchableOpacity disabled key={index} activeOpacity={0.85}
+                                    onPress={() => navigation.navigate('DriverDetail', { driver: item, request })}>
+                                    <DriverInfoFull onSend={onSend} driver={item} request={request} />
+                                </TouchableOpacity>
+                            )
+                        }
+                        }
+                    />
 
-                    (search) ?
-                        <View style={{ flex: 1 }}>
-                            <ScrollView contentContainerStyle={{ paddingHorizontal: myWidth(4.1) }} showsVerticalScrollIndicator={false}>
-                                <Spacer paddingT={myHeight(1.3)} />
+                </View>
 
-                                {filterItems.map((item, i) =>
-                                    <TouchableOpacity key={i} activeOpacity={0.85} onPress={() => onGoToItem(item)}>
-                                        <ItemInfo item={item} />
-                                    </TouchableOpacity>
-                                )}
-                            </ScrollView>
-                        </View>
-                        :
-                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                            <Lottie
-                                autoPlay={true}
-                                loop={true}
-                                source={require('../assets/lottie/food.json')}
-                                style={{ height: myHeight(27), width: myHeight(27), marginTop: -myHeight(3) }}
-
-                            />
-                        </View>
-                }
 
             </SafeAreaView>
 

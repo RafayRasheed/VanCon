@@ -69,19 +69,24 @@ export const RequestInfo = ({ item, navigation, code }) => {
 
                 {
                     code == 2 ?
-                        <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('RequestRide', { preReq: item })}>
-                            <Text
-                                style={[
-                                    styles.textCommon,
-                                    {
-                                        fontSize: myFontSize.body2,
-                                        fontFamily: myFonts.heading,
-                                        color: myColors.primaryT,
-                                        paddingStart: myWidth(3)
-                                    },
-                                ]}
-                            >{'EDIT'}</Text>
-                        </TouchableOpacity>
+                        <>
+                            {
+                                item.status == 1 &&
+                                <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('RequestRide', { preReq: item })}>
+                                    <Text
+                                        style={[
+                                            styles.textCommon,
+                                            {
+                                                fontSize: myFontSize.body2,
+                                                fontFamily: myFonts.heading,
+                                                color: myColors.primaryT,
+                                                paddingStart: myWidth(3)
+                                            },
+                                        ]}
+                                    >{'EDIT'}</Text>
+                                </TouchableOpacity>
+                            }
+                        </>
                         :
                         <>
                             <Image

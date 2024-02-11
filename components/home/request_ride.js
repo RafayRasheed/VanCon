@@ -278,6 +278,7 @@ export const RequestRide = ({ navigation, route }) => {
 
             database()
                 .ref(`/requests/${profile.uid}/${id}`).update(newProfile).then(() => {
+
                     setIsLoading(false)
                     navigation.goBack()
                 })
