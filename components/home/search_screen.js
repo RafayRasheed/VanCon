@@ -11,11 +11,13 @@ import { Restaurants } from './home_data';
 import { DriverInfoFull } from './home.component/driver_info_full';
 import Lottie from 'lottie-react-native';
 import { Filter } from './home.component/filter';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ItemInfo } from './home.component/item_info';
 import { FlashList } from '@shopify/flash-list';
 import database from '@react-native-firebase/database';
 import { sendPushNotification } from '../functions/firebase';
+import { setErrorAlert } from '../../redux/error_reducer';
+import storeRedux from '../../redux/store_redux';
 
 const CommonFaci = ({ name, fac, setFAc }) => (
     <TouchableOpacity activeOpacity={0.75}
@@ -70,7 +72,7 @@ export const Search = ({ navigation, route }) => {
     const [allItems, setAllItems] = useState([])
     const [filterItems, setFilterItems] = useState([])
 
-
+    const dispatch = useDispatch()
     const requestId = route.params.requestId
     // const [fullRest, setFullRest] = useState([])
     const Loader = () => (
@@ -149,6 +151,7 @@ export const Search = ({ navigation, route }) => {
         database()
             .ref(`/requests/${request.uid}/${request.id}`)
             .update(newUpdate).then(() => {
+                storeRedux.dispatch(setErrorAlert({ Title: `Request Send to ${driver.name} Successfully`, Status: 2 }))
                 database()
                     .ref(`/requests/${driver.uid}/${request.id}`)
                     .update({ ...request, ...newUpdate }).then(() => {
@@ -270,27 +273,39 @@ export const Search = ({ navigation, route }) => {
                 <View style={{ height: myHeight(0.30), marginHorizontal: myWidth(4), backgroundColor: myColors.divider }} />
 
                 <View style={{ flex: 1 }}>
-                    <FlashList
-                        showsVerticalScrollIndicator={false}
-                        scrollEnabled={false}
-                        data={filterItems}
-                        extraData={request}
-                        // extraData={[ac, wifi, topRated, search]}
-                        // contentContainerStyle={{ flexGrow: 1 }}
-                        ItemSeparatorComponent={() =>
-                            <View style={{ borderTopWidth: myHeight(0.08), borderColor: myColors.offColor, width: "100%" }} />
-                        }
-                        estimatedItemSize={myHeight(10)}
-                        renderItem={({ item, index }) => {
-                            return (
-                                <TouchableOpacity disabled key={index} activeOpacity={0.85}
-                                    onPress={() => navigation.navigate('DriverDetail', { driver: item, request })}>
-                                    <DriverInfoFull onSend={onSend} driver={item} request={request} />
-                                </TouchableOpacity>
-                            )
-                        }
-                        }
-                    />
+                    {filterItems.length ?
+
+                        <FlashList
+                            showsVerticalScrollIndicator={false}
+                            scrollEnabled={false}
+                            data={filterItems}
+                            extraData={request}
+                            // extraData={[ac, wifi, topRated, search]}
+                            // contentContainerStyle={{ flexGrow: 1 }}
+                            ItemSeparatorComponent={() =>
+                                <View style={{ borderTopWidth: myHeight(0.08), borderColor: myColors.offColor, width: "100%" }} />
+                            }
+                            estimatedItemSize={myHeight(10)}
+                            renderItem={({ item, index }) => {
+                                return (
+                                    <TouchableOpacity disabled key={index} activeOpacity={0.85}
+                                        onPress={() => navigation.navigate('DriverDetail', { driver: item, request })}>
+                                        <DriverInfoFull onSend={onSend} driver={item} request={request} />
+                                    </TouchableOpacity>
+                                )
+                            }
+                            }
+                        />
+                        :
+                        <View style={{ flex: 0.8, justifyContent: 'center', alignItems: 'center' }}>
+                            <Text style={[styles.textCommon,
+                            {
+                                fontFamily: myFonts.bodyBold,
+                                fontSize: myFontSize.body4,
+
+                            }]}>No Drivers Available</Text>
+                        </View>
+                    }
 
                 </View>
 
