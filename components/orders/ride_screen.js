@@ -8,15 +8,19 @@ import { History_Order } from './order_component/order_history';
 import { setHistoryOrderse, setPendingOrderse, setProgressOrderse } from '../../redux/order_reducer';
 import firestore, { Filter } from '@react-native-firebase/firestore';
 import { RequestInfo } from '../home/home.component/request_info';
+import { FlashList } from '@shopify/flash-list';
 
 
 export const RidesScreen = ({ navigation }) => {
     const { pending, progress, history } = useSelector(state => state.orders)
-    console.log(pending.length, progress.length, history.length)
+    const pendingUnread = pending.filter(it => it.unread == true)
+    const progressUnread = progress.filter(it => it.unread == true)
+    const historyUnread = history.filter(it => it.unread == true)
     const [i, setI] = useState(0);
     const [search, setSearch] = useState(null)
     const { profile } = useSelector(state => state.profile)
     const dispatch = useDispatch()
+    console.log(pendingUnread, progressUnread, historyUnread)
 
     useEffect(() => {
     }, [])
@@ -73,18 +77,18 @@ export const RidesScreen = ({ navigation }) => {
                     {/* Order */}
                     <TouchableOpacity activeOpacity={0.6} onPress={() => setI(0)}
                         style={[styles.containerButtonOrder_Hist, { backgroundColor: i == 0 ? myColors.primaryT : myColors.primaryL2 }]}>
-                        <Text style={[styles.textHist_Order, { color: i == 0 ? myColors.background : myColors.text }]}>In Progress ({progress.length})</Text>
+                        <Text style={[styles.textHist_Order, { color: i == 0 ? myColors.background : myColors.text }]}>In Progress  {progressUnread.length ? `(${progressUnread.length})` : ''}</Text>
                     </TouchableOpacity>
                     {/* History */}
                     <TouchableOpacity activeOpacity={0.6} onPress={() => setI(1)}
                         style={[styles.containerButtonOrder_Hist, { backgroundColor: i == 1 ? myColors.primaryT : myColors.primaryL2 }]}>
-                        <Text style={[styles.textHist_Order, { color: i == 1 ? myColors.background : myColors.text }]}>Pending ({pending.length})</Text>
+                        <Text style={[styles.textHist_Order, { color: i == 1 ? myColors.background : myColors.text }]}>Pending {pendingUnread.length ? `(${pendingUnread.length})` : ''}</Text>
                     </TouchableOpacity>
 
                     {/* History */}
                     <TouchableOpacity activeOpacity={0.6} onPress={() => setI(2)}
                         style={[styles.containerButtonOrder_Hist, { backgroundColor: i == 2 ? myColors.primaryT : myColors.primaryL2 }]}>
-                        <Text style={[styles.textHist_Order, { color: i == 2 ? myColors.background : myColors.text }]}>History ({history.length})</Text>
+                        <Text style={[styles.textHist_Order, { color: i == 2 ? myColors.background : myColors.text }]}>History {historyUnread.length ? `(${historyUnread.length})` : ''}</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -92,7 +96,30 @@ export const RidesScreen = ({ navigation }) => {
             <Spacer paddingT={myHeight(2)} />
             <View style={styles.containerLine} />
             {/* <Spacer paddingT={myHeight(0.86)} /> */}
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.containerContentScroll}>
+
+            <FlashList
+                showsVerticalScrollIndicator={false}
+                scrollEnabled={false}
+                data={i == 0 ? progress : i == 1 ? pending : history}
+                extraData={i}
+                // extraData={[ac, wifi, topRated, search]}
+                contentContainerStyle={styles.containerContentScroll}
+
+                estimatedItemSize={myHeight(10)}
+                renderItem={({ item, index }) => {
+                    return (
+                        <TouchableOpacity key={index} activeOpacity={0.95}
+                            onPress={() => navigation.navigate('OrderDetails', { item, code: i + 1 })}>
+
+
+
+                            <RequestInfo item={item} navigation={navigation} code={i + 1} />
+                        </TouchableOpacity>
+                    )
+                }
+                }
+            />
+            {/* <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.containerContentScroll}>
                 {i == 0 &&
                     progress.map((item, ind) =>
                         <TouchableOpacity key={ind} activeOpacity={0.95}
@@ -141,7 +168,7 @@ export const RidesScreen = ({ navigation }) => {
 
                     )
                 }
-            </ScrollView>
+            </ScrollView> */}
         </SafeAreaView>
     )
 }

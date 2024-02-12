@@ -23,6 +23,7 @@ import { navigationRef } from "./RootNavigation"
 import NavigationService from "./NavigationService"
 import { Chat } from "./home/chat_screen"
 import { RequestRide } from "./home/request_ride"
+import { DriverDetail } from "./home/driver_detail_screen"
 
 const AppTAB = createStackNavigator()
 
@@ -52,6 +53,7 @@ export const AppNavigator = () => {
                 <AppTAB.Screen component={Search} name="Search" />
                 <AppTAB.Screen component={Chat} name="Chat" />
                 <AppTAB.Screen component={RequestRide} name="RequestRide" />
+                <AppTAB.Screen component={DriverDetail} name="DriverDetail" />
 
 
 

@@ -1,4 +1,4 @@
-import { Image, TouchableOpacity, SafeAreaView, StyleSheet, Text, View, ImageBackground } from 'react-native'
+import { Image, TouchableOpacity, SafeAreaView, StyleSheet, Text, View, ImageBackground, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Spacer, myHeight, myWidth } from "../../common"
 import { myFontSize, myFonts, myLetSpacing } from "../../../ultils/myFonts"
@@ -6,7 +6,8 @@ import { myColors } from "../../../ultils/myColors"
 import { useDispatch, useSelector } from 'react-redux'
 import { addFavoriteRest, removeFavoriteRest } from '../../../redux/favorite_reducer'
 import { ImageUri } from '../../common/image_uri'
-export const DriverInfoFull = ({ driver, request = null, onSend }) => {
+import { RFValue } from 'react-native-responsive-fontsize'
+export const DriverInfoFull = ({ driver, request = null, onSend, isLoad }) => {
     const { favoriteDrivers } = useSelector(state => state.favorite)
     const dispatch = useDispatch()
 
@@ -164,22 +165,24 @@ export const DriverInfoFull = ({ driver, request = null, onSend }) => {
 
                         {
                             request ?
-                                <TouchableOpacity activeOpacity={0.7} onPress={() => onSend(driver)} style={{
+                                <TouchableOpacity disabled={isLoad} activeOpacity={0.7} onPress={() => onSend(driver)} style={{
                                     backgroundColor: myColors.primaryT,
                                     paddingHorizontal: myWidth(5),
                                     borderRadius: myWidth(1.5), paddingVertical: myHeight(0.25)
                                 }}>
-                                    <Text
-                                        style={[
-                                            styles.textCommon,
-                                            {
-                                                fontSize: myFontSize.xxSmall,
-                                                fontFamily: myFonts.body,
-                                                color: myColors.background,
-                                                textAlign: 'center',
-                                            },
-                                        ]}
-                                    >Send</Text>
+                                    {isLoad ? <ActivityIndicator size={RFValue(15)} style={{ paddingVertical: RFValue(2) }} color={myColors.background} /> :
+                                        <Text
+                                            style={[
+                                                styles.textCommon,
+                                                {
+                                                    fontSize: myFontSize.xxSmall,
+                                                    fontFamily: myFonts.body,
+                                                    color: myColors.background,
+                                                    textAlign: 'center',
+                                                },
+                                            ]}
+                                        >Send</Text>
+                                    }
                                 </TouchableOpacity>
 
                                 :

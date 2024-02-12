@@ -280,7 +280,11 @@ export const RequestRide = ({ navigation, route }) => {
                 .ref(`/requests/${profile.uid}/${id}`).update(newProfile).then(() => {
 
                     setIsLoading(false)
-                    navigation.goBack()
+                    // navigation.goBack()
+                    setTimeout(() => {
+                        console.log(id)
+                        navigation.replace('Search', { requestId: id, code: 2 })
+                    }, 200)
                 })
                 .catch((er) => {
                     setIsLoading(false)

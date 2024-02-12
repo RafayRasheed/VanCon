@@ -18,7 +18,7 @@ import { HomeSkeleton } from './home.component/home_skeleton';
 import { ImageUri } from '../common/image_uri';
 import storage from '@react-native-firebase/storage';
 import { setAllDriver, } from '../../redux/data_reducer';
-import { setAllRequest, setHistoryOrderse, setPendingOrderse, setProgressOrderse } from '../../redux/order_reducer';
+import { setAllRequest, setAllUnread, setHistoryOrderse, setPendingOrderse, setProgressOrderse } from '../../redux/order_reducer';
 import database from '@react-native-firebase/database';
 import { SetErrorAlertToFunction, deccodeInfo, getAllRestuarant, getAreasLocations, getCurrentLocations, statusDate } from '../functions/functions';
 import messaging from '@react-native-firebase/messaging';
@@ -200,27 +200,41 @@ export const HomeScreen = ({ navigation }) => {
                     let InProgress = []
                     let History = []
                     let all = []
+                    const unread = []
 
                     snapshot.forEach((documentSnapshot1, i) => {
                         const val = documentSnapshot1.val()
                         all.push(val)
                         if (val.status == 1 || val.status == 2) {
                             Pending.push(val)
+                            if (val.unread) {
+                                unread.push({ id: val.id, code: 2 })
+                            }
                         }
                         else if (val.status == 3) {
 
                             InProgress.push(val)
+                            if (val.unread) {
+                                unread.push({ id: val.id, code: 1 })
+                            }
                         }
                         else {
                             History.push(val)
+                            if (val.unread) {
+                                unread.push({ id: val.id, code: 3 })
+                            }
                         }
 
 
                     });
+                    Pending.reverse()
+                    InProgress.reverse()
+                    History.reverse()
                     dispatch(setPendingOrderse(Pending))
                     dispatch(setProgressOrderse(InProgress))
                     dispatch(setHistoryOrderse(History))
                     dispatch(setAllRequest(all))
+                    setAllUnread(unread)
 
                 } else {
                     dispatch(setPendingOrderse([]))

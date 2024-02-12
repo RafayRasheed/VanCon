@@ -236,6 +236,32 @@ export const RideDetails = ({ navigation, route }) => {
                     <Spacer paddingT={myHeight(2)} />
 
                     <View>
+                        {item.instruction ?
+
+
+                            <>
+
+
+                                <Text numberOfLines={1} style={[styles.textCommon, {
+
+                                    paddingHorizontal: myWidth(4),
+                                    fontFamily: myFonts.bodyBold, fontSize: myFontSize.xBody
+                                }]}>Instructions</Text>
+                                <Spacer paddingT={myHeight(0.3)} />
+                                <Text numberOfLines={1} style={[styles.textCommon, {
+
+                                    paddingHorizontal: myWidth(4),
+                                    fontFamily: myFonts.bodyBold, fontSize: myFontSize.body, color: myColors.textL5
+                                }]}>{item.instruction}</Text>
+
+                                <Spacer paddingT={myHeight(2)} />
+                            </>
+                            :
+                            null
+                        }
+                    </View>
+
+                    <View>
                         {item.sendDrivers ?
 
 

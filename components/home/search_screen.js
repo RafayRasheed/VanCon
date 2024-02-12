@@ -63,7 +63,7 @@ export const Search = ({ navigation, route }) => {
     const [request, setRequest] = useState(null)
 
     const [search, setSearch] = useState(null)
-    const [load, setLoad] = useState(null)
+    const [load, setLoad] = useState([])
     const [filterModal, setFilterModal] = useState(null)
     const [topRated, setTopRated] = useState(false)
     const [ac, setAc] = useState(false)
@@ -127,7 +127,7 @@ export const Search = ({ navigation, route }) => {
 
 
                     if ((driver.allRoutes.findIndex(it => it.id == request.pickup.id) != -1) &&
-                        (driver.allRoutes.findIndex(it => it.id == request.dropOff.id) != -1)) {
+                        (driver.allRoutes.findIndex(it => it.id == request.dropoff.id) != -1)) {
 
                         simple.push(driver)
                     }
@@ -144,6 +144,8 @@ export const Search = ({ navigation, route }) => {
     }, [request])
 
     function onSend(driver) {
+        setLoad(load.push[driver.uid])
+        // return
         const driverDetail = { status: 1, did: driver.uid, name: driver.name, vehicleName: driver.vehicleName, contact: driver.contact }
         const sendDrivers = request.sendDrivers ? [...request.sendDrivers, driverDetail] : [driverDetail]
         const status = request.status == 1 ? 2 : request.status
@@ -154,15 +156,19 @@ export const Search = ({ navigation, route }) => {
                 storeRedux.dispatch(setErrorAlert({ Title: `Request Send to ${driver.name} Successfully`, Status: 2 }))
                 database()
                     .ref(`/requests/${driver.uid}/${request.id}`)
-                    .update({ ...request, ...newUpdate }).then(() => {
-
+                    .update({ ...request, ...newUpdate, unread: true }).then(() => {
+                        setLoad(load.filter(it => it != driver.uid))
                         sendPushNotification('New Request', `You have a ride request from ${request.name}`, 2, [driver.deviceToken])
 
                     }).catch((err) => {
+                        setLoad(load.filter(it => it != driver.uid))
+
                         console.log('error on send request', err)
                     })
 
             }).catch((err) => {
+                setLoad(load.filter(it => it != driver.uid))
+
                 console.log('error on send request', err)
             })
     }
@@ -279,7 +285,7 @@ export const Search = ({ navigation, route }) => {
                             showsVerticalScrollIndicator={false}
                             scrollEnabled={false}
                             data={filterItems}
-                            extraData={request}
+                            extraData={[request, load]}
                             // extraData={[ac, wifi, topRated, search]}
                             // contentContainerStyle={{ flexGrow: 1 }}
                             ItemSeparatorComponent={() =>
@@ -287,10 +293,11 @@ export const Search = ({ navigation, route }) => {
                             }
                             estimatedItemSize={myHeight(10)}
                             renderItem={({ item, index }) => {
+                                const isLoad = (load && load.findIndex(it => it == item.uid) != -1)
                                 return (
                                     <TouchableOpacity disabled key={index} activeOpacity={0.85}
                                         onPress={() => navigation.navigate('DriverDetail', { driver: item, request })}>
-                                        <DriverInfoFull onSend={onSend} driver={item} request={request} />
+                                        <DriverInfoFull onSend={onSend} isLoad={isLoad} driver={item} request={request} />
                                     </TouchableOpacity>
                                 )
                             }

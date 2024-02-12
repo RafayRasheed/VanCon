@@ -48,7 +48,8 @@ const Icons = {
 
 const screenOptions = ({ navigator, route }) => {
     const { totalUnread } = useSelector(state => state.chats)
-    const { progress } = useSelector(state => state.orders)
+    const { progress, unread } = useSelector(state => state.orders)
+    // console.log(unread)
     const name = route.name
     return {
         headerShown: false,
@@ -105,12 +106,12 @@ const screenOptions = ({ navigator, route }) => {
                         <Image style={[Icons[name].style, { tintColor: color, resizeMode: 'contain', }]}
                             source={Icons[name].image} />
                         {
-                            progress?.length ?
+                            unread?.length ?
                                 <View style={{
                                     position: 'absolute', top: -myHeight(0.6), right: -myHeight(1.4), backgroundColor: myColors.red, borderRadius: 100,
                                     paddingVertical: myHeight(0.35), paddingHorizontal: myHeight(1)
                                 }}>
-                                    <Text style={[styles.textCommon, { fontSize: myFontSize.tiny, fontFamily: myFonts.bodyBold, color: myColors.background }]}>{progress.length}</Text>
+                                    <Text style={[styles.textCommon, { fontSize: myFontSize.tiny, fontFamily: myFonts.bodyBold, color: myColors.background }]}>{unread.length}</Text>
                                 </View>
                                 : null
                         }
