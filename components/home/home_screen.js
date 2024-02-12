@@ -234,12 +234,13 @@ export const HomeScreen = ({ navigation }) => {
                     dispatch(setProgressOrderse(InProgress))
                     dispatch(setHistoryOrderse(History))
                     dispatch(setAllRequest(all))
-                    setAllUnread(unread)
+                    dispatch(setAllUnread(unread))
 
                 } else {
                     dispatch(setPendingOrderse([]))
                     dispatch(setProgressOrderse([]))
                     dispatch(setHistoryOrderse([]))
+                    dispatch(setAllUnread([]))
                     dispatch(setAllRequest([]))
 
                 }
