@@ -7,9 +7,69 @@ import { myColors } from "../../../ultils/myColors"
 import { useDispatch, useSelector } from 'react-redux'
 import { addFavoriteRest, removeFavoriteRest } from '../../../redux/favorite_reducer'
 import { ImageUri } from '../../common/image_uri'
+import database from '@react-native-firebase/database';
+import { FirebaseUser, sendPushNotification } from '../../functions/firebase'
+import { setErrorAlert } from '../../../redux/error_reducer'
+import firestore from '@react-native-firebase/firestore';
 
 export const RequestInfo = ({ item, navigation, code }) => {
     console.log(item)
+    const { profile } = useSelector(state => state.profile)
+    const [load, setLoad] = useState(false)
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        if (item.unread) {
+            database()
+                .ref(`/requests/${profile.uid}/${item.id}`).update({ unread: false }).
+                then(() => { console.log('To Unread successfully') })
+                .catch((err) => { console.log('error on update unread err') })
+        }
+    }, [item])
+
+    function onRemove() {
+
+
+        setLoad(true)
+        database()
+            .ref(`/requests/${profile.uid}/${item.id}`).update({ status: -5 })
+            .then(() => {
+                console.log('To onRemove successfully')
+                dispatch(setErrorAlert({ Title: 'Request Remove Successfully', Body: null, Status: 2 }))
+                setTimeout(() => {
+
+                    setLoad(false)
+                }, item.status == 1 ? 0 : 1000)
+
+                if (item.status != 1) {
+                    item.sendDrivers.map(di => {
+                        if (di.status == 1) {
+                            database()
+                                .ref(`/requests/${di.did}/${item.id}`).update({ status: -5 })
+                                .then(() => {
+                                    firestore().collection('drivers').doc(di.did).get().then((data) => {
+                                        const captain = data.data()
+                                        const token = captain.deviceToken
+                                        sendPushNotification('Request Cancelled', `Request ${item.id} is cancelled by ${profile.name}`, 0, [token])
+
+                                    }).catch((err) => { console.log(err) })
+                                }).catch((err) => {
+                                    console.log('error on accept unread err', err)
+
+
+                                })
+                        }
+                    })
+                }
+
+
+            })
+            .catch((err) => {
+                console.log('error on accept unread err', err)
+                setLoad(false)
+
+            })
+    }
     return (
         <View
 
@@ -65,6 +125,31 @@ export const RequestInfo = ({ item, navigation, code }) => {
                             },
                         ]}
                     >{item.distance} </Text>
+
+                    <Spacer paddingEnd={myWidth(2.5)} />
+
+                    <Image
+                        style={{
+
+                            width: myHeight(1.6),
+                            height: myHeight(1.6),
+                            resizeMode: 'contain',
+                            tintColor: myColors.primaryT
+                        }}
+                        source={require('../../assets/home_main/home/seatSF.png')}
+                    />
+                    <Spacer paddingEnd={myWidth(1)} />
+                    <Text
+                        style={[
+                            styles.textCommon,
+                            {
+                                flex: 1,
+                                fontSize: myFontSize.body,
+                                fontFamily: myFonts.bodyBold,
+                            },
+                        ]}
+                    >{item.seats}
+                    </Text>
                 </View>
 
                 {
@@ -88,29 +173,7 @@ export const RequestInfo = ({ item, navigation, code }) => {
                             }
                         </>
                         :
-                        <>
-                            <Image
-                                style={{
-                                    width: myHeight(2),
-                                    height: myHeight(2),
-                                    resizeMode: 'contain',
-                                    tintColor: myColors.primaryT
-                                }}
-                                source={require('../../assets/home_main/home/driver.png')}
-                            />
-                            <Spacer paddingEnd={myWidth(2)} />
-                            <Text
-                                style={[
-                                    styles.textCommon,
-                                    {
-
-                                        fontSize: myFontSize.body2,
-                                        fontFamily: myFonts.bodyBold,
-                                    },
-                                ]}
-                            >{item.driverName}
-                            </Text>
-                        </>
+                        null
                 }
 
 
@@ -263,32 +326,112 @@ export const RequestInfo = ({ item, navigation, code }) => {
             <Spacer paddingT={myHeight(1.2)} />
 
             {
-                code == 2 &&
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text
-                        style={[
-                            styles.textCommon,
-                            {
-                                flex: 1,
-                                fontSize: myFontSize.body,
-                                fontFamily: myFonts.body,
-                                color: item.status == 1 ? 'red' : myColors.text
-                            },
-                        ]}
-                    >{item.status == 1 ? 'Not send to any driver yet' : `Send to ${item.sendDrivers.length} drivers yet`}</Text>
-                    <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('Search', { requestId: item.id, code })}>
+                code == 2 ?
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Text
                             style={[
                                 styles.textCommon,
                                 {
+                                    flex: 1,
                                     fontSize: myFontSize.body,
-                                    fontFamily: myFonts.heading,
-                                    color: myColors.primaryT
+                                    fontFamily: myFonts.body,
+                                    color: item.status == 1 ? 'red' : myColors.text
                                 },
                             ]}
-                        >{item.status == 1 ? 'Send Now' : 'Send More'}</Text>
-                    </TouchableOpacity>
-                </View>
+                        >{item.status == 1 ? 'Not send to any driver yet' : `Send to ${item.sendDrivers.length} ${item.sendDrivers.length > 1 ? 'drivers' : 'driver'} yet`}</Text>
+
+                        {
+                            load ?
+                                <Text
+                                    style={[
+                                        styles.textCommon,
+                                        {
+
+                                            fontSize: myFontSize.body,
+                                            fontFamily: myFonts.bodyBold,
+                                            color: myColors.primaryT
+                                        },
+                                    ]}
+                                >Loading...</Text>
+                                :
+                                <>
+
+                                    <TouchableOpacity activeOpacity={0.7} onPress={() => onRemove()}>
+                                        <Text
+                                            style={[
+                                                styles.textCommon,
+                                                {
+                                                    fontSize: myFontSize.body,
+                                                    fontFamily: myFonts.heading,
+                                                    color: myColors.red
+                                                },
+                                            ]}
+                                        >{'Remove'}</Text>
+                                    </TouchableOpacity>
+                                    <Spacer paddingEnd={myWidth(3)} />
+
+                                    <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('Search', { requestId: item.id, code })}>
+                                        <Text
+                                            style={[
+                                                styles.textCommon,
+                                                {
+                                                    fontSize: myFontSize.body,
+                                                    fontFamily: myFonts.heading,
+                                                    color: myColors.primaryT
+                                                },
+                                            ]}
+                                        >{'Send'}</Text>
+                                    </TouchableOpacity>
+                                </>
+                        }
+
+                    </View>
+                    :
+                    <>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            {
+                                item.driverName &&
+                                <>
+
+                                    <Image
+                                        style={{
+                                            width: myHeight(2),
+                                            height: myHeight(2),
+                                            resizeMode: 'contain',
+                                            tintColor: myColors.primaryT
+                                        }}
+                                        source={require('../../assets/home_main/home/driver.png')}
+                                    />
+                                    <Spacer paddingEnd={myWidth(2)} />
+                                    <Text
+                                        style={[
+                                            styles.textCommon,
+                                            {
+                                                flex: 1,
+                                                fontSize: myFontSize.body2,
+                                                fontFamily: myFonts.bodyBold,
+                                            },
+                                        ]}
+                                    >{item.driverName}
+                                    </Text>
+                                </>
+                            }
+                            <View style={{ flex: 1 }} />
+
+                            <Text
+                                style={[
+                                    styles.textCommon,
+                                    {
+
+                                        fontSize: myFontSize.body2,
+                                        fontFamily: myFonts.bodyBold,
+                                        color: item.status < 0 ? 'red' : myColors.primaryT
+                                    },
+                                ]}
+                            >{item.status < 0 ? 'Cancelled' : item.status == 5 ? 'Completed' : `In Progress`}</Text>
+                        </View>
+                    </>
+
             }
             <Spacer paddingT={myHeight(1.5)} />
         </View>
