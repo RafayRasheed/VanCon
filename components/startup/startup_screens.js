@@ -143,7 +143,7 @@ export const StartupScreen = ({ navigation }) => {
 
     function getReady() {
         storage.set('isFirstTime', true)
-        // navigation.replace('AccountNavigator')
+        navigation.replace('AccountNavigator')
     }
 
 
@@ -319,10 +319,10 @@ const styles = StyleSheet.create({
     },
 
     containerDot: {
-        width: myHeight(1.5),
-        height: myHeight(1.5),
+        width: myHeight(1.25),
+        height: myHeight(1.25),
         borderRadius: myHeight(1),
-        marginHorizontal: myWidth(1.2),
+        marginHorizontal: myWidth(1),
     },
     containerStart: {
         backgroundColor: myColors.primaryT,

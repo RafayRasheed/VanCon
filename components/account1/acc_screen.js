@@ -10,6 +10,7 @@ import Animated, { SlideInDown } from "react-native-reanimated";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { SelectCity } from "./select_city";
 import { Modalize } from "react-native-modalize";
+import Lottie from 'lottie-react-native';
 
 // import Animated, { SlideInDown, FadeInUp, FadeOutUp } from 'react-native-reanimated';
 export const AccScreen = ({ navigation }) => {
@@ -83,6 +84,15 @@ export const AccScreen = ({ navigation }) => {
                         source={require('../assets/account/welcome.png')} />
 
                     <Spacer paddingT={myHeight(8.5)} />
+                    {/* <Lottie
+                        autoPlay={true}
+                        loop={true}
+                        source={require('../assets/lottie/van.json')}
+                        style={{
+                            // backgroundColor: 'red',
+                            height: myWidth(55),
+                        }}
+                    /> */}
                     {/* T Welcome */}
                     <Text style={styles.textWel}>Welcome</Text>
 
@@ -90,7 +100,7 @@ export const AccScreen = ({ navigation }) => {
                     {/* T Detail */}
                     <Text style={styles.textDetail}>
                         Before enjoying Food media services Please register first</Text>
-                    <Spacer paddingT={myHeight(11)} />
+                    <Spacer paddingT={myHeight(18)} />
 
                     {/* B Create Acc */}
                     <TouchableOpacity activeOpacity={0.8} style={[styles.bigButton, { backgroundColor: myColors.primary }]}
@@ -105,7 +115,7 @@ export const AccScreen = ({ navigation }) => {
 
                     <Spacer paddingT={myHeight(2)} />
                     {/* B Create Login */}
-                    <TouchableOpacity activeOpacity={0.8} style={[styles.bigButton, { backgroundColor: myColors.lightGree }]}
+                    <TouchableOpacity activeOpacity={0.8} style={[styles.bigButton, { backgroundColor: myColors.primaryL5 }]}
                         onPress={() => {
                             // setOnAcc(true)
                             onOpen()
