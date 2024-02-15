@@ -495,7 +495,7 @@ export const Chat = ({ navigation, route }) => {
                                     <TouchableOpacity style={{
                                         paddingVertical: myHeight(1.4),
                                         paddingHorizontal: myWidth(6),
-                                        backgroundColor: myColors.primaryT,
+                                        backgroundColor: myColors.textL0,
                                         borderRadius: myWidth(2)
                                     }}
                                         onPress={onSendMsg} activeOpacity={0.85}>

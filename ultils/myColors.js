@@ -63,3 +63,46 @@ export const myColors = {
     border: '#BEC5D1',
     searchbar: '#E6E7E9'
 }
+
+
+const alpha = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+const darkColors = [
+    '#283618',
+    '#1B4F72',
+    '#4A235A',
+    '#5B2C6F',
+    '#36454F',
+    '#2E4053',
+    '#8E44AD',
+    '#2980B9',
+    '#7D6608',
+    '#283618',
+    '#1B4F72',
+    '#4A235A',
+    '#5B2C6F',
+    '#36454F',
+    '#2E4053',
+    '#8E44AD',
+    '#2980B9',
+    '#7D6608',
+    '#283618',
+    '#1B4F72',
+    '#4A235A',
+    '#5B2C6F',
+    '#36454F',
+    '#2E4053',
+    '#8E44AD',
+    '#2980B9',
+    '#7D6608',
+];
+
+export function getAvatarColor(name) {
+    const alph = name.slice(0, 1).toLowerCase()
+    const ind = alpha.findIndex(it => it == alph)
+    if (ind != -1) {
+        return darkColors[ind]
+    }
+
+    return darkColors[26]
+
+}

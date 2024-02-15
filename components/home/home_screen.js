@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, Alert, ScrollView, StyleSheet, TouchableOpacity, Image, View, Text, FlatList, Modal, UIManager, LayoutAnimation } from 'react-native'
 import { MyError, NotiAlertNew, Spacer, StatusbarH, ios, myHeight, myWidth } from '../common';
-import { myColors } from '../../ultils/myColors';
+import { getAvatarColor, myColors } from '../../ultils/myColors';
 import { myFontSize, myFonts, myLetSpacing } from '../../ultils/myFonts';
 import { Categories, Restaurants, } from './home_data'
 import { ResturantH } from './home.component/resturant_hori';
@@ -130,7 +130,9 @@ export const HomeScreen = ({ navigation }) => {
         // return () => clearInterval(interval);
 
     }, [profile.city])
+    useEffect(() => {
 
+    }, [profile]);
     // Realtime
     useEffect(() => {
         const onValueChange = database()
@@ -171,7 +173,8 @@ export const HomeScreen = ({ navigation }) => {
                                     ...latest, unreadmasseges, chatId: key,
                                     user2: val.captain,
                                     statusTime: statusDate(latest.date, latest.time),
-                                    allMessages, allUnreadMessagesToRead
+                                    allMessages, allUnreadMessagesToRead,
+                                    colorC: getAvatarColor(val.captain.name)
                                 }
                                 Chats.push(chat)
                             }
