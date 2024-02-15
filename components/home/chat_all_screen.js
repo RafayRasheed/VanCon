@@ -15,20 +15,15 @@ import { RFValue } from 'react-native-responsive-fontsize'
 
 export const ChatList = ({ navigation, route }) => {
     const [message, setMessage] = useState(null)
-    const scrollRef = useRef(null)
 
-    const [focus, setFocus] = useState(false)
-    const [fromTouch, setFromTouch] = useState(false)
-    const [first, setFirst] = useState(true)
-    const [unreadCount, setUnreadCount] = useState(0)
-    const [showScrollToLast, setShowScrollToLast] = useState(false)
+    const [search, setSearch] = useState(null)
+
     const { chats, totalUnread } = useSelector(state => state.chats)
     const { profile } = useSelector(state => state.profile)
     const dispatch = useDispatch()
 
-    const item = chats[0]
+    // const item = chats[0]
     useEffect(() => {
-        console.log()
     }, []);
 
 
@@ -37,34 +32,70 @@ export const ChatList = ({ navigation, route }) => {
 
             <SafeAreaView style={{ flex: 1, backgroundColor: myColors.background, }}>
                 <StatusbarH />
-                <View style={{ paddingBottom: myHeight(0) }}>
-                    <View style={{
-                        paddingVertical: myHeight(1.5),
-                        shadowOpacity: 0.2, backgroundColor: myColors.background,
-                        shadowRadius: 2, flexDirection: 'row', alignItems: 'center'
-                    }}>
+                <View style={{ paddingTop: myHeight(2) }}>
+                    <View style={{ paddingHorizontal: myWidth(4), flexDirection: 'row', alignItems: 'center' }}>
 
+                        {/* Search */}
+                        <View style={{
+                            flex: 1,
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            paddingHorizontal: myWidth(4),
+                            borderRadius: myWidth(10),
+                            backgroundColor: myColors.primaryL4,
+                            // marginHorizontal: myWidth(4)
+                        }}>
 
-                        <Spacer paddingEnd={myWidth(5)} />
-                        {/* Name & Last seen */}
-                        <View style={{}}>
-                            <Text style={[styles.textCommon, {
-                                fontSize: myFontSize.medium0,
-                                fontFamily: myFonts.heading,
-                            }]}>{'Chats'} {totalUnread ? `(${totalUnread})` : ''}</Text>
-                            {/* <Text style={[styles.textCommon, {
+                            <TextInput placeholder="Search"
+                                placeholderTextColor={myColors.textL0}
+                                autoCorrect={false}
+                                selectionColor={myColors.text}
+                                style={{
+                                    flex: 1,
+                                    textAlignVertical: 'center',
+                                    paddingVertical: myHeight(0.7),
+                                    fontSize: myFontSize.body2,
+                                    color: myColors.text,
+                                    includeFontPadding: false,
+                                    fontFamily: myFonts.bodyBold,
+                                }}
+                                cursorColor={myColors.primaryT}
+                                value={search} onChangeText={setSearch}
+                            // value={search} onChangeText={(val) => null}
+                            />
+                            <Image
+                                style={{
+                                    width: myHeight(2.2),
+                                    height: myHeight(2.2),
+                                    resizeMode: 'contain',
+                                    tintColor: myColors.textL
+                                }}
+                                source={require('../assets/home_main/home/search.png')}
+                            />
+                        </View>
+
+                    </View>
+                    <Spacer paddingT={myHeight(1.7)} />
+
+                    <View style={{ paddingHorizontal: myWidth(4) }}>
+                        <Text style={[styles.textCommon, {
+                            fontSize: myFontSize.large,
+                            fontFamily: myFonts.body,
+                        }]}>{'Messages'} {totalUnread ? `(${totalUnread})` : ''}</Text>
+                        {/* <Text style={[styles.textCommon, {
                                 fontSize: myFontSize.body,
                                 fontFamily: myFonts.body,
                             }]}>Last seen {'12:09'}</Text> */}
-                        </View>
                     </View>
+
+                    <Spacer paddingT={myHeight(1)} />
 
 
                     {/* Divider */}
-                    <View style={{
-                        borderTopWidth: myHeight(0.08),
-                        borderColor: myColors.offColor2, width: '100%'
-                    }} />
+                    {/* <View style={{
+                        borderTopWidth: myHeight(0.18),
+                        borderColor: myColors.divider, width: '100%'
+                    }} /> */}
                 </View>
 
                 {/* <TouchableOpacity
