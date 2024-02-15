@@ -1,19 +1,19 @@
 export const myColors = {
-    // primary: '#B079FF',
-    // primaryT: '#7744aa',
-    // primaryL: '#d4b8fc',
-    // primaryL2: '#ddc4ff',
-    // primaryL3: '#e2ccff',
-    // primaryL4: '#e5d4fc ', //50%
-    // primaryL5: '#eadefa', //30%
+    primary: '#B079FF',
+    primaryT: '#7744aa',
+    primaryL: '#d4b8fc',
+    primaryL2: '#ddc4ff',
+    primaryL3: '#e2ccff',
+    primaryL4: '#e5d4fc ', //50%
+    primaryL5: '#eadefa', //30%
 
-    primary: '#32B768',
-    primaryT: '#2aa85e',
-    primaryL: '#a7faa5',
-    primaryL2: '#d1f7d0',
-    primaryL3: '#e6fce6',
-    primaryL4: '#edfaed ', //50%
-    primaryL5: '#f7fcf7', //30%
+    // primary: '#32B768',
+    // primaryT: '#2aa85e',
+    // primaryL: '#a7faa5',
+    // primaryL2: '#d1f7d0',
+    // primaryL3: '#e6fce6',
+    // primaryL4: '#edfaed ', //50%
+    // primaryL5: '#f7fcf7', //30%
 
     star: '#FFC700',
     textL0: '#525252',
