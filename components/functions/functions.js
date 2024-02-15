@@ -120,6 +120,7 @@ export function updateAndNewLocation(coords) {
     }
   })
   console.log('minDistance: ', minArea)
+  return
   if (profile.city && minArea && minArea.distance > 1300) {
     // if (true) {
 
