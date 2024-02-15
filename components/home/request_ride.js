@@ -272,6 +272,7 @@ export const RequestRide = ({ navigation, route }) => {
                 driverName: null,
                 driverContact: null,
                 twoWay,
+                unread: true,
 
             }
             console.log('New Profile', newProfile)

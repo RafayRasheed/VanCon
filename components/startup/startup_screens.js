@@ -1,27 +1,55 @@
 import React, { useEffect, useState } from 'react';
-import { Image, TouchableOpacity, ScrollView, StyleSheet, Text, View, SafeAreaView } from 'react-native';
+import { Image, TouchableOpacity, ScrollView, StyleSheet, Text, View, SafeAreaView, StatusBar } from 'react-native';
 import { Spacer, StatusbarH, myHeight, myWidth, storage } from '../common';
 import { myColors } from '../../ultils/myColors';
 import { myFontSize, myFonts, myLetSpacing } from '../../ultils/myFonts';
 
+// const startupData = [
+//     {
+//         title: 'Nearby restaurants',
+//         des: 'You dont have to go far to find a good restaurant, we provided all the restaurants that is near you',
+//         image: require('../assets/startup/maps.png'),
+//         style: { width: myWidth(70), height: myWidth(70) * 0.6, marginBottom: myHeight(5) },
+
+//     },
+//     {
+//         title: 'Select Favorites Menu',
+//         des: 'Now eat well, dont leave the house,You can choose your favorite food only with one click',
+//         image: require('../assets/startup/order.png'),
+//         style: { width: myWidth(60), height: myWidth(60), marginBottom: myHeight(2) },
+
+//     },
+//     {
+//         title: 'Good food, Cheap price',
+//         des: 'You can eat at expensive restaurants with affordable price',
+//         image: require('../assets/startup/food.png'),
+//         style: { width: myWidth(60), height: myWidth(60), marginBottom: myHeight(3) },
+
+//     },
+
+
+
+// ]
 const startupData = [
     {
         title: 'Nearby restaurants',
         des: 'You dont have to go far to find a good restaurant, we provided all the restaurants that is near you',
-        image: require('../assets/startup/maps.png'),
-        style: { width: myWidth(70), height: myWidth(70) * 0.6, marginBottom: myHeight(5) },
+        image: require('../assets/startup/On1.png'),
+        style: {}
+
     },
     {
         title: 'Select Favorites Menu',
         des: 'Now eat well, dont leave the house,You can choose your favorite food only with one click',
-        image: require('../assets/startup/order.png'),
-        style: { width: myWidth(60), height: myWidth(60), marginBottom: myHeight(2) },
+        image: require('../assets/startup/On2.png'),
+        style: {}
+
     },
     {
         title: 'Good food, Cheap price',
         des: 'You can eat at expensive restaurants with affordable price',
-        image: require('../assets/startup/food.png'),
-        style: { width: myWidth(60), height: myWidth(60), marginBottom: myHeight(3) },
+        image: require('../assets/startup/On3.png'),
+        style: {}
     },
 
 
@@ -121,23 +149,63 @@ export const StartupScreen = ({ navigation }) => {
     return (
         <SafeAreaView style={styles.container}>
             {/* Top --> Skip */}
-            <StatusbarH />
+            {/* <StatusbarH /> */}
             <View style={{ flex: 1, justifyContent: 'space-between' }}>
-                <View style={styles.containerTopSkip}>
 
-                    {i < lenStartup - 1 &&
-                        <TouchableOpacity activeOpacity={0.6} onPress={getReady} style={styles.containerSkip}>
-                            <Text style={styles.textSkip}>Skip</Text>
-                            <Spacer paddingEnd={myWidth(1)} />
-                            <Image style={styles.imageGo} source={require('../assets/startup/go.png')} />
-                            <Image style={[styles.imageGo, { marginStart: -myWidth(1) }]} source={require('../assets/startup/go.png')} />
-                        </TouchableOpacity>
-                    }
+                <View>
+                    <ScrollView
+                        horizontal
+                        onTouchStart={() => setScrollTouch(true)}
+                        onScroll={handleScroll}
+                        overScrollMode='never'
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={{ alignItems: 'flex-end' }}
+                        pagingEnabled
+                        scrollEventThrottle={10}
+                        ref={ref => setRef(ref)}
+                    >
+                        {
+                            startupData.map((item, i) =>
+                                <View key={i} style={{
+                                    width: myWidth(100), overflow: 'hidden'
+                                }}>
+                                    <View onLayout={(event) => {
+                                        const layout = event.nativeEvent.layout;
+                                        // posX[i] = layout.x;
+                                        // setPosX(posX);
+                                        // console.log(posX)
+                                    }}
+                                        style={{
+                                            maxHeight: myHeight(75), height: (myWidth(100) * 1.3) + StatusBar.currentHeight, width: '100%', overflow: 'hidden',
+                                            borderBottomStartRadius: myWidth(50), borderBottomEndRadius: myWidth(50)
+                                        }}>
+                                        <Image style={[{ height: '100%', width: '100%', resizeMode: 'cover' }]} source={item.image} />
+
+                                    </View>
+                                    {/* <View
+                                        onLayout={(event) => {
+                                            const layout = event.nativeEvent.layout;
+                                            // posX[i] = layout.x;
+                                            // setPosX(posX);
+                                            // console.log(posX)
+                                        }}
+                                        style={styles.containerMid} key={i}>
+                                        <Image style={[styles.imageMid, item.style]} source={item.image} />
+                                        <Text style={styles.textTitle}> {item.title}</Text>
+                                        <Spacer paddingT={myHeight(1.5)} />
+                                    </View>
+                                    <Text style={styles.textDes}>{item.des}</Text>
+                                    <Spacer paddingT={myHeight(12.5)} /> */}
+                                </View>
+                            )
+                        }
+
+                    </ScrollView>
                 </View>
 
 
                 {/* Mid */}
-                <View>
+                {/* <View>
                     <ScrollView
                         horizontal
                         onTouchStart={() => setScrollTouch(true)}
@@ -162,20 +230,32 @@ export const StartupScreen = ({ navigation }) => {
                                             // console.log(posX)
                                         }}
                                         style={styles.containerMid} key={i}>
-                                        {/* <Image /> */}
+                                      
                                         <Image style={[styles.imageMid, item.style]} source={item.image} />
-                                        {/* <Spacer paddingT={myHeight(0.8)} /> */}
+                                       
                                         <Text style={styles.textTitle}> {item.title}</Text>
                                         <Spacer paddingT={myHeight(1.5)} />
                                     </View>
                                     <Text style={styles.textDes}>{item.des}</Text>
                                     <Spacer paddingT={myHeight(12.5)} />
-                                    {/* <View style={{ flex: 1 }} /> */}
+                                 
                                 </View>
                             )
                         }
 
                     </ScrollView>
+                </View> */}
+
+                <View style={styles.containerTopSkip}>
+
+                    {i < lenStartup - 1 &&
+                        <TouchableOpacity activeOpacity={0.6} onPress={getReady} style={styles.containerSkip}>
+                            <Text style={styles.textSkip}>Skip</Text>
+                            <Spacer paddingEnd={myWidth(1)} />
+                            <Image style={styles.imageGo} source={require('../assets/startup/go.png')} />
+                            <Image style={[styles.imageGo, { marginStart: -myWidth(1) }]} source={require('../assets/startup/go.png')} />
+                        </TouchableOpacity>
+                    }
                 </View>
 
                 {/* Bottom * => Start Button & Change*/}
@@ -214,9 +294,9 @@ export const StartupScreen = ({ navigation }) => {
                     <Spacer paddingT={myHeight(8)} />
 
                 </View>
-            </View>
+            </View >
 
-        </SafeAreaView>
+        </SafeAreaView >
     )
 }
 
