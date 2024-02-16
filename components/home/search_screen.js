@@ -62,7 +62,6 @@ export const Search = ({ navigation, route }) => {
     const [request, setRequest] = useState(null)
 
     const [search, setSearch] = useState(null)
-    const [load, setLoad] = useState([])
     const [filterModal, setFilterModal] = useState(null)
     const [topRated, setTopRated] = useState(false)
     const [ac, setAc] = useState(false)
@@ -120,6 +119,7 @@ export const Search = ({ navigation, route }) => {
 
                 })
                 includePackage = driver.packages.findIndex(it => it == request.packages) != -1
+                console.log('sage', !alreadySend, includeDays, includePackage)
 
                 if (!alreadySend && includeDays && includePackage) {
 
@@ -136,37 +136,38 @@ export const Search = ({ navigation, route }) => {
 
                     }
                 }
+
                 setAllItems([...simple, ...jugaar])
 
             })
         }
     }, [request])
 
-    function onSend(driver) {
-        setLoad(load.push[driver.uid])
+    const onSend = (driver) => {
         // return
-        const driverDetail = { status: 1, did: driver.uid, name: driver.name, vehicleName: driver.vehicleName, contact: driver.contact }
-        const sendDrivers = request.sendDrivers ? [...request.sendDrivers, driverDetail] : [driverDetail]
+        const driverDetail = { status: 1, did: driver.uid, name: driver.name, vehicleName: driver.vehicleName, contact: driver.contact, unread: true }
+        const sendDrivers = request.sendDrivers ? [...request.sendDrivers, { did: driver.uid }] : [{ did: driver.uid }]
         const status = request.status == 1 ? 2 : request.status
         const newUpdate = { status, sendDrivers }
+        newUpdate[driver.uid] = driverDetail
+        // return
         database()
             .ref(`/requests/${request.uid}/${request.id}`)
             .update(newUpdate).then(() => {
                 storeRedux.dispatch(setErrorAlert({ Title: `Request Send to ${driver.name} Successfully`, Status: 2 }))
-                database()
-                    .ref(`/requests/${driver.uid}/${request.id}`)
-                    .update({ ...request, ...newUpdate, unread: true }).then(() => {
-                        setLoad(load.filter(it => it != driver.uid))
-                        sendPushNotification('New Request', `You have a ride request from ${request.name}`, 2, [driver.deviceToken])
+                sendPushNotification('New Request', `You have a ride request from ${request.name}`, 2, [driver.deviceToken])
+                console.log('Successfully')
+                // database()
+                //     .ref(`/requests/${driver.uid}/${request.id}`)
+                //     .update({ ...request, ...newUpdate, unread: true }).then(() => {
 
-                    }).catch((err) => {
-                        setLoad(load.filter(it => it != driver.uid))
 
-                        console.log('error on send request', err)
-                    })
+                //     }).catch((err) => {
+
+                //         console.log('error on send request', err)
+                //     })
 
             }).catch((err) => {
-                setLoad(load.filter(it => it != driver.uid))
 
                 console.log('error on send request', err)
             })
@@ -195,13 +196,6 @@ export const Search = ({ navigation, route }) => {
     }, [allItems, search, topRated, wifi, ac])
 
 
-    // useEffect(() => {
-    //     if (load) {
-    //         setTimeout(() =>
-    //             setLoad(false)
-    //             , 3000)
-    //     }
-    // }, [topRated, wifi, ac])
     return (
 
         <>
@@ -284,7 +278,7 @@ export const Search = ({ navigation, route }) => {
                             showsVerticalScrollIndicator={false}
                             scrollEnabled={false}
                             data={filterItems}
-                            extraData={[request, load]}
+                            extraData={[request]}
                             // extraData={[ac, wifi, topRated, search]}
                             // contentContainerStyle={{ flexGrow: 1 }}
                             ItemSeparatorComponent={() =>
@@ -292,11 +286,10 @@ export const Search = ({ navigation, route }) => {
                             }
                             estimatedItemSize={myHeight(10)}
                             renderItem={({ item, index }) => {
-                                const isLoad = (load && load.findIndex(it => it == item.uid) != -1)
                                 return (
                                     <TouchableOpacity disabled key={index} activeOpacity={0.85}
                                         onPress={() => navigation.navigate('DriverDetail', { driver: item, request })}>
-                                        <DriverInfoFull onSend={onSend} isLoad={isLoad} driver={item} request={request} />
+                                        <DriverInfoFull onSend={onSend} driver={item} request={request} />
                                     </TouchableOpacity>
                                 )
                             }

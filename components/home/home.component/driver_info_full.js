@@ -7,12 +7,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { addFavoriteRest, removeFavoriteRest } from '../../../redux/favorite_reducer'
 import { ImageUri } from '../../common/image_uri'
 import { RFValue } from 'react-native-responsive-fontsize'
-export const DriverInfoFull = ({ driver, request = null, onSend, isLoad }) => {
+export const DriverInfoFull = ({ driver, request = null, onSend, }) => {
     const { favoriteDrivers } = useSelector(state => state.favorite)
     const dispatch = useDispatch()
 
     const checkFav = favoriteDrivers.find(redID => redID == driver.uid)
     const [isFav, setIsFav] = useState(checkFav != null)
+    const [isLoad, setLoad] = useState(false)
+
 
     function changeFav() {
         if (!isFav) {
@@ -26,6 +28,13 @@ export const DriverInfoFull = ({ driver, request = null, onSend, isLoad }) => {
         // console.log(driver)
         setIsFav(checkFav != null)
     }, [checkFav])
+    useEffect(() => {
+        if (isLoad) {
+            setTimeout(() => {
+                setLoad(false)
+            }, 4000)
+        }
+    }, [isLoad])
 
 
     return (
@@ -165,11 +174,17 @@ export const DriverInfoFull = ({ driver, request = null, onSend, isLoad }) => {
 
                         {
                             request ?
-                                <TouchableOpacity disabled={isLoad} activeOpacity={0.7} onPress={() => onSend(driver)} style={{
-                                    backgroundColor: myColors.primaryT,
-                                    paddingHorizontal: myWidth(5),
-                                    borderRadius: myWidth(1.5), paddingVertical: myHeight(0.25)
-                                }}>
+                                <TouchableOpacity disabled={isLoad} activeOpacity={0.7} onPress={() => {
+                                    setLoad(true)
+                                    onSend(driver)
+                                }
+
+                                }
+                                    style={{
+                                        backgroundColor: myColors.primaryT,
+                                        paddingHorizontal: myWidth(5),
+                                        borderRadius: myWidth(1.5), paddingVertical: myHeight(0.25)
+                                    }}>
                                     {isLoad ? <ActivityIndicator size={RFValue(15)} style={{ paddingVertical: RFValue(2) }} color={myColors.background} /> :
                                         <Text
                                             style={[

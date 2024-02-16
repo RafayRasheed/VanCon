@@ -14,6 +14,7 @@ export const myColors = {
     // primaryL3: '#e6fce6',
     // primaryL4: '#edfaed ', //50%
     // primaryL5: '#f7fcf7', //30%
+    green: '#2aa85e',
 
     star: '#FFC700',
     orange: '#FF7A00',

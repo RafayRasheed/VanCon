@@ -31,8 +31,13 @@ export const RequestInfo = ({ item, navigation, code }) => {
 
 
         setLoad(true)
+        const update = { status: -5 }
+        item.sendDrivers.map(diii => {
+            const di = item[diii.did]
+            update[diii.did] = { ...di, unread: true }
+        })
         database()
-            .ref(`/requests/${profile.uid}/${item.id}`).update({ status: -5 })
+            .ref(`/requests/${profile.uid}/${item.id}`).update(update)
             .then(() => {
                 console.log('To onRemove successfully')
                 dispatch(setErrorAlert({ Title: 'Request Remove Successfully', Body: null, Status: 2 }))
@@ -42,22 +47,17 @@ export const RequestInfo = ({ item, navigation, code }) => {
                 }, item.status == 1 ? 0 : 1000)
 
                 if (item.status != 1) {
-                    item.sendDrivers.map(di => {
+                    item.sendDrivers.map(diii => {
+                        const di = item[diii.did]
                         if (di.status == 1) {
-                            database()
-                                .ref(`/requests/${di.did}/${item.id}`).update({ status: -5 })
-                                .then(() => {
-                                    firestore().collection('drivers').doc(di.did).get().then((data) => {
-                                        const captain = data.data()
-                                        const token = captain.deviceToken
-                                        sendPushNotification('Request Cancelled', `Request ${item.id} is cancelled by ${profile.name}`, 0, [token])
 
-                                    }).catch((err) => { console.log(err) })
-                                }).catch((err) => {
-                                    console.log('error on accept unread err', err)
+                            firestore().collection('drivers').doc(di.did).get().then((data) => {
+                                const captain = data.data()
+                                const token = captain.deviceToken
+                                sendPushNotification('Request Cancelled', `Request ${item.id} is cancelled by ${profile.name}`, 0, [token])
 
+                            }).catch((err) => { console.log(err) })
 
-                                })
                         }
                     })
                 }
@@ -377,7 +377,7 @@ export const RequestInfo = ({ item, navigation, code }) => {
                                                 {
                                                     fontSize: myFontSize.body,
                                                     fontFamily: myFonts.heading,
-                                                    color: myColors.primaryT
+                                                    color: myColors.green
                                                 },
                                             ]}
                                         >{'Send'}</Text>

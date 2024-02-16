@@ -19,7 +19,7 @@ export const RideDetails = ({ navigation, route }) => {
 
     const { allRequest } = useSelector(State => State.orders)
     const [item, setRequest] = useState(null)
-
+    const item2 = item
     // const driver = item?.sendDrivers[0]
 
     useEffect(() => {
@@ -279,7 +279,7 @@ export const RideDetails = ({ navigation, route }) => {
                                     showsVerticalScrollIndicator={false}
                                     scrollEnabled={false}
                                     data={item.sendDrivers}
-                                    extraData={null}
+                                    extraData={item}
                                     // extraData={[ac, wifi, topRated, search]}
                                     // contentContainerStyle={{ flexGrow: 1 }}
                                     // ItemSeparatorComponent={() =>
@@ -287,7 +287,7 @@ export const RideDetails = ({ navigation, route }) => {
                                     // }
                                     estimatedItemSize={myHeight(10)}
                                     renderItem={({ item, index }) => {
-                                        const driver = item
+                                        const driver = item2[item.did]
                                         return (
                                             <TouchableOpacity disabled key={index} activeOpacity={0.85}
                                                 onPress={() => navigation.navigate('DriverDetail', { driver: item })}>
