@@ -16,41 +16,29 @@ import { DriverInfoFull } from '../home/home.component/driver_info_full';
 
 export const Favourite = ({ navigation }) => {
     const [i, setI] = useState(0)
-    const { AllItems, AllRest } = useSelector(State => State.data)
+    const { AllDrivers, } = useSelector(State => State.data)
 
-    const { favoriteItem, favoriteRestuarnt } = useSelector(state => state.favorite)
-
-    const restaurantLength = favoriteRestuarnt.length
-    const ItemLength = favoriteItem.length
+    const { favoriteDrivers } = useSelector(state => state.favorite)
+    const DriversLength = favoriteDrivers.length
     const [favItems, setFavItems] = useState([])
     const [favRest, setFavRest] = useState([])
     const [isLoadingRes, setIsLoadingRes] = useState(true)
-    const [isLoadingItem, setIsLoadingItem] = useState(true)
     useEffect(() => {
 
     }, [])
 
     function onGoToItem(item) {
-        const restaurant = AllRest.filter(res => res.uid == item.resId)[0]
-        console.log(restaurant)
+
         navigation.navigate('ItemDetails', { item, restaurant })
     }
 
-    useEffect(() => {
-        setIsLoadingItem(ItemLength != 0)
-        const favI = AllItems.filter(item => favoriteItem.findIndex(fi => fi.itemId == item.id) != -1)
-        setFavItems(favI)
-        setIsLoadingItem(false)
-
-
-    }, [favoriteItem])
 
     useEffect(() => {
-        setIsLoadingRes(restaurantLength != 0)
-        const favR = AllRest.filter(res => favoriteRestuarnt.findIndex(fr => fr == res.uid) != -1)
+        setIsLoadingRes(DriversLength != 0)
+        const favR = AllDrivers.filter(res => favoriteDrivers.findIndex(fr => fr == res.uid) != -1)
         setFavRest(favR)
         setIsLoadingRes(false)
-    }, [favoriteRestuarnt])
+    }, [favoriteDrivers])
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: myColors.background }}>
             <StatusbarH />
@@ -61,15 +49,25 @@ export const Favourite = ({ navigation }) => {
                     {/* Search */}
 
                     {/* Arrow */}
-                    <TouchableOpacity activeOpacity={0.7}
-                        onPress={() => navigation.goBack()} style={{ paddingHorizontal: myWidth(4), }}>
-                        <Image style={{
-                            height: myHeight(2.4),
-                            width: myHeight(2.4),
-                            resizeMode: 'contain',
-                            tintColor: myColors.textL0
-                        }} source={require('../assets/home_main/home/back.png')} />
-                    </TouchableOpacity>
+                    <View style={{ paddingHorizontal: myWidth(4) }}>
+
+                        <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.7} style={{
+                            backgroundColor: myColors.primaryT,
+                            height: myHeight(3.5),
+                            width: myHeight(3.5),
+                            borderRadius: myHeight(3),
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}  >
+                            <Image style={
+                                {
+                                    height: myHeight(1.7),
+                                    width: myHeight(1.7),
+                                    resizeMode: 'contain'
+                                }
+                            } source={require('../assets/startup/goL.png')} />
+                        </TouchableOpacity>
+                    </View>
                     {/* <Spacer paddingEnd={myWidth(2.5)} /> */}
                     <Text style={[styles.textCommon,
                     {
@@ -82,82 +80,22 @@ export const Favourite = ({ navigation }) => {
                 {/* <View style={{ height: myHeight(0.6), backgroundColor: myColors.divider }} /> */}
             </View>
 
-            <Spacer paddingT={myHeight(1.5)} />
-            {/* Restaurants & Items Headings */}
-            <View style={{ flexDirection: 'row', alignItems: "center", }}>
-                <Spacer paddingEnd={myWidth(5)} />
-                <TouchableOpacity activeOpacity={0.7} onPress={() => setI(0)}>
-                    <View style={{
-                        paddingHorizontal: myWidth(4),
-                        paddingVertical: myHeight(0.6),
-                        borderRadius: 500,
-                        backgroundColor: i == 0 ? myColors.primary : myColors.divider,
-                        alignItems: 'center'
-                    }}>
-                        <Text style={[styles.textCommon, {
-                            fontFamily: myFonts.bodyBold,
-                            fontSize: myFontSize.body,
-                            color: i == 0 ? myColors.background : myColors.text
-                        }]}>Restaurants</Text>
-                    </View>
-                    {/* <View style={[{
-                        backgroundColor: myColors.primaryT,
-                        borderRadius: myHeight(3),
-                        height: myHeight(0.4),
-                        marginTop: -myHeight(0.4)
-                    }, i != 0 && { backgroundColor: myColors.background }]} /> */}
-                </TouchableOpacity>
-
-                <Spacer paddingEnd={myWidth(5)} />
-                <TouchableOpacity activeOpacity={0.7} onPress={() => setI(1)}>
-                    <View style={{
-                        paddingHorizontal: myWidth(4),
-                        paddingVertical: myHeight(0.6),
-                        borderRadius: 500,
-                        backgroundColor: i == 1 ? myColors.primary : myColors.divider,
-                        alignItems: 'center'
-                    }}>
-                        <Text style={[styles.textCommon, {
-                            fontFamily: myFonts.bodyBold,
-                            fontSize: myFontSize.body,
-                            color: i == 1 ? myColors.background : myColors.text
-                        }]}>Items</Text>
-                    </View>
-                    {/* <View style={[{
-                        backgroundColor: myColors.primaryT,
-                        borderRadius: myHeight(3),
-                        height: myHeight(0.4),
-                        marginTop: -myHeight(0.4)
-                    }, i != 1 && { backgroundColor: myColors.background }]} /> */}
-                </TouchableOpacity>
-            </View>
 
             <Spacer paddingT={myHeight(1)} />
             {/* Line */}
             <View style={{ height: myHeight(0.3), backgroundColor: myColors.divider }} />
 
             {
-                (!favRest.length && i == 0) &&
+                (!favRest.length) &&
                 <Text style={[styles.textCommon, {
                     fontFamily: myFonts.bodyBold,
                     fontSize: myFontSize.medium0,
                     alignSelf: 'center',
                     textAlignVertical: 'center',
                     marginTop: myHeight(2)
-                }]}>{'No Restaurants Found!'}</Text>
+                }]}>{'No Favorites Found!'}</Text>
             }
-            {
-                (!favItems.length && i == 1) &&
-                <Text style={[styles.textCommon, {
 
-                    fontFamily: myFonts.bodyBold,
-                    fontSize: myFontSize.medium0,
-                    alignSelf: 'center',
-                    textAlignVertical: 'center',
-                    marginTop: myHeight(2)
-
-                }]}>{'No Items Found!'}</Text>
-            }
             {/* {(!isLoadingItem && ItemLength && i == 1) &&
                 <View style={{ flex: 1 }}>
                     <ScrollView contentContainerStyle={{ paddingHorizontal: myWidth(4.1) }} showsVerticalScrollIndicator={false}>
@@ -173,26 +111,19 @@ export const Favourite = ({ navigation }) => {
             } */}
 
             <FlatList
-                data={i == 0 ? favRest : favItems}
-                keyExtractor={item => i == 0 ? item.uid : item.id}
+                data={favRest}
+                keyExtractor={item => item.uid}
                 showsVerticalScrollIndicator={false}
                 renderItem={({ item }) => {
-                    if (i == 0) {
-                        return (
+                    // return null
+                    return (
 
-                            <TouchableOpacity activeOpacity={0.95}
-                                onPress={() => navigation.navigate('RestaurantDetail', { item })} >
-                                <DriverInfoFull restaurant={item} />
-                            </TouchableOpacity>
-                        )
-                    } else {
-                        return (
+                        <TouchableOpacity activeOpacity={0.8} key={i} onPress={() => navigation.navigate('DriverDetail', { driver: item })}>
 
-                            <TouchableOpacity key={i} activeOpacity={0.85} style={{ marginHorizontal: myWidth(4) }} onPress={() => onGoToItem(item)}>
-                                <ItemInfo item={item} />
-                            </TouchableOpacity>
-                        )
-                    }
+                            <DriverInfoFull driver={item} />
+                        </TouchableOpacity>
+                    )
+
                 }
 
                 }
@@ -201,7 +132,7 @@ export const Favourite = ({ navigation }) => {
 
             {/* Loading for Restaurant */}
             {
-                (isLoadingRes && i == 0) &&
+                (isLoadingRes) &&
                 <>
                     <RestaurantInfoSkeleton isFull={true} />
                     <RestaurantInfoSkeleton isFull={true} />
@@ -209,19 +140,7 @@ export const Favourite = ({ navigation }) => {
                 </>
 
             }
-            {/* Loading for Items */}
-            {
-                (isLoadingItem && i == 1) &&
-                <>
-                    <ItemSkeleton />
-                    <ItemSkeleton />
-                    <ItemSkeleton />
-                    <ItemSkeleton />
-                    <ItemSkeleton />
-                    <ItemSkeleton />
-                </>
 
-            }
 
 
             <Spacer paddingT={myHeight(2)} />
