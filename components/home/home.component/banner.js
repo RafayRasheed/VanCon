@@ -25,7 +25,7 @@ export const Banners = () => {
 
                 if (prevI + 1 === maxLength) {
                     // scrollRef.current?.scrollTo({ x: 0, y: 0, animated: true });
-                    scrollRef.current?.scrollToOffset({ offset: 0, y: 0, animated: true });
+                    scrollRef.current?.scrollToOffset({ offset: 0, y: 0, animated: false });
                     return prevI;
                 } else {
 

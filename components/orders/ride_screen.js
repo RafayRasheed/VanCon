@@ -95,11 +95,12 @@ export const RidesScreen = ({ navigation }) => {
 
             <Spacer paddingT={myHeight(2)} />
             <View style={styles.containerLine} />
+
             {/* <Spacer paddingT={myHeight(0.86)} /> */}
 
             <FlashList
                 showsVerticalScrollIndicator={false}
-                scrollEnabled={false}
+                // scrollEnabled={false}
                 data={i == 0 ? progress : i == 1 ? pending : history}
                 extraData={i}
                 // extraData={[ac, wifi, topRated, search]}

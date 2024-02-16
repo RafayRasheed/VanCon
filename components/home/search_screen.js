@@ -19,6 +19,7 @@ import { sendPushNotification } from '../functions/firebase';
 import { setErrorAlert } from '../../redux/error_reducer';
 import storeRedux from '../../redux/store_redux';
 import { containString } from '../functions/functions';
+import firestore from '@react-native-firebase/firestore';
 
 const CommonFaci = ({ name, fac, setFAc }) => (
     <TouchableOpacity activeOpacity={0.75}
@@ -155,8 +156,13 @@ export const Search = ({ navigation, route }) => {
             .ref(`/requests/${request.uid}/${request.id}`)
             .update(newUpdate).then(() => {
                 storeRedux.dispatch(setErrorAlert({ Title: `Request Send to ${driver.name} Successfully`, Status: 2 }))
-                sendPushNotification('New Request', `You have a ride request from ${request.name}`, 2, [driver.deviceToken])
-                console.log('Successfully')
+                firestore().collection('drivers').doc(driver.uid).get().then((data) => {
+                    const captain = data.data()
+                    const token = captain.deviceToken
+                    console.log('Successfully')
+
+                    sendPushNotification('New Request', `You have a ride request from ${request.name}`, 2, [token])
+                }).catch((err) => { console.log(err) })
                 // database()
                 //     .ref(`/requests/${driver.uid}/${request.id}`)
                 //     .update({ ...request, ...newUpdate, unread: true }).then(() => {

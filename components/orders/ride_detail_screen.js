@@ -16,6 +16,7 @@ export const RideDetails = ({ navigation, route }) => {
     const code = route.params.code
     const [errorMsg, setErrorMsg] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
+    const [sendDrivers, setSendDrivers] = useState([])
 
     const { allRequest } = useSelector(State => State.orders)
     const [item, setRequest] = useState(null)
@@ -28,6 +29,31 @@ export const RideDetails = ({ navigation, route }) => {
             setRequest(allRequest.find(it => it.id == req.id))
         }
     }, [allRequest])
+    useEffect(() => {
+        if (item) {
+            // const ind = item.sendDrivers.findIndex(it => item[it.did].status >= 2)
+            // if(ind!=-1){
+            //     driver.push(item[item.sendDrivers[ind].did])
+            // }
+            let driver = []
+
+            let dri = null
+            item.sendDrivers.map((it, i) => {
+                const d = item[it.did]
+                if (d.status >= 2) {
+                    dri = d
+                }
+                else {
+                    driver.push(d)
+                }
+            })
+            if (dri) {
+                driver = [dri, ...driver]
+            }
+            console.log(driver.length)
+            setSendDrivers(driver)
+        }
+    }, [item])
     useEffect(() => {
 
         if (errorMsg) {
@@ -278,7 +304,7 @@ export const RideDetails = ({ navigation, route }) => {
                                 <FlashList
                                     showsVerticalScrollIndicator={false}
                                     scrollEnabled={false}
-                                    data={item.sendDrivers}
+                                    data={sendDrivers}
                                     extraData={item}
                                     // extraData={[ac, wifi, topRated, search]}
                                     // contentContainerStyle={{ flexGrow: 1 }}
@@ -287,7 +313,8 @@ export const RideDetails = ({ navigation, route }) => {
                                     // }
                                     estimatedItemSize={myHeight(10)}
                                     renderItem={({ item, index }) => {
-                                        const driver = item2[item.did]
+                                        const driver = item
+                                        const showChat = item.status > 0 && (!item2.did || item2.did == item.did)
                                         return (
                                             <TouchableOpacity disabled key={index} activeOpacity={0.85}
                                                 onPress={() => navigation.navigate('DriverDetail', { driver: item })}>
@@ -347,6 +374,8 @@ export const RideDetails = ({ navigation, route }) => {
                                                                 }}>{driver.name}</Text>
                                                         </View>
                                                     </View>
+
+
                                                     <View style={{ justifyContent: 'space-between', alignItems: 'flex-end' }}>
                                                         <Text numberOfLines={1}
                                                             style={[
@@ -356,52 +385,58 @@ export const RideDetails = ({ navigation, route }) => {
                                                                     fontSize: myFontSize.xxSmall,
                                                                     fontFamily: myFonts.heading,
 
-                                                                    color: driver.status < 0 ? myColors.red : myColors.primaryT
+                                                                    color: driver.status < 0 ? myColors.red : driver.status == 1 ? myColors.textL : myColors.green
                                                                 },
                                                             ]}>{driver.status < 0 ? 'Rejected' : driver.status == 1 ? 'Sended' : 'Accepted'}</Text>
                                                         <Spacer paddingT={myHeight(0.6)} />
+                                                        <View style={{ flexDirection: 'row', alignItems: 'center', height: myHeight(3), }}>
+                                                            {
+                                                                showChat ?
+                                                                    <>
+                                                                        <TouchableOpacity activeOpacity={0.85} style={{
+                                                                            padding: myHeight(0.8), backgroundColor: myColors.background,
+                                                                            elevation: 3,
+                                                                            borderRadius: 100
+                                                                        }}
+                                                                            onPress={() => { Linking.openURL(`tel:${driver.contact}`); }}
+                                                                        >
+                                                                            <Image source={require('../assets/home_main/home/phone.png')}
+                                                                                style={{
+                                                                                    width: myHeight(1.8),
+                                                                                    height: myHeight(1.8),
+                                                                                    resizeMode: 'contain',
+                                                                                    tintColor: myColors.primaryT
+                                                                                }}
+                                                                            />
 
-                                                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                                            <TouchableOpacity activeOpacity={0.85} style={{
-                                                                padding: myHeight(0.8), backgroundColor: myColors.background,
-                                                                elevation: 3,
-                                                                borderRadius: 100
-                                                            }}
-                                                                onPress={() => { Linking.openURL(`tel:${driver.contact}`); }}
-                                                            >
-                                                                <Image source={require('../assets/home_main/home/phone.png')}
-                                                                    style={{
-                                                                        width: myHeight(1.8),
-                                                                        height: myHeight(1.8),
-                                                                        resizeMode: 'contain',
-                                                                        tintColor: myColors.primaryT
-                                                                    }}
-                                                                />
+                                                                        </TouchableOpacity>
+                                                                        <Spacer paddingEnd={myWidth(2.5)} />
 
-                                                            </TouchableOpacity>
-                                                            <Spacer paddingEnd={myWidth(2.5)} />
+                                                                        <TouchableOpacity activeOpacity={0.85} style={{
+                                                                            padding: myHeight(0.8), backgroundColor: myColors.background,
+                                                                            elevation: 3,
+                                                                            borderRadius: 100
+                                                                        }}
+                                                                            onPress={() => {
+                                                                                console.log(driver)
+                                                                                navigation.navigate('Chat',
+                                                                                    { user2: { ...driver, uid: driver.did } }
+                                                                                )
+                                                                            }}
+                                                                        >
+                                                                            <Image source={require('../assets/home_main/home/navigator/chat2.png')}
+                                                                                style={{
+                                                                                    width: myHeight(1.8),
+                                                                                    height: myHeight(1.8),
+                                                                                    resizeMode: 'contain',
+                                                                                    tintColor: myColors.primaryT
+                                                                                }}
+                                                                            />
+                                                                        </TouchableOpacity>
+                                                                    </>
 
-                                                            <TouchableOpacity activeOpacity={0.85} style={{
-                                                                padding: myHeight(0.8), backgroundColor: myColors.background,
-                                                                elevation: 3,
-                                                                borderRadius: 100
-                                                            }}
-                                                                onPress={() => {
-                                                                    console.log(driver)
-                                                                    navigation.navigate('Chat',
-                                                                        { user2: { ...driver, uid: driver.did } }
-                                                                    )
-                                                                }}
-                                                            >
-                                                                <Image source={require('../assets/home_main/home/navigator/chat2.png')}
-                                                                    style={{
-                                                                        width: myHeight(1.8),
-                                                                        height: myHeight(1.8),
-                                                                        resizeMode: 'contain',
-                                                                        tintColor: myColors.primaryT
-                                                                    }}
-                                                                />
-                                                            </TouchableOpacity>
+                                                                    : null
+                                                            }
                                                         </View>
                                                     </View>
                                                     {/* <View style={{

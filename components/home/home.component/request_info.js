@@ -13,7 +13,6 @@ import { setErrorAlert } from '../../../redux/error_reducer'
 import firestore from '@react-native-firebase/firestore';
 
 export const RequestInfo = ({ item, navigation, code }) => {
-    console.log(item)
     const { profile } = useSelector(state => state.profile)
     const [load, setLoad] = useState(false)
     const dispatch = useDispatch()
@@ -55,6 +54,7 @@ export const RequestInfo = ({ item, navigation, code }) => {
                                 const captain = data.data()
                                 const token = captain.deviceToken
                                 sendPushNotification('Request Cancelled', `Request ${item.id} is cancelled by ${profile.name}`, 0, [token])
+                                console.log('Successfully')
 
                             }).catch((err) => { console.log(err) })
 
@@ -349,7 +349,7 @@ export const RequestInfo = ({ item, navigation, code }) => {
 
                                             fontSize: myFontSize.body,
                                             fontFamily: myFonts.bodyBold,
-                                            color: myColors.primaryT
+                                            color: myColors.green
                                         },
                                     ]}
                                 >Loading...</Text>
@@ -425,7 +425,7 @@ export const RequestInfo = ({ item, navigation, code }) => {
 
                                         fontSize: myFontSize.body2,
                                         fontFamily: myFonts.bodyBold,
-                                        color: item.status < 0 ? 'red' : myColors.primaryT
+                                        color: item.status < 0 ? 'red' : myColors.green
                                     },
                                 ]}
                             >{item.status < 0 ? 'Cancelled' : item.status == 5 ? 'Completed' : `In Progress`}</Text>
