@@ -53,7 +53,7 @@ export const ChatList = ({ navigation, route }) => {
                             alignItems: 'center',
                             paddingHorizontal: myWidth(4),
                             borderRadius: myWidth(10),
-                            backgroundColor: myColors.primaryL4,
+                            backgroundColor: myColors.primaryL3,
                             // marginHorizontal: myWidth(4)
                         }}>
 
@@ -92,11 +92,18 @@ export const ChatList = ({ navigation, route }) => {
                         <Text style={[styles.textCommon, {
                             fontSize: myFontSize.large,
                             fontFamily: myFonts.body,
-                        }]}>{'Messages'} {totalUnread ? `(${totalUnread})` : ''}</Text>
-                        {/* <Text style={[styles.textCommon, {
-                                fontSize: myFontSize.body,
-                                fontFamily: myFonts.body,
-                            }]}>Last seen {'12:09'}</Text> */}
+                        }]}>{'Messages'}</Text>
+                        {
+                            totalUnread ?
+                                <Text style={[styles.textCommon, {
+                                    fontSize: myFontSize.body,
+                                    fontFamily: myFonts.body,
+                                    color: myColors.textL4,
+                                }]}> {`You have ${totalUnread} new messages`}</Text>
+                                : null
+                        }
+
+
                     </View>
 
                     <Spacer paddingT={myHeight(1)} />

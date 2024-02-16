@@ -55,7 +55,7 @@ export const SelectCity = ({ showCityModal, setCity, city }) => {
         <Animated.View
             entering={SlideInDown}
             exiting={SlideOutDown}
-            style={{ height: '100%', width: '100%', position: 'absolute', backgroundColor: myColors.background }}>
+            style={{ height: '100%', width: '100%', position: 'absolute', backgroundColor: myColors.background, zIndex: 10000 }}>
             <StatusbarH />
             <Spacer paddingT={myHeight(1)} />
             {/* Top */}

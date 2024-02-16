@@ -112,7 +112,7 @@ export const Login = ({ navigation, showError, showLoading }) => {
                         <TextInput placeholder="Eg namaemail@emailkamu.com"
                             placeholderTextColor={myColors.textL4}
                             autoCorrect={false}
-                            style={styles.input} cursorColor={myColors.primary}
+                            style={styles.input} cursorColor={myColors.primaryT}
                             value={email} onChangeText={setEmail}
                             autoCapitalize='none'
                         />
@@ -130,7 +130,7 @@ export const Login = ({ navigation, showError, showLoading }) => {
 
                             autoCorrect={false}
                             placeholderTextColor={myColors.textL4}
-                            style={styles.input} cursorColor={myColors.primary}
+                            style={styles.input} cursorColor={myColors.primaryT}
                             value={password} onChangeText={setPass}
                             secureTextEntry={hidePass}
                             autoCapitalize='none'
@@ -155,7 +155,7 @@ export const Login = ({ navigation, showError, showLoading }) => {
                 {/* <TouchableOpacity onPress={() => verifyLog ? navigate('HomeNavigator') : null} */}
                 <TouchableOpacity onPress={onVerifying}
                     activeOpacity={0.8}
-                    style={[styles.button, { backgroundColor: myColors.primary }]}>
+                    style={[styles.button, { backgroundColor: myColors.primaryT }]}>
                     <Text style={styles.textReg}>Login</Text>
                 </TouchableOpacity>
 
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
         fontSize: myFontSize.body
     },
     textForgetP: {
-        fontFamily: myFonts.heading, fontSize: myFontSize.body, color: myColors.primary,
+        fontFamily: myFonts.heading, fontSize: myFontSize.body, color: myColors.primaryT,
         paddingVertical: myHeight(0.8)
     },
     textReg: {

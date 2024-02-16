@@ -138,7 +138,7 @@ export const CreateAcc = ({ navigate, showError, showLoading, city, setShowCityM
                             placeholderTextColor={myColors.textL4}
                             // ={false}
                             autoCorrect={false}
-                            style={styles.input} cursorColor={myColors.primary}
+                            style={styles.input} cursorColor={myColors.primaryT}
                             value={name} onChangeText={setName}
                         />
                     </View>
@@ -152,7 +152,7 @@ export const CreateAcc = ({ navigate, showError, showLoading, city, setShowCityM
                         <TextInput placeholder="Eg namaemail@emailkamu.com"
                             placeholderTextColor={myColors.textL4}
                             autoCorrect={false}
-                            style={styles.input} cursorColor={myColors.primary}
+                            style={styles.input} cursorColor={myColors.primaryT}
                             value={email} onChangeText={setEmail}
                             autoCapitalize='none'
                         />
@@ -167,7 +167,7 @@ export const CreateAcc = ({ navigate, showError, showLoading, city, setShowCityM
                     <View style={styles.containerInput}>
                         <TextInput placeholder="Password"
                             placeholderTextColor={myColors.textL4}
-                            style={styles.input} cursorColor={myColors.primary}
+                            style={styles.input} cursorColor={myColors.primaryT}
                             value={password} onChangeText={setPass}
                             secureTextEntry={hidePass}
                             autoCapitalize='none'
@@ -196,7 +196,7 @@ export const CreateAcc = ({ navigate, showError, showLoading, city, setShowCityM
                         <Spacer paddingEnd={myWidth(1)} />
                         <TextInput placeholder="Select Your City"
                             placeholderTextColor={myColors.textL4}
-                            style={styles.input} cursorColor={myColors.primary}
+                            style={styles.input} cursorColor={myColors.primaryT}
                             value={city}
                             editable={false}
                         />
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
     button: {
         height: myHeight(6.1), width: myWidth(86),
         borderRadius: myHeight(1.47), alignItems: 'center', justifyContent: 'center',
-        flexDirection: 'row', backgroundColor: myColors.primary
+        flexDirection: 'row', backgroundColor: myColors.primaryT
     },
     textGoogle: {
         color: myColors.black2, fontFamily: myFonts.heading,
