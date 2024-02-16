@@ -10,7 +10,7 @@ export const Banners = () => {
     const [i, setI] = useState(0)
     const dotArr = []
     const scrollRef = useRef(null)
-    const offerWidthSScroll = myWidth(95)
+    const offerWidthSScroll = myWidth(100)
     const lenOffers = offers2.length
     const slideIntervalRef = useRef(null);
 
@@ -125,30 +125,39 @@ export const Banners = () => {
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={{
                     flexGrow: 1, justifyContent: 'center',
-                    paddingHorizontal: myWidth(5)
+                    // paddingHorizontal: myWidth(5)
                 }}
+                onScrollBeginDrag={() => { }}
                 ref={scrollRef}
                 pagingEnabled
                 snapToInterval={offerWidthSScroll}
                 scrollEventThrottle={1}
-
+                onScrollEndDrag={() => { }}
+                onScrollAnimationEnd={() => { }}
                 extraData={[i]}
                 data={offers2}
                 keyExtractor={(item, index) => index.toString()}
                 estimatedItemSize={87}
                 ItemSeparatorComponent={() => (
-                    <View style={{ height: myHeight(0.35), backgroundColor: myColors.divider, marginHorizontal: myWidth(0) }} />
+                    <View style={{
+                        height: myHeight(0.35),
+                        backgroundColor: myColors.divider, marginHorizontal: myWidth(0)
+                    }} />
                 )}
-                renderItem={({ item }) => {
+                renderItem={({ item, index }) => {
                     return (
 
-                        <View key={i} style={{ flex: 1, }}>
+                        <View key={i} style={{
+                            width: myWidth(100), height: myWidth(90) * 0.47, marginEnd: myWidth(0),
+                            paddingHorizontal: myWidth(5)
+                        }}>
                             <View
                                 style={{
                                     flexDirection: 'row',
-                                    width: myWidth(90), height: myWidth(90) * 0.47,
-                                    borderRadius: myHeight(5), borderWidth: 1, borderColor: myColors.offColor2,
-                                    marginEnd: myWidth(5), overflow: 'hidden'
+                                    height: '100%', width: '100%',
+                                    borderRadius: myHeight(5),
+                                    borderWidth: 1, borderColor: myColors.offColor2,
+                                    overflow: 'hidden'
                                 }}
 
                             >

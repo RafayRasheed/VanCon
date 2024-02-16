@@ -70,7 +70,7 @@ export const StartupScreen = ({ navigation }) => {
 
     // Loop for dots
     for (let j = 0; j < lenStartup; j++) {
-        dotArr.push(<View key={j} style={[styles.containerDot, { backgroundColor: j == i ? myColors.primary : myColors.dot, }]} />)
+        dotArr.push(<View key={j} style={[styles.containerDot, { backgroundColor: j == i ? myColors.orange : myColors.dot, }]} />)
     }
 
     function handleScroll(event) {

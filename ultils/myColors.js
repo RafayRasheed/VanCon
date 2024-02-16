@@ -70,7 +70,7 @@ const alpha = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", 
 const darkColors = [
     '#283618',
     '#1B4F72',
-    '#4A235A',
+    '#FFC700',
     '#FF7A00',
     '#36454F',
     '#2E4053',
@@ -79,7 +79,7 @@ const darkColors = [
     '#7D6608',
     '#283618',
     '#1B4F72',
-    '#4A235A',
+    '#FFC700',
     '#FF7A00',
     '#36454F',
     '#2E4053',
@@ -88,7 +88,7 @@ const darkColors = [
     '#7D6608',
     '#283618',
     '#1B4F72',
-    '#4A235A',
+    '#FFC700',
     '#FF7A00',
     '#36454F',
     '#2E4053',
@@ -104,6 +104,6 @@ export function getAvatarColor(name) {
         return darkColors[ind]
     }
 
-    return darkColors[26]
+    return darkColors[darkColors.length - 1]
 
 }

@@ -20,9 +20,9 @@ export const Profile = ({ navigation }) => {
     const Common = ({ navigate, iconSize, icon, tind = myColors.primaryT, name }) => (
         <View onPress={() => navigation.navigate(navigate)}
             style={{}}>
-            <Spacer paddingT={myHeight(2.5)} />
+            <Spacer paddingT={myHeight(1)} />
 
-            <View style={{ flexDirection: 'row', alignItems: 'center', }}
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingStart: myWidth(1.5), paddingEnd: myWidth(4) }}
                 activeOpacity={0.8} onPress={() => null}>
 
                 <View style={{ width: myHeight(5), paddingStart: myWidth(0.5) }}>
@@ -30,7 +30,7 @@ export const Profile = ({ navigation }) => {
                         height: iconSize,
                         width: iconSize,
                         resizeMode: 'contain',
-                        tintColor: myColors.primaryT
+                        tintColor: myColors.textL4
                     }} source={icon} />
                 </View>
 
@@ -40,18 +40,19 @@ export const Profile = ({ navigation }) => {
                     flex: 1,
                     fontSize: myFontSize.xBody2,
                     fontFamily: myFonts.bodyBold,
+                    color: myColors.textL0
                 }]}>{name}</Text>
 
                 <Image style={{
-                    height: myHeight(2),
-                    width: myHeight(2),
+                    height: myHeight(1.8),
+                    width: myHeight(1.8),
                     resizeMode: 'contain',
                     marginTop: myHeight(0.4),
-                    tintColor: myColors.offColor
+                    tintColor: myColors.orange
                 }} source={require('../assets/home_main/home/go.png')} />
 
             </View>
-            <Spacer paddingT={myHeight(2.5)} />
+            <Spacer paddingT={myHeight(1)} />
         </View>
     )
 
@@ -73,16 +74,63 @@ export const Profile = ({ navigation }) => {
         <>
             {/* <StatusBar backgroundColor={orderModal ? '#00000030' : myColors.background} /> */}
             <SafeAreaView style={{ flex: 1, backgroundColor: myColors.background }}>
-                <StatusbarH />
+                <View
+                    style={{
+                        width: '100%', overflow: 'hidden', backgroundColor: myColors.text,
+                        borderBottomStartRadius: myHeight(50), borderBottomEndRadius: myHeight(50), alignItems: 'center'
+                    }}>
+                    <Spacer paddingT={myHeight(2)} />
+                    <StatusbarH />
 
-                <Spacer paddingT={myHeight(2)} />
-                {/* Pofile & Name */}
-                <View style={{
+                    <View style={{ width: '100%', paddingHorizontal: myWidth(5) }}>
+
+                        <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.7} style={{
+                            backgroundColor: myColors.primaryT,
+                            height: myHeight(4.2),
+                            width: myHeight(4.2),
+                            borderRadius: myHeight(3),
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}  >
+                            <Image style={
+                                {
+                                    height: myHeight(2),
+                                    width: myHeight(2),
+                                    resizeMode: 'contain'
+                                }
+                            } source={require('../assets/startup/goL.png')} />
+                        </TouchableOpacity>
+                    </View>
+                    {/* image */}
+                    <View style={{
+                        borderRadius: myWidth(100), overflow: 'hidden',
+                        // backgroundColor: myColors.primaryL5, padding: myHeight(1.3),
+                        // borderWidth: myWidth(0.1), borderColor: myColors.textL4, 
+                    }}>
+                        <Image source={require('../assets/profile/profile.png')}
+                            style={{
+                                width: myHeight(13),
+                                height: myHeight(13),
+                                resizeMode: 'contain',
+                                // tintColor: myColors.primaryT
+                            }}
+                        />
+
+                    </View>
+                    <Spacer paddingT={myHeight(1)} />
+
+                    <Text style={{
+                        color: myColors.background, fontSize: myFontSize.medium2, fontFamily: myFonts.heading, paddingHorizontal: myWidth(16),
+                    }}>{profile.name}</Text>
+                    <Spacer paddingT={myHeight(8.5)} />
+
+                </View>
+                {/*<Spacer paddingT={myHeight(2)} />
+                 <View style={{
                     flexDirection: 'row', paddingHorizontal: myWidth(4),
                     alignItems: 'center',
                 }}>
 
-                    {/* image */}
                     <View style={{
                         borderRadius: myWidth(100), overflow: 'hidden',
                         // backgroundColor: myColors.primaryL5, padding: myHeight(1.3),
@@ -99,13 +147,12 @@ export const Profile = ({ navigation }) => {
 
                     </View>
                     <Spacer paddingEnd={myWidth(4)} />
-                    {/* Name */}
                     <Text numberOfLines={1} style={[styles.textCommon, {
                         flex: 1,
                         fontSize: myFontSize.medium,
                         fontFamily: myFonts.heading,
                     }]}>{profile.name}</Text>
-                </View>
+                </View> */}
 
                 <Spacer paddingT={myHeight(2.5)} />
 
@@ -120,7 +167,7 @@ export const Profile = ({ navigation }) => {
 
                     </TouchableOpacity>
                     {/* Divider */}
-                    <View style={{ borderTopWidth: myHeight(0.18), borderColor: myColors.dot, }} />
+                    {/* <View style={{ borderTopWidth: myHeight(0.18), borderColor: myColors.dot, }} /> */}
 
 
 
@@ -133,7 +180,7 @@ export const Profile = ({ navigation }) => {
                         />
                     </TouchableOpacity>
                     {/* Divider */}
-                    <View style={{ borderTopWidth: myHeight(0.18), borderColor: myColors.dot, }} />
+                    {/* <View style={{ borderTopWidth: myHeight(0.18), borderColor: myColors.dot, }} /> */}
 
 
                     <TouchableOpacity activeOpacity={0.7} onPress={() => null}
@@ -145,7 +192,7 @@ export const Profile = ({ navigation }) => {
                         />
                     </TouchableOpacity>
                     {/* Divider */}
-                    <View style={{ borderTopWidth: myHeight(0.18), borderColor: myColors.dot, }} />
+                    {/* <View style={{ borderTopWidth: myHeight(0.18), borderColor: myColors.dot, }} /> */}
 
 
                     {/* Customer Support */}
@@ -157,7 +204,7 @@ export const Profile = ({ navigation }) => {
                         />
                     </TouchableOpacity>
                     {/* Divider */}
-                    <View style={{ borderTopWidth: myHeight(0.18), borderColor: myColors.dot, }} />
+                    {/* <View style={{ borderTopWidth: myHeight(0.18), borderColor: myColors.dot, }} /> */}
 
 
 
@@ -170,7 +217,7 @@ export const Profile = ({ navigation }) => {
                         />
                     </TouchableOpacity>
                     {/* Divider */}
-                    <View style={{ borderTopWidth: myHeight(0.18), borderColor: myColors.dot, }} />
+                    {/* <View style={{ borderTopWidth: myHeight(0.18), borderColor: myColors.dot, }} /> */}
 
 
 
