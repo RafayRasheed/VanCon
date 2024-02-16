@@ -77,7 +77,7 @@ export const RequestInfo = ({ item, navigation, code }) => {
                 backgroundColor: myColors.background, elevation: 5,
                 borderRadius: myWidth(1.5), paddingHorizontal: myWidth(3),
                 marginBottom: myHeight(1), marginTop: myHeight(1),
-                borderBottomWidth: myHeight(0.2), borderColor: myColors.divider
+                borderWidth: myHeight(0.1), borderColor: item.unread ? myColors.green : myColors.divider
             }}>
             <Spacer paddingT={myHeight(1)} />
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
