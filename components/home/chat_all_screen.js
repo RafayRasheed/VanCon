@@ -6,11 +6,12 @@ import { getAvatarColor, myColors } from '../../ultils/myColors'
 import { MyError, Spacer, StatusbarH, ios, myHeight, myWidth } from '../common'
 import { myFontSize, myFonts, myLetSpacing } from '../../ultils/myFonts'
 import database from '@react-native-firebase/database';
-import { dataFullData, verificationCode } from '../functions/functions'
+import { containString, dataFullData, verificationCode } from '../functions/functions'
 import { useDispatch, useSelector } from 'react-redux'
 import { FlashList } from '@shopify/flash-list'
 import { setErrorAlert } from '../../redux/error_reducer'
 import { RFValue } from 'react-native-responsive-fontsize'
+import { setChats } from '../../redux/chat_reducer'
 
 
 export const ChatList = ({ navigation, route }) => {
@@ -19,12 +20,22 @@ export const ChatList = ({ navigation, route }) => {
     const [search, setSearch] = useState(null)
 
     const { chats, totalUnread } = useSelector(state => state.chats)
+    const [chatssss, setChatssss] = useState(null)
+
     const { profile } = useSelector(state => state.profile)
     const dispatch = useDispatch()
 
     // const item = chats[0]
+
     useEffect(() => {
-    }, []);
+        if (search) {
+            setChatssss(chats.filter(it => containString(it.user2.name, search)))
+            // setChats(chats.filter())
+        } else {
+            setChatssss(chats)
+        }
+    }, [search, chats]);
+
 
 
     return (
@@ -173,8 +184,7 @@ export const ChatList = ({ navigation, route }) => {
                 <FlashList
 
 
-                    extraData={chats}
-                    data={chats}
+                    data={chatssss}
                     ItemSeparatorComponent={() =>
                         <View style={{ borderTopWidth: myHeight(0.04), borderColor: myColors.divider, width: "100%" }} />
                     }

@@ -207,7 +207,9 @@ export const getAreasLocations = () => {
 
 }
 
-
+export function containString(contain, thiss) {
+  return (contain.toLowerCase().includes(thiss.toLowerCase()))
+}
 export function getAllRestuarant(profile) {
 
   firestore().collection('drivers')

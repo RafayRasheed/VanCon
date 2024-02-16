@@ -18,6 +18,7 @@ import database from '@react-native-firebase/database';
 import { sendPushNotification } from '../functions/firebase';
 import { setErrorAlert } from '../../redux/error_reducer';
 import storeRedux from '../../redux/store_redux';
+import { containString } from '../functions/functions';
 
 const CommonFaci = ({ name, fac, setFAc }) => (
     <TouchableOpacity activeOpacity={0.75}
@@ -52,9 +53,7 @@ const CommonFaci = ({ name, fac, setFAc }) => (
         </View>
     </TouchableOpacity>
 )
-function containString(contain, thiss) {
-    return (contain.toLowerCase().includes(thiss.toLowerCase()))
-}
+
 export const Search = ({ navigation, route }) => {
     const { AllDrivers } = useSelector(State => State.data)
     const { allRequest } = useSelector(State => State.orders)
