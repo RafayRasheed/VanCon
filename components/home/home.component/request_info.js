@@ -19,10 +19,13 @@ export const RequestInfo = ({ item, navigation, code }) => {
 
     useEffect(() => {
         if (item.unread) {
-            database()
-                .ref(`/requests/${profile.uid}/${item.id}`).update({ unread: false }).
-                then(() => { console.log('To Unread successfully') })
-                .catch((err) => { console.log('error on update unread err') })
+            setTimeout(() => {
+
+                database()
+                    .ref(`/requests/${profile.uid}/${item.id}`).update({ unread: false }).
+                    then(() => { console.log('To Unread successfully') })
+                    .catch((err) => { console.log('error on update unread err') })
+            }, 3000)
         }
     }, [item])
 
@@ -110,7 +113,7 @@ export const RequestInfo = ({ item, navigation, code }) => {
                             width: myHeight(2),
                             height: myHeight(2),
                             resizeMode: 'contain',
-                            tintColor: myColors.primaryT
+                            tintColor: myColors.textL4
                         }} source={require('../../assets/home_main/home/distance.png')}
                     />
                     <Spacer paddingEnd={myWidth(1.2)} />
@@ -134,7 +137,7 @@ export const RequestInfo = ({ item, navigation, code }) => {
                             width: myHeight(1.6),
                             height: myHeight(1.6),
                             resizeMode: 'contain',
-                            tintColor: myColors.primaryT
+                            tintColor: myColors.textL4
                         }}
                         source={require('../../assets/home_main/home/seatSF.png')}
                     />
@@ -156,7 +159,7 @@ export const RequestInfo = ({ item, navigation, code }) => {
                     code == 2 ?
                         <>
                             {
-                                item.status == 1 &&
+                                (item.status == 1 || item.status == 2) &&
                                 <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('RequestRide', { preReq: item })}>
                                     <Text
                                         style={[
@@ -240,7 +243,7 @@ export const RequestInfo = ({ item, navigation, code }) => {
                                 width: myHeight(2),
                                 height: myHeight(2),
                                 resizeMode: 'contain',
-                                tintColor: myColors.primaryT
+                                tintColor: myColors.textL4
                             }} source={require('../../assets/home_main/home/clock.png')}
                         />
                         <Spacer paddingEnd={myWidth(1.3)} />
@@ -293,7 +296,7 @@ export const RequestInfo = ({ item, navigation, code }) => {
                                             width: myHeight(2),
                                             height: myHeight(2),
                                             resizeMode: 'contain',
-                                            tintColor: myColors.primaryT
+                                            tintColor: myColors.textL4
                                         }} source={require('../../assets/home_main/home/clock.png')}
                                     />
                                     <Spacer paddingEnd={myWidth(1.3)} />
@@ -398,7 +401,7 @@ export const RequestInfo = ({ item, navigation, code }) => {
                                             width: myHeight(2),
                                             height: myHeight(2),
                                             resizeMode: 'contain',
-                                            tintColor: myColors.primaryT
+                                            tintColor: myColors.textL4
                                         }}
                                         source={require('../../assets/home_main/home/driver.png')}
                                     />
