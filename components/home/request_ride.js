@@ -467,7 +467,7 @@ export const RequestRide = ({ navigation, route }) => {
                         setPackages(name)
                     }
                 }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', }}>
+                {/* <View style={{ flexDirection: 'row', alignItems: 'center', }}>
                     <View style={{
                         height: myHeight(3.5),
                         width: myHeight(3.5),
@@ -485,11 +485,29 @@ export const RequestRide = ({ navigation, route }) => {
                             }} source={require('../assets/home_main/home/check.png')} />
                         }
                     </View>
-                    {/* <Spacer paddingEnd={myWidth(0.3)} /> */}
                     <Text style={[styles.textCommon,
                     {
                         fontFamily: myFonts.bodyBold,
                         fontSize: myFontSize.xBody,
+
+                    }]}>{name}</Text>
+                </View> */}
+
+                <View style={{
+                    flexDirection: 'row', paddingHorizontal: myWidth(4),
+                    alignItems: 'center', justifyContent: 'center',
+                    backgroundColor: fac ? myColors.text2 : myColors.background
+                    , borderRadius: myHeight(100), paddingVertical: myHeight(0.4),
+
+                }}>
+
+
+                    <Text style={[styles.textCommon,
+                    {
+                        fontFamily: myFonts.bodyBold,
+                        fontSize: myFontSize.body2,
+                        // alignItems: 'center',
+                        color: fac ? myColors.background : myColors.text
 
                     }]}>{name}</Text>
                 </View>
@@ -511,7 +529,7 @@ export const RequestRide = ({ navigation, route }) => {
                         setDailyDays(fac ? dailyDays.filter(it => it != name) : [name, ...dailyDays])
                     }
                 }}>
-                <View style={{ flexDirection: 'row', width: myWidth(23), alignItems: 'center', }}>
+                {/* <View style={{ flexDirection: 'row', width: myWidth(23), alignItems: 'center', }}>
                     <View style={{
                         height: myHeight(3.5),
                         width: myHeight(3.5),
@@ -529,12 +547,29 @@ export const RequestRide = ({ navigation, route }) => {
                             }} source={require('../assets/home_main/home/check.png')} />
                         }
                     </View>
-                    {/* <Spacer paddingEnd={myWidth(0.3)} /> */}
                     <Text style={[styles.textCommon,
                     {
                         fontFamily: myFonts.bodyBold,
                         fontSize: myFontSize.xBody,
                         color: isAll && name != 'All' ? myColors.offColor : myColors.text
+
+                    }]}>{name}</Text>
+                </View> */}
+                <View style={{
+                    flexDirection: 'row', width: myWidth(21),
+                    alignItems: 'center', justifyContent: 'center',
+                    backgroundColor: isAll && name != 'All' ? myColors.background : fac ? myColors.text2 : myColors.background
+                    , borderRadius: myHeight(100), paddingVertical: myHeight(0.2),
+                    marginHorizontal: myWidth(1), marginVertical: myHeight(0.5)
+                }}>
+
+
+                    <Text style={[styles.textCommon,
+                    {
+                        fontFamily: myFonts.heading,
+                        fontSize: myFontSize.body2,
+                        // alignItems: 'center',
+                        color: isAll && name != 'All' ? myColors.textL4 : fac ? myColors.background : myColors.text
 
                     }]}>{name}</Text>
                 </View>
@@ -685,11 +720,11 @@ export const RequestRide = ({ navigation, route }) => {
                 {/* Top */}
                 <View>
                     <Spacer paddingT={myHeight(1.5)} />
-                    <View style={{ paddingEnd: myWidth(4), flexDirection: 'row', alignItems: 'center' }}>
+                    <View style={{ marginHorizontal: myWidth(4) }}>
                         {/* Search */}
 
                         {/* Arrow */}
-                        <TouchableOpacity activeOpacity={0.7}
+                        {/* <TouchableOpacity activeOpacity={0.7}
                             onPress={() => navigation.goBack()} style={{ paddingHorizontal: myWidth(4), }}>
                             <Image style={{
                                 height: myHeight(2.4),
@@ -697,20 +732,37 @@ export const RequestRide = ({ navigation, route }) => {
                                 resizeMode: 'contain',
                                 tintColor: myColors.textL0
                             }} source={require('../assets/home_main/home/back.png')} />
+                        </TouchableOpacity> */}
+
+                        <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.7} style={{
+                            backgroundColor: myColors.primaryT,
+                            height: myHeight(4.2),
+                            width: myHeight(4.2),
+                            borderRadius: myHeight(3),
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}  >
+                            <Image style={
+                                {
+                                    height: myHeight(2),
+                                    width: myHeight(2),
+                                    resizeMode: 'contain'
+                                }
+                            } source={require('../assets/startup/goL.png')} />
                         </TouchableOpacity>
-                        {/* <Spacer paddingEnd={myWidth(2.5)} /> */}
+                        <Spacer paddingT={myHeight(1.5)} />
                         <Text style={[styles.textCommon,
                         {
-                            fontFamily: myFonts.heading,
-                            fontSize: myFontSize.xBody2
+                            fontFamily: myFonts.body,
+                            fontSize: myFontSize.medium3
                         }]}>
-                            Ride Request
+                            Book Ride
                         </Text>
                     </View>
-                    <Spacer paddingT={myHeight(1.5)} />
+                    {/* <Spacer paddingT={myHeight(1.5)} /> */}
 
-                    <View style={{ height: myHeight(0.6), backgroundColor: myColors.divider }} />
                 </View>
+                {/* <View style={{ height: myHeight(0.6), backgroundColor: myColors.divider }} /> */}
 
                 <KeyboardAwareScrollView contentContainerStyle={{ paddingHorizontal: myWidth(4) }}>
 
@@ -720,7 +772,7 @@ export const RequestRide = ({ navigation, route }) => {
 
                         <Text style={[styles.textCommon,
                         {
-                            fontFamily: myFonts.heading,
+                            fontFamily: myFonts.bodyBold,
                             fontSize: myFontSize.xBody,
 
                         }]}>Pickup Details</Text>
@@ -779,7 +831,7 @@ export const RequestRide = ({ navigation, route }) => {
 
                         <Text style={[styles.textCommon,
                         {
-                            fontFamily: myFonts.heading,
+                            fontFamily: myFonts.bodyBold,
                             fontSize: myFontSize.xBody,
 
                         }]}>Dropoff Details</Text>
@@ -871,17 +923,17 @@ export const RequestRide = ({ navigation, route }) => {
 
                     </View>
 
-                    <Spacer paddingT={myHeight(0.3)} />
+                    <Spacer paddingT={myHeight(0.8)} />
                     {/* Seats */}
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Text style={[styles.textCommon,
                         {
-                            fontFamily: myFonts.heading,
+                            fontFamily: myFonts.bodyBold,
                             fontSize: myFontSize.xBody,
                             flex: 1,
 
 
-                        }]}>Seats</Text>
+                        }]}>Passenger</Text>
                         <Spacer paddingT={myHeight(0.4)} />
 
                         {/* plus miunus*/}
@@ -925,12 +977,12 @@ export const RequestRide = ({ navigation, route }) => {
 
 
                     </View>
-                    <Spacer paddingT={myHeight(0.2)} />
+                    <Spacer paddingT={myHeight(0.8)} />
                     {/* Days */}
                     <View>
                         <Text style={[styles.textCommon,
                         {
-                            fontFamily: myFonts.heading,
+                            fontFamily: myFonts.bodyBold,
                             fontSize: myFontSize.xBody,
 
 
@@ -955,7 +1007,7 @@ export const RequestRide = ({ navigation, route }) => {
                     <View>
                         <Text style={[styles.textCommon,
                         {
-                            fontFamily: myFonts.heading,
+                            fontFamily: myFonts.bodyBold,
                             fontSize: myFontSize.xBody,
 
                         }]}>Select Paid</Text>
@@ -974,7 +1026,7 @@ export const RequestRide = ({ navigation, route }) => {
                         <Text style={[styles.textCommon,
                         {
                             flex: 1,
-                            fontFamily: myFonts.heading,
+                            fontFamily: myFonts.bodyBold,
                             fontSize: myFontSize.body4,
 
                         }]}>Your {packages} Offer</Text>
@@ -1057,7 +1109,7 @@ export const RequestRide = ({ navigation, route }) => {
                     <View>
                         <Text style={[styles.textCommon,
                         {
-                            fontFamily: myFonts.heading,
+                            fontFamily: myFonts.bodyBold,
                             fontSize: myFontSize.xBody,
 
                         }]}>Instructions</Text>
@@ -1100,14 +1152,14 @@ export const RequestRide = ({ navigation, route }) => {
                         style={{
                             width: myWidth(92), alignSelf: 'center', paddingVertical: myHeight(1.3),
                             borderRadius: myHeight(1.4), alignItems: 'center', justifyContent: 'center',
-                            flexDirection: 'row', backgroundColor: myColors.primaryT,
-                            // borderWidth: myHeight(0.15), borderColor: myColors.primaryT
+                            flexDirection: 'row', backgroundColor: myColors.background,
+                            borderWidth: myHeight(0.15), borderColor: myColors.text
                         }}>
                         <Text style={[styles.textCommon, {
                             fontFamily: myFonts.heading,
                             fontSize: myFontSize.body3,
-                            color: myColors.background
-                        }]}>Generate Request</Text>
+                            color: myColors.textL4
+                        }]}>Book Now</Text>
                     </TouchableOpacity>
 
                     <Spacer paddingT={myHeight(3)} />

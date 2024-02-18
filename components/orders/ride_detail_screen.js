@@ -336,7 +336,7 @@ export const RideDetails = ({ navigation, route }) => {
                                                             <Image style={{
                                                                 width: myHeight(2), height: myHeight(2),
                                                                 marginLeft: -myWidth(0.3),
-                                                                resizeMode: 'contain', marginTop: myHeight(0.2), tintColor: myColors.primaryT
+                                                                resizeMode: 'contain', marginTop: myHeight(0.2), tintColor: myColors.text
                                                             }}
                                                                 source={require('../assets/home_main/home/navigator/van2.png')} />
                                                             <Spacer paddingEnd={myWidth(1.5)} />
@@ -356,7 +356,7 @@ export const RideDetails = ({ navigation, route }) => {
                                                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                                             <Image style={{
                                                                 width: myHeight(2), height: myHeight(2),
-                                                                resizeMode: 'contain', marginTop: myHeight(0.0), tintColor: myColors.primaryT
+                                                                resizeMode: 'contain', marginTop: myHeight(0.0), tintColor: myColors.text
                                                             }}
                                                                 source={require('../assets/home_main/home/driver.png')} />
                                                             <Spacer paddingEnd={myWidth(1)} />
@@ -367,7 +367,7 @@ export const RideDetails = ({ navigation, route }) => {
 
                                                                     fontSize: myFontSize.body,
                                                                     fontFamily: myFonts.bodyBold,
-                                                                    color: myColors.text,
+                                                                    color: myColors.textL0,
                                                                     letterSpacing: myLetSpacing.common,
                                                                     includeFontPadding: false,
                                                                     padding: 0,
@@ -385,7 +385,7 @@ export const RideDetails = ({ navigation, route }) => {
                                                                     fontSize: myFontSize.xxSmall,
                                                                     fontFamily: myFonts.heading,
 
-                                                                    color: driver.status < 0 ? myColors.red : driver.status == 1 ? myColors.textL : myColors.green
+                                                                    color: driver.status < 0 ? myColors.red : driver.status == 1 ? myColors.textL4 : myColors.green
                                                                 },
                                                             ]}>{driver.status < 0 ? 'Rejected' : driver.status == 1 ? 'Sended' : 'Accepted'}</Text>
                                                         <Spacer paddingT={myHeight(0.6)} />
