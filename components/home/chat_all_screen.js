@@ -53,7 +53,7 @@ export const ChatList = ({ navigation, route }) => {
                             alignItems: 'center',
                             paddingHorizontal: myWidth(4),
                             borderRadius: myWidth(10),
-                            backgroundColor: myColors.primaryL3,
+                            backgroundColor: myColors.primaryL5,
                             // marginHorizontal: myWidth(4)
                         }}>
 

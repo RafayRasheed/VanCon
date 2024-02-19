@@ -238,7 +238,7 @@ export const RequestInfo = ({ item, navigation, code }) => {
                             ]}
                         >
                             PickUp</Text>
-                        <Image
+                        {/* <Image
                             style={{
                                 width: myHeight(2),
                                 height: myHeight(2),
@@ -246,13 +246,13 @@ export const RequestInfo = ({ item, navigation, code }) => {
                                 tintColor: myColors.textL4
                             }} source={require('../../assets/home_main/home/clock.png')}
                         />
-                        <Spacer paddingEnd={myWidth(1.3)} />
+                        <Spacer paddingEnd={myWidth(1.3)} /> */}
 
                         <Text style={[
                             styles.textCommon,
                             {
-                                fontSize: myFontSize.xxSmall,
-                                fontFamily: myFonts.body,
+                                fontSize: myFontSize.xSmall,
+                                fontFamily: myFonts.heading, color: myColors.textL4
                             },
                         ]}>{item.pickupTime.time}
                         </Text>
@@ -291,7 +291,7 @@ export const RequestInfo = ({ item, navigation, code }) => {
                             {
                                 item.twoWay &&
                                 <>
-                                    <Image
+                                    {/* <Image
                                         style={{
                                             width: myHeight(2),
                                             height: myHeight(2),
@@ -299,12 +299,14 @@ export const RequestInfo = ({ item, navigation, code }) => {
                                             tintColor: myColors.textL4
                                         }} source={require('../../assets/home_main/home/clock.png')}
                                     />
-                                    <Spacer paddingEnd={myWidth(1.3)} />
+                                    <Spacer paddingEnd={myWidth(1.3)} /> */}
                                     <Text style={[
                                         styles.textCommon,
                                         {
-                                            fontSize: myFontSize.xxSmall,
-                                            fontFamily: myFonts.body,
+                                            fontSize: myFontSize.xSmall,
+
+                                            fontFamily: myFonts.heading, color: myColors.textL4
+
                                         },
                                     ]}>{item.dropoffTime.time}
                                     </Text>
@@ -431,7 +433,7 @@ export const RequestInfo = ({ item, navigation, code }) => {
                                         color: item.status < 0 ? 'red' : myColors.green
                                     },
                                 ]}
-                            >{item.status < 0 ? 'Cancelled' : item.status == 5 ? 'Completed' : `In Progress`}</Text>
+                            >{item.status < 0 ? 'Cancelled' : item.status == 5 ? 'Completed' : `Active`}</Text>
                         </View>
                     </>
 
