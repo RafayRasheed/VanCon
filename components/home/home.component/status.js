@@ -33,7 +33,7 @@ if (!ios && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-export const Status = ({ notifications = [], onPressRide }) => {
+export const Status = ({ notifications = [], }) => {
   const navigation = useNavigation();
   const [notiLen, setNotiLen] = useState(notifications.length.toString());
   const [notificationVisible, setNotificationVisible] = useState(
@@ -176,7 +176,7 @@ export const Status = ({ notifications = [], onPressRide }) => {
 
               <TouchableOpacity
                 // onLayout={(event) => console.log('item', event.nativeEvent.layout.height)}
-                activeOpacity={0.5}
+                activeOpacity={0.9}
                 // onPress={() => {
                 //   if (notificationExpand) {
                 //     // LayoutAnimation.configureNext(LayoutAnimation.Presets.linear)
@@ -189,7 +189,7 @@ export const Status = ({ notifications = [], onPressRide }) => {
                 //     onNotificationsFocus(item.RideId);
                 //   }
                 // }}
-                onPress={onPressRide}
+                onPress={() => navigation.navigate('OrderDetails', { item, code: 1 })}
                 key={i}
                 style={[
                   styles.containerNotiItem,
@@ -211,7 +211,7 @@ export const Status = ({ notifications = [], onPressRide }) => {
                       style={[styles.textNotiItem, { flex: 1 }]}
                       numberOfLines={1}
                     >
-                      {item.RideId}
+                      {item.id}
                     </Text>
                   </View>
                   <View style={{ flexDirection: 'row' }}>
@@ -247,7 +247,7 @@ export const Status = ({ notifications = [], onPressRide }) => {
                     </Text>
                   </View>
                 </View>
-                <TouchableOpacity activeOpacity={0.6} onPress={() => null}>
+                <TouchableOpacity disabled activeOpacity={0.6} onPress={() => null}>
                   <Spacer paddingT={myHeight(2.15)} />
                   <Image
                     style={[styles.imageGo]}
