@@ -60,7 +60,7 @@ export const DriverInfoFull = ({ driver, request = null, onSend, }) => {
 
 
 
-                            <View style={{
+                            {/* <View style={{
                                 backgroundColor: myColors.primaryT,
                                 paddingHorizontal: myWidth(3.5),
                                 borderTopEndRadius: myWidth(1.5), paddingVertical: myHeight(0.5),
@@ -72,7 +72,7 @@ export const DriverInfoFull = ({ driver, request = null, onSend, }) => {
                                     <Spacer paddingEnd={myWidth(1.6)} />
                                     <Text style={styles.textRating}>{driver.rating} ({driver.noOfRatings})</Text>
                                 </View>
-                            </View>
+                            </View> */}
 
 
                         </View>
@@ -93,84 +93,112 @@ export const DriverInfoFull = ({ driver, request = null, onSend, }) => {
 
                 {/* Detals */}
                 <View style={{ paddingHorizontal: myWidth(2) }}>
+                    <Text numberOfLines={1}
+                        style={{
+                            flex: 1,
+                            fontSize: myFontSize.xBody,
+                            fontFamily: myFonts.heading,
+                            color: myColors.text,
+                            letterSpacing: myLetSpacing.common,
+                            includeFontPadding: false,
+                            padding: 0,
+                        }}>{driver.vehicleName}</Text>
+                    <Spacer paddingT={myHeight(0.5)} />
 
-                    {/* Name & Rating */}
+                    <View style={{ height: myHeight(0.15), backgroundColor: myColors.dot }} />
+
+                    <Spacer paddingT={myHeight(1)} />
+
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <Image style={{
-                            width: myHeight(2.3), height: myHeight(2.3),
-                            marginLeft: -myWidth(0.3),
-                            resizeMode: 'contain', marginTop: myHeight(0.2), tintColor: myColors.primaryT
-                        }}
-                            source={require('../../assets/home_main/home/navigator/van2.png')} />
-                        <Spacer paddingEnd={myWidth(1.1)} />
+                        <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+                            {
+                                request ? null
 
-                        {/* Name */}
-                        <Text numberOfLines={1}
-                            style={styles.textName}>{driver.vehicleName} <Text style={{
-                                fontSize: myFontSize.body4,
-                                color: myColors.text, fontFamily: myFonts.body
-                            }}>({driver.vehicleModal})</Text></Text>
+                                    :
+                                    <>
+                                        <Image style={{
+                                            width: myHeight(1.65), height: myHeight(1.65),
+                                            resizeMode: 'contain', marginTop: -myHeight(0.2), tintColor: myColors.textL0
+                                        }}
+                                            source={require('../../assets/home_main/home/seatSF.png')} />
+                                        <Spacer paddingEnd={myWidth(1)} />
 
-                        <Spacer paddingEnd={myWidth(1.5)} />
+                                        <Text
 
-                        <Image style={{
-                            width: myHeight(2.9), height: myHeight(2.9),
-                            resizeMode: 'contain', marginTop: myHeight(0.2), tintColor: myColors.primaryT
-                        }}
-                            source={require('../../assets/home_main/home/ac.png')} />
-                        <Spacer paddingEnd={myWidth(2.5)} />
+                                            style={{
+                                                fontSize: myFontSize.xxSmall,
+                                                fontFamily: myFonts.bodyBold,
+                                                color: myColors.text,
+                                                letterSpacing: myLetSpacing.common,
+                                                includeFontPadding: false,
+                                                padding: 0,
+                                            }}>{driver.vehicleSeats} Seats</Text>
+                                        <Spacer paddingEnd={myWidth(3.5)} />
+                                    </>
 
-                        <Text
 
-                            style={{
-                                fontSize: myFontSize.body3,
-                                fontFamily: myFonts.bodyBold,
-                                color: myColors.text,
-                                letterSpacing: myLetSpacing.common,
-                                includeFontPadding: false,
-                                padding: 0,
-                            }}>{driver.ac ? 'AC' : 'Non AC'}</Text>
-                        <Spacer paddingEnd={myWidth(2.5)} />
-                        <Image style={{
-                            width: myHeight(2.5), height: myHeight(2.5),
-                            resizeMode: 'contain', marginTop: myHeight(0),
-                            tintColor: driver.isWifi ? myColors.primaryT : myColors.offColor
-                        }}
-                            source={driver.isWifi ? require('../../assets/home_main/home/wifi.png') : require('../../assets/home_main/home/wifiO.png')} />
-                        <Spacer paddingEnd={myWidth(1)} />
 
-                        {/* Rating */}
-                        {/* <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Image style={styles.imageStar} source={require('../../assets/home_main/home/star.png')} />
 
-        <Spacer paddingEnd={myWidth(1.6)} />
-        <Text style={styles.textRating}>{driver.rating}</Text>
-    </View> */}
-                    </View>
-                    <Spacer paddingT={myHeight(0.3)} />
+                            }
+                            {
+                                driver.ac ?
+                                    <>
+                                        <Image style={{
+                                            width: myHeight(2), height: myHeight(2),
+                                            resizeMode: 'contain', marginTop: myHeight(0), tintColor: myColors.textL0
+                                        }}
+                                            source={require('../../assets/home_main/home/ac2.png')} />
+                                        <Spacer paddingEnd={myWidth(1.5)} />
 
-                    {/* Name & Rating */}
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <Image style={{
-                            width: myHeight(2), height: myHeight(2),
-                            resizeMode: 'contain', marginTop: myHeight(0.0), tintColor: myColors.primaryT
-                        }}
-                            source={require('../../assets/home_main/home/driver.png')} />
-                        <Spacer paddingEnd={myWidth(1.5)} />
+                                        <Text
 
-                        {/* Name */}
-                        <Text numberOfLines={1}
-                            style={{
-                                flex: 1,
-                                fontSize: myFontSize.body2,
-                                fontFamily: myFonts.bodyBold,
-                                color: myColors.text,
-                                letterSpacing: myLetSpacing.common,
-                                includeFontPadding: false,
-                                padding: 0,
-                            }}>{driver.name}</Text>
+                                            style={{
+                                                fontSize: myFontSize.xxSmall,
+                                                fontFamily: myFonts.bodyBold,
+                                                color: myColors.text,
+                                                letterSpacing: myLetSpacing.common,
+                                                includeFontPadding: false,
+                                                padding: 0,
+                                            }}>Air Conditioned</Text>
+                                        <Spacer paddingEnd={myWidth(3)} />
+                                    </>
+                                    : null
+                            }
 
-                        <Spacer paddingEnd={myWidth(1.5)} />
+
+                            {
+                                driver.isWifi ?
+                                    <>
+                                        <Image style={{
+                                            width: myHeight(2.3), height: myHeight(2.3),
+                                            resizeMode: 'contain', marginTop: myHeight(0),
+                                            tintColor: myColors.textL0
+                                        }}
+                                            source={require('../../assets/home_main/home/wifi.png')} />
+                                        <Spacer paddingEnd={myWidth(1.5)} />
+                                        <Text
+
+                                            style={{
+                                                fontSize: myFontSize.xxSmall,
+                                                fontFamily: myFonts.bodyBold,
+                                                color: myColors.text,
+                                                letterSpacing: myLetSpacing.common,
+                                                includeFontPadding: false,
+                                                padding: 0,
+                                            }}>Wifi</Text>
+                                        <Spacer paddingEnd={myWidth(3)} />
+
+                                    </>
+                                    : null
+                            }
+                            <View style={{ flexDirection: 'row', alignItems: 'center', }}>
+                                <Image style={styles.imageStar} source={require('../../assets/home_main/home/star.png')} />
+
+                                <Spacer paddingEnd={myWidth(1.6)} />
+                                <Text style={styles.textRating}>{driver.rating}</Text>
+                            </View>
+
+                        </View>
 
                         {
                             request ?
@@ -199,46 +227,14 @@ export const DriverInfoFull = ({ driver, request = null, onSend, }) => {
                                         >Send</Text>
                                     }
                                 </TouchableOpacity>
-
                                 :
-                                <>
-                                    <Image style={{
-                                        width: myHeight(2), height: myHeight(2),
-                                        resizeMode: 'contain', marginTop: myHeight(0.0), tintColor: myColors.primaryT
-                                    }}
-                                        source={require('../../assets/home_main/home/seatSF.png')} />
-                                    <Spacer paddingEnd={myWidth(1.5)} />
 
-                                    <Text
-
-                                        style={{
-                                            fontSize: myFontSize.body3,
-                                            fontFamily: myFonts.bodyBold,
-                                            color: myColors.text,
-                                            letterSpacing: myLetSpacing.common,
-                                            includeFontPadding: false,
-                                            padding: 0,
-                                        }}>{driver.vehicleSeats} Seater</Text>
-                                    <Spacer paddingEnd={myWidth(1.5)} />
-                                </>
+                                null
                         }
                     </View>
-                    {/* Location */}
-                    {/* <View style={{ flexDirection: 'row', }}>
-    <Image style={styles.imageLoc}
-        source={require('../../assets/home_main/home/loc.png')} />
-    <Spacer paddingEnd={myWidth(0.8)} />
-    <Text numberOfLines={1} style={[styles.textCommon, {
-        flex: 1,
-        fontSize: myFontSize.body,
-        fontFamily: myFonts.bodyBold,
-        color: myColors.text,
 
-    }]}>{driver.location}</Text>
-</View> */}
 
-                    {/* restaurants */}
-                    {/* <Text numberOfLines={1} style={styles.textrestaurants}>{restaurants}</Text> */}
+
                     <Spacer paddingT={myHeight(1)} />
 
                 </View>
@@ -259,7 +255,7 @@ const styles = StyleSheet.create({
         backgroundColor: myColors.background,
         overflow: 'hidden',
         borderRadius: myWidth(3.5),
-        elevation: 4,
+        elevation: 1,
         alignSelf: 'center',
 
     },
@@ -333,9 +329,9 @@ const styles = StyleSheet.create({
     },
     textRating: {
         // flex: 1,
-        fontSize: myFontSize.body,
+        fontSize: myFontSize.xxSmall,
         fontFamily: myFonts.body,
-        color: myColors.background,
+        color: myColors.text,
         letterSpacing: myLetSpacing.common,
         includeFontPadding: false,
         padding: 0,
@@ -391,7 +387,7 @@ const styles = StyleSheet.create({
         height: myHeight(2.6),
         width: myHeight(2.6),
         resizeMode: 'contain',
-        tintColor: myColors.red,
+        tintColor: myColors.text,
     },
     imageLoc: {
         width: myHeight(2.2), height: myHeight(2.2),

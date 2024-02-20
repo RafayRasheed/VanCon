@@ -9,6 +9,7 @@ import { setHistoryOrderse, setPendingOrderse, setProgressOrderse } from '../../
 import firestore, { Filter } from '@react-native-firebase/firestore';
 import { RequestInfo } from '../home/home.component/request_info';
 import { FlashList } from '@shopify/flash-list';
+import { containString } from '../functions/functions';
 
 
 export const RidesScreen = ({ navigation }) => {
@@ -20,75 +21,103 @@ export const RidesScreen = ({ navigation }) => {
     const [search, setSearch] = useState(null)
     const { profile } = useSelector(state => state.profile)
     const dispatch = useDispatch()
-    console.log(pendingUnread, progressUnread, historyUnread)
+    const [pendingL, setPendingL] = useState([]);
+    const [progressL, setProgressL] = useState([]);
+    const [historyL, setHistoryL] = useState([]);
 
+    function filter(list) {
+        return list.filter(item => (item.driverName ? containString(item.driverName, search) : false) || containString(item.id, search) || containString(item.dropoff.name, search) || containString(item.pickup.name, search))
+    }
     useEffect(() => {
-    }, [])
+        if (search) {
+
+            setPendingL(filter(pending))
+            setHistoryL(filter(history))
+            setProgressL(filter(progress))
+        }
+        else {
+            setPendingL(pending)
+            setHistoryL(history)
+            setProgressL(progress)
+        }
+    }, [search, pending, progress, history])
     return (
         <SafeAreaView style={styles.container}>
             <StatusbarH />
-            <Spacer paddingT={myHeight(2)} />
+            <Spacer paddingT={myHeight(0.7)} />
+
             {/* Top Container */}
             <View style={styles.containerTop}>
                 {/* containerActivity_Ic */}
                 <View style={styles.containerActivity_Ic}>
                     <Text style={styles.textActivity}>Rides</Text>
                 </View>
+                <Spacer paddingT={myHeight(0.5)} />
 
-                {/* <Spacer paddingT={myHeight(1.5)} /> */}
-                {/* Search */}
-                {/* <View style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    borderRadius: myHeight(8),
-                    paddingHorizontal: myWidth(4),
-                    borderWidth: myHeight(0.09),
-                    borderColor: myColors.primaryT,
-                    backgroundColor: myColors.background,
 
-                }}>
-                    <TextInput placeholder="Search"
-                        keyboardType={'number-pad'}
-                        placeholderTextColor={myColors.offColor}
-                        selectionColor={myColors.primaryT}
-                        cursorColor={myColors.primaryT}
-                        value={search} onChangeText={setSearch}
-                        style={{
-                            flex: 1,
-                            textAlignVertical: 'center',
-                            paddingVertical: ios ? myHeight(0.8) : myHeight(100) > 600 ? myHeight(0.6) : myHeight(0.1),
-                            fontSize: myFontSize.xxSmall,
-                            color: myColors.text,
-                            includeFontPadding: false,
-                            fontFamily: myFonts.bodyBold,
-                        }}
-                    />
 
-                    <Spacer paddingEnd={myWidth(2)} />
-                    <Image style={{
-                        height: myHeight(2), width: myHeight(2), resizeMode: 'contain', tintColor: myColors.primaryT
-                    }} source={require('../assets/home_main/search2.png')} />
+                {/* <Spacer paddingT={myHeight(1)} /> */}
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
 
-                </View> */}
+                    {/* Search */}
+                    <View style={{
+                        flex: 1,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        paddingHorizontal: myWidth(4),
+                        borderRadius: myWidth(10),
+                        backgroundColor: myColors.divider,
+                        // marginHorizontal: myWidth(4)
+                    }}>
 
-                <Spacer paddingT={myHeight(1.5)} />
+                        <TextInput placeholder="Search by id, address, name"
+                            placeholderTextColor={myColors.textL4}
+                            autoCorrect={false}
+                            selectionColor={myColors.text}
+                            style={{
+                                flex: 1,
+                                textAlignVertical: 'center',
+                                paddingVertical: myHeight(0.4),
+                                fontSize: myFontSize.xxSmall,
+                                color: myColors.text,
+                                includeFontPadding: false,
+                                fontFamily: myFonts.bodyBold,
+                            }}
+                            cursorColor={myColors.primaryT}
+                            value={search} onChangeText={setSearch}
+                        // value={search} onChangeText={(val) => null}
+                        />
+                        <Image
+                            style={{
+                                width: myHeight(2.2),
+                                height: myHeight(2.2),
+                                resizeMode: 'contain',
+                                tintColor: myColors.textL
+                            }}
+                            source={require('../assets/home_main/home/search.png')}
+                        />
+                    </View>
+
+                </View>
+                <Spacer paddingT={myHeight(2)} />
+
                 {/* Button Order & History */}
                 <View style={styles.containerOrder_Hist}>
                     {/* Order */}
                     <TouchableOpacity activeOpacity={0.6} onPress={() => setI(0)}
-                        style={[styles.containerButtonOrder_Hist, { backgroundColor: i == 0 ? myColors.primaryT : myColors.primaryL2 }]}>
-                        <Text style={[styles.textHist_Order, { color: i == 0 ? myColors.background : myColors.text }]}>In Progress  {progressUnread.length ? `(${progressUnread.length})` : ''}</Text>
+                        style={[styles.containerButtonOrder_Hist, { backgroundColor: i == 0 ? myColors.primaryT : myColors.primaryL5 }]}>
+                        <Text style={[styles.textHist_Order, { color: i == 0 ? myColors.background : myColors.text }]}>In Progress{progressUnread.length ? ` (${progressUnread.length})` : ''}</Text>
                     </TouchableOpacity>
                     {/* History */}
                     <TouchableOpacity activeOpacity={0.6} onPress={() => setI(1)}
-                        style={[styles.containerButtonOrder_Hist, { backgroundColor: i == 1 ? myColors.primaryT : myColors.primaryL2 }]}>
-                        <Text style={[styles.textHist_Order, { color: i == 1 ? myColors.background : myColors.text }]}>Pending {pendingUnread.length ? `(${pendingUnread.length})` : ''}</Text>
+                        style={[styles.containerButtonOrder_Hist, { backgroundColor: i == 1 ? myColors.primaryT : myColors.primaryL5 }]}>
+                        <Text style={[styles.textHist_Order, { color: i == 1 ? myColors.background : myColors.text }]}>Pending{pendingUnread.length ? ` (${pendingUnread.length})` : ''}</Text>
                     </TouchableOpacity>
 
                     {/* History */}
                     <TouchableOpacity activeOpacity={0.6} onPress={() => setI(2)}
-                        style={[styles.containerButtonOrder_Hist, { backgroundColor: i == 2 ? myColors.primaryT : myColors.primaryL2 }]}>
-                        <Text style={[styles.textHist_Order, { color: i == 2 ? myColors.background : myColors.text }]}>History {historyUnread.length ? `(${historyUnread.length})` : ''}</Text>
+                        style={[styles.containerButtonOrder_Hist, { backgroundColor: i == 2 ? myColors.primaryT : myColors.primaryL5 }]}>
+                        <Text style={[styles.textHist_Order, { color: i == 2 ? myColors.background : myColors.text }]}>History{historyUnread.length ? ` (${historyUnread.length})` : ''}</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -97,29 +126,42 @@ export const RidesScreen = ({ navigation }) => {
             <View style={styles.containerLine} />
 
             {/* <Spacer paddingT={myHeight(0.86)} /> */}
-
-            <FlashList
-                showsVerticalScrollIndicator={false}
-                // scrollEnabled={false}
-                data={i == 0 ? progress : i == 1 ? pending : history}
-                extraData={i}
-                // extraData={[ac, wifi, topRated, search]}
-                contentContainerStyle={styles.containerContentScroll}
-
-                estimatedItemSize={myHeight(10)}
-                renderItem={({ item, index }) => {
-                    return (
-                        <TouchableOpacity key={index} activeOpacity={0.95}
-                            onPress={() => navigation.navigate('OrderDetails', { item, code: i + 1 })}>
+            {
+                ((i == 0 && progressL.length) || (i == 1 && pendingL.length) || (i == 2 && historyL.length)) ?
 
 
+                    <FlashList
+                        showsVerticalScrollIndicator={false}
+                        // scrollEnabled={false}
+                        data={i == 0 ? progressL : i == 1 ? pendingL : historyL}
+                        extraData={i}
+                        // extraData={[ac, wifi, topRated, search]}
+                        contentContainerStyle={styles.containerContentScroll}
 
-                            <RequestInfo item={item} navigation={navigation} code={i + 1} />
-                        </TouchableOpacity>
-                    )
-                }
-                }
-            />
+                        estimatedItemSize={myHeight(10)}
+                        renderItem={({ item, index }) => {
+                            return (
+                                <TouchableOpacity key={index} activeOpacity={0.95}
+                                    onPress={() => navigation.navigate('OrderDetails', { item, code: i + 1 })}>
+
+
+
+                                    <RequestInfo item={item} navigation={navigation} code={i + 1} />
+                                </TouchableOpacity>
+                            )
+                        }
+                        }
+                    />
+                    :
+                    <View style={{ flex: 0.7, justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={[styles.textCommon, {
+                            fontSize: myFontSize.medium0,
+                            fontFamily: myFonts.bodyBold,
+                            color: myColors.textL4,
+                        }]}>No Ride Found</Text>
+                        {/* (i == 0 && progressL.length)  */}
+                    </View>
+            }
             {/* <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.containerContentScroll}>
                 {i == 0 &&
                     progress.map((item, ind) =>
@@ -212,8 +254,8 @@ const styles = StyleSheet.create({
 
     //Text
     textActivity: {
-        fontSize: myFontSize.xBody,
-        fontFamily: myFonts.bodyBold,
+        fontSize: myFontSize.large,
+        fontFamily: myFonts.body,
         color: myColors.text,
         letterSpacing: myLetSpacing.common,
         includeFontPadding: false,
