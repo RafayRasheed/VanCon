@@ -271,15 +271,14 @@ export const RequestInfo = ({ item, navigation, code }) => {
                                 resizeMode: 'contain',
                                 tintColor: myColors.textL4
                             }} source={require('../../assets/home_main/home/clock.png')}
-                        /> */}
+                        />
                         <Spacer paddingEnd={myWidth(1.3)} />
 
                         <Text style={[
                             styles.textCommon,
                             {
-                                fontSize: myFontSize.xSmall,
-                                fontFamily: myFonts.bodyBold,
-                                color: myColors.textL4
+                                fontSize: myFontSize.xxSmall,
+                                fontFamily: myFonts.body,
                             },
                         ]}>{item.pickupTime.time}
                         </Text>
@@ -297,42 +296,41 @@ export const RequestInfo = ({ item, navigation, code }) => {
                     <Spacer paddingT={myHeight(1.3)} />
 
                     {/* Destination */}
-                    <View>
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <View>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
 
-                            <Text
-                                style={[
-                                    styles.textCommon,
-                                    {
-                                        flex: 1,
-                                        fontSize: myFontSize.xxSmall,
-                                        fontFamily: myFonts.bodyBold,
-                                    },
-                                ]}
-                            >
-                                DropOff
-                            </Text>
+                                <Text
+                                    style={[
+                                        styles.textCommon,
+                                        {
+                                            flex: 1,
+                                            fontSize: myFontSize.xxSmall,
+                                            fontFamily: myFonts.bodyBold,
+                                        },
+                                    ]}
+                                >
+                                    DropOff
+                                </Text>
 
 
 
-                            {
-                                item.twoWay &&
-                                <>
-                                    {/* <Image
+                                {
+                                    item.twoWay &&
+                                    <>
+                                        {/* <Image
                                         style={{
                                             width: myHeight(2),
                                             height: myHeight(2),
                                             resizeMode: 'contain',
                                             tintColor: myColors.textL4
                                         }} source={require('../../assets/home_main/home/clock.png')}
-                                    /> */}
+                                    />
                                     <Spacer paddingEnd={myWidth(1.3)} />
                                     <Text style={[
                                         styles.textCommon,
                                         {
-                                            fontSize: myFontSize.xSmall,
-                                            fontFamily: myFonts.bodyBold,
-                                            color: myColors.textL4
+                                            fontSize: myFontSize.xxSmall,
+                                            fontFamily: myFonts.body,
                                         },
                                     ]}>{item.dropoffTime.time}
                                     </Text>
@@ -582,30 +580,30 @@ export const RequestInfo = ({ item, navigation, code }) => {
                                         color: item.status < 0 ? 'red' : myColors.green
                                     },
                                 ]}
-                            >{item.status < 0 ? 'Cancelled' : item.status == 5 ? 'Completed' : `In Progress`}</Text>
+                            >{item.status < 0 ? 'Cancelled' : item.status == 5 ? 'Completed' : `Active`}</Text>
                         </View>
                     </>
 
             } */}
-            <Spacer paddingT={myHeight(1.5)} />
-        </View>
-    )
+                                        <Spacer paddingT={myHeight(1.5)} />
+                                    </View>
+                                )
 
 }
 
 
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: myColors.background,
+                                const styles = StyleSheet.create({
+                                    container: {
+                                    flex: 1,
+                                backgroundColor: myColors.background,
     },
 
-    //Text
-    textCommon: {
-        color: myColors.text,
-        letterSpacing: myLetSpacing.common,
-        includeFontPadding: false,
-        padding: 0,
+                                //Text
+                                textCommon: {
+                                    color: myColors.text,
+                                letterSpacing: myLetSpacing.common,
+                                includeFontPadding: false,
+                                padding: 0,
     },
 });

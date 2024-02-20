@@ -29,6 +29,7 @@ import Animated, { SlideInUp } from 'react-native-reanimated';
 import { setProfile } from '../../redux/profile_reducer';
 import { setChats, setTotalUnread } from '../../redux/chat_reducer';
 import { DriverInfoFull } from './home.component/driver_info_full';
+import { Status } from './home.component/status';
 
 if (!ios && UIManager.setLayoutAnimationEnabledExperimental) {
     UIManager.setLayoutAnimationEnabledExperimental(true)
@@ -43,6 +44,7 @@ export const HomeScreen = ({ navigation }) => {
     const [nearbyRestaurant, setNearbyRestaurant] = useState([])
     const [RecommendRestaurant, setRecommendRestaurant] = useState([])
     const [startPro, setStartPro] = useState({})
+    const { pending, progress, history } = useSelector(state => state.orders)
 
 
 
@@ -321,6 +323,7 @@ export const HomeScreen = ({ navigation }) => {
                                 </TouchableOpacity>
                             )
                         })}
+                        <Status notifications={history} />
                         {/* <Banners />
 
 

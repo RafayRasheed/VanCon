@@ -18,16 +18,14 @@ export const RidesScreen = ({ navigation }) => {
     const progressUnread = progress.filter(it => it.unread == true)
     const historyUnread = history.filter(it => it.unread == true)
     const [i, setI] = useState(0);
-    const [search, setSearch] = useState(null)
-    const { profile } = useSelector(state => state.profile)
-    const dispatch = useDispatch()
     const [pendingL, setPendingL] = useState([]);
     const [progressL, setProgressL] = useState([]);
     const [historyL, setHistoryL] = useState([]);
+    const [search, setSearch] = useState(null)
+    const { profile } = useSelector(state => state.profile)
+    const dispatch = useDispatch()
+    console.log(pendingUnread, progressUnread, historyUnread)
 
-    function filter(list) {
-        return list.filter(item => (item.driverName ? containString(item.driverName, search) : false) || containString(item.id, search) || containString(item.dropoff.name, search) || containString(item.pickup.name, search))
-    }
     useEffect(() => {
         if (search) {
 
@@ -44,8 +42,7 @@ export const RidesScreen = ({ navigation }) => {
     return (
         <SafeAreaView style={styles.container}>
             <StatusbarH />
-            <Spacer paddingT={myHeight(0.7)} />
-
+            <Spacer paddingT={myHeight(2)} />
             {/* Top Container */}
             <View style={styles.containerTop}>
                 {/* containerActivity_Ic */}
@@ -56,51 +53,43 @@ export const RidesScreen = ({ navigation }) => {
 
 
 
-                {/* <Spacer paddingT={myHeight(1)} /> */}
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                {/* <Spacer paddingT={myHeight(1.5)} /> */}
+                {/* Search */}
+                {/* <View style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    borderRadius: myHeight(8),
+                    paddingHorizontal: myWidth(4),
+                    borderWidth: myHeight(0.09),
+                    borderColor: myColors.primaryT,
+                    backgroundColor: myColors.background,
 
-                    {/* Search */}
-                    <View style={{
-                        flex: 1,
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        paddingHorizontal: myWidth(4),
-                        borderRadius: myWidth(10),
-                        backgroundColor: myColors.divider,
-                        // marginHorizontal: myWidth(4)
-                    }}>
+                }}>
+                    <TextInput placeholder="Search"
+                        keyboardType={'number-pad'}
+                        placeholderTextColor={myColors.offColor}
+                        selectionColor={myColors.primaryT}
+                        cursorColor={myColors.primaryT}
+                        value={search} onChangeText={setSearch}
+                        style={{
+                            flex: 1,
+                            textAlignVertical: 'center',
+                            paddingVertical: ios ? myHeight(0.8) : myHeight(100) > 600 ? myHeight(0.6) : myHeight(0.1),
+                            fontSize: myFontSize.xxSmall,
+                            color: myColors.text,
+                            includeFontPadding: false,
+                            fontFamily: myFonts.bodyBold,
+                        }}
+                    />
 
-                        <TextInput placeholder="Search by id, address, name"
-                            placeholderTextColor={myColors.textL4}
-                            autoCorrect={false}
-                            selectionColor={myColors.text}
-                            style={{
-                                flex: 1,
-                                textAlignVertical: 'center',
-                                paddingVertical: myHeight(0.4),
-                                fontSize: myFontSize.xxSmall,
-                                color: myColors.text,
-                                includeFontPadding: false,
-                                fontFamily: myFonts.bodyBold,
-                            }}
-                            cursorColor={myColors.primaryT}
-                            value={search} onChangeText={setSearch}
-                        // value={search} onChangeText={(val) => null}
-                        />
-                        <Image
-                            style={{
-                                width: myHeight(2.2),
-                                height: myHeight(2.2),
-                                resizeMode: 'contain',
-                                tintColor: myColors.textL
-                            }}
-                            source={require('../assets/home_main/home/search.png')}
-                        />
-                    </View>
+                    <Spacer paddingEnd={myWidth(2)} />
+                    <Image style={{
+                        height: myHeight(2), width: myHeight(2), resizeMode: 'contain', tintColor: myColors.primaryT
+                    }} source={require('../assets/home_main/search2.png')} />
 
-                </View>
-                <Spacer paddingT={myHeight(2)} />
+                </View> */}
 
+                <Spacer paddingT={myHeight(1.5)} />
                 {/* Button Order & History */}
                 <View style={styles.containerOrder_Hist}>
                     {/* Order */}
@@ -122,46 +111,33 @@ export const RidesScreen = ({ navigation }) => {
                 </View>
             </View>
 
-            <Spacer paddingT={myHeight(2)} />
+            <Spacer paddingT={myHeight(1.5)} />
             <View style={styles.containerLine} />
 
             {/* <Spacer paddingT={myHeight(0.86)} /> */}
-            {
-                ((i == 0 && progressL.length) || (i == 1 && pendingL.length) || (i == 2 && historyL.length)) ?
 
+            <FlashList
+                showsVerticalScrollIndicator={false}
+                // scrollEnabled={false}
+                data={i == 0 ? progressL : i == 1 ? pendingL : historyL}
+                extraData={i}
+                // extraData={[ac, wifi, topRated, search]}
+                contentContainerStyle={styles.containerContentScroll}
 
-                    <FlashList
-                        showsVerticalScrollIndicator={false}
-                        // scrollEnabled={false}
-                        data={i == 0 ? progressL : i == 1 ? pendingL : historyL}
-                        extraData={i}
-                        // extraData={[ac, wifi, topRated, search]}
-                        contentContainerStyle={styles.containerContentScroll}
-
-                        estimatedItemSize={myHeight(10)}
-                        renderItem={({ item, index }) => {
-                            return (
-                                <TouchableOpacity key={index} activeOpacity={0.95}
-                                    onPress={() => navigation.navigate('OrderDetails', { item, code: i + 1 })}>
+                estimatedItemSize={myHeight(10)}
+                renderItem={({ item, index }) => {
+                    return (
+                        <TouchableOpacity key={index} activeOpacity={0.95}
+                            onPress={() => navigation.navigate('OrderDetails', { item, code: i + 1 })}>
 
 
 
-                                    <RequestInfo item={item} navigation={navigation} code={i + 1} />
-                                </TouchableOpacity>
-                            )
-                        }
-                        }
-                    />
-                    :
-                    <View style={{ flex: 0.7, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={[styles.textCommon, {
-                            fontSize: myFontSize.medium0,
-                            fontFamily: myFonts.bodyBold,
-                            color: myColors.textL4,
-                        }]}>No Ride Found</Text>
-                        {/* (i == 0 && progressL.length)  */}
-                    </View>
-            }
+                            <RequestInfo item={item} navigation={navigation} code={i + 1} />
+                        </TouchableOpacity>
+                    )
+                }
+                }
+            />
             {/* <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.containerContentScroll}>
                 {i == 0 &&
                     progress.map((item, ind) =>
@@ -235,15 +211,15 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     containerButtonOrder_Hist: {
-        paddingHorizontal: myWidth(3.5),
+        paddingHorizontal: myWidth(4.5),
         paddingVertical: myHeight(0.5),
         borderRadius: myWidth(10),
         justifyContent: 'center',
         alignItems: 'center',
     },
     containerLine: {
-        height: myHeight(0.06),
-        backgroundColor: myColors.line,
+        height: myHeight(0.15),
+        backgroundColor: myColors.divider,
     },
 
     containerContentScroll: {
