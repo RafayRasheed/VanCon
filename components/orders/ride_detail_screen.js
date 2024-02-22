@@ -38,8 +38,9 @@ export const RideDetails = ({ navigation, route }) => {
             let driver = []
 
             let dri = null
-            item.sendDrivers.map((it, i) => {
+            item.sendDrivers?.map((it, i) => {
                 const d = item[it.did]
+                console.log('sefsegfsfsfsefsfse', d)
                 if (d.status >= 2) {
                     dri = d
                 }

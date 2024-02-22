@@ -323,7 +323,9 @@ export const HomeScreen = ({ navigation }) => {
                                 </TouchableOpacity>
                             )
                         })}
-                        <Status notifications={history} />
+
+                        <Spacer paddingT={progress.length ? myHeight(20) : myHeight(4)} />
+
                         {/* <Banners />
 
 
@@ -408,7 +410,12 @@ export const HomeScreen = ({ navigation }) => {
                         {/* <Spacer paddingT={myHeight(3)} /> */}
                     </ScrollView>
             }
+            {
+                progress.length ?
 
+                    <Status notifications={progress} />
+                    : null
+            }
         </SafeAreaView>
     )
 }

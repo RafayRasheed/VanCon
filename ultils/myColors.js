@@ -6,18 +6,23 @@ export const myColors = {
     primaryL3: '#e2ccff',
     primaryL4: '#e5d4fc ', //50%
     primaryL5: '#eadefa', //30%
+    primaryL6: '#F4EDFF', //30%
 
     // primary: '#32B768',
-    // primaryT: '#2aa85e',
+    //   primaryT: '#2aa85e',
     // primaryL: '#a7faa5',
     // primaryL2: '#d1f7d0',
     // primaryL3: '#e6fce6',
     // primaryL4: '#edfaed ', //50%
     // primaryL5: '#f7fcf7', //30%
-    green: '#2aa85e',
-
     star: '#FFC700',
     orange: '#FF7A00',
+    green: '#2aa85e',
+    green2: '#00A86B',
+
+    greenL: '#99EDCE',
+
+
     textL0: '#525252',
     textL: '#8F8F8F',
     textL2: '#9E9C9C',

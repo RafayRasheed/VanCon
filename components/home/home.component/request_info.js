@@ -1,5 +1,5 @@
 
-import { Image, TouchableOpacity, SafeAreaView, StyleSheet, Text, View, ImageBackground } from 'react-native'
+import { Image, TouchableOpacity, SafeAreaView, StyleSheet, Text, View, ImageBackground, Linking } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Spacer, myHeight, myWidth } from "../../common"
 import { myFontSize, myFonts, myLetSpacing } from "../../../ultils/myFonts"
@@ -204,7 +204,53 @@ export const RequestInfo = ({ item, navigation, code }) => {
                         null
                 }
 
+                {
+                    code != 1 ? null :
 
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <TouchableOpacity activeOpacity={0.85} style={{
+                                padding: myHeight(0.8), backgroundColor: myColors.background,
+                                elevation: 3,
+                                borderRadius: 100
+                            }}
+                                onPress={() => { Linking.openURL(`tel:${item.driverContact}`); }}
+                            >
+                                <Image source={require('../../assets/home_main/home/phone.png')}
+                                    style={{
+                                        width: myHeight(1.8),
+                                        height: myHeight(1.8),
+                                        resizeMode: 'contain',
+                                        tintColor: myColors.text
+                                    }}
+                                />
+
+                            </TouchableOpacity>
+                            <Spacer paddingEnd={myWidth(3.5)} />
+
+                            <TouchableOpacity activeOpacity={0.85} style={{
+                                padding: myHeight(0.8), backgroundColor: myColors.background,
+                                elevation: 3,
+                                borderRadius: 100
+                            }}
+                                onPress={() => {
+                                    navigation.navigate('Chat',
+                                        { user2: { uid: item.did, name: item.driverName } }
+                                    )
+                                }}
+                            >
+                                <Image source={require('../../assets/home_main/home/navigator/chat2.png')}
+                                    style={{
+                                        width: myHeight(1.8),
+                                        height: myHeight(1.8),
+                                        resizeMode: 'contain',
+                                        tintColor: myColors.text
+                                    }}
+                                />
+                            </TouchableOpacity>
+                        </View>
+
+
+                }
 
 
             </View>

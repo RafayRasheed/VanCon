@@ -42,9 +42,7 @@ export const Status = ({ notifications = [], }) => {
   const iosHeight = useSafeAreaInsets().top
 
   const [notificationExpand, setNotificationExpand] = useState(false);
-  const [notificationsFocusID, setNotificationsFocusID] = useState(
-    typeof notifications.RideId != 'undefined' ? notifications[0].RideId : null,
-  );
+  const [notificationsFocusID, setNotificationsFocusID] = useState(null);
   function onNotificationsFocus(RideId) {
     if (RideId == notificationsFocusID) {
       setNotificationExpand(false);
@@ -54,9 +52,7 @@ export const Status = ({ notifications = [], }) => {
   }
   function settingNotification() {
     if (notifications[0] != null) {
-      const s = notifications.filter(
-        item => item.RideId == notificationsFocusID,
-      );
+
       if (notifications.length) {
         setNotificationVisible([notifications[0]]);
       } else {
