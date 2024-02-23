@@ -236,13 +236,13 @@ export const Status = ({ notifications = [], }) => {
             <Text style={styles.textNotiSwipe}>
               {notificationExpand
                 ? 'Swipe down to see less requests'
-                : 'Swipe up to see more requests'}
+                : `Swipe up to see ${notifications.length - 1} more requests`}
             </Text>
-            <View style={[styles.containerNotiCount, { right: RFValue(35) }]}>
+            {/* <View style={[styles.containerNotiCount, { right: RFValue(35) }]}>
               <Text style={styles.textNotiCount}>
                 {notifications.length}
               </Text>
-            </View>
+            </View> */}
           </View>
         </PanGestureHandler>
       ) : null}
