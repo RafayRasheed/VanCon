@@ -30,6 +30,7 @@ import { setProfile } from '../../redux/profile_reducer';
 import { setChats, setTotalUnread } from '../../redux/chat_reducer';
 import { DriverInfoFull } from './home.component/driver_info_full';
 import { Status } from './home.component/status';
+import { FlashList } from '@shopify/flash-list';
 
 if (!ios && UIManager.setLayoutAnimationEnabledExperimental) {
     UIManager.setLayoutAnimationEnabledExperimental(true)
@@ -315,17 +316,39 @@ export const HomeScreen = ({ navigation }) => {
 
                         </TouchableOpacity>
 
-                        {AllDrivers.map((item, i) => {
-                            return (
-                                <TouchableOpacity activeOpacity={0.8} key={i} onPress={() => navigation.navigate('DriverDetail', { driver: item })}>
 
-                                    <DriverInfoFull driver={item} />
-                                </TouchableOpacity>
-                            )
-                        })}
+                        <FlashList
+                            horizontal={true}
+                            showsHorizontalScrollIndicator={false}
 
-                        <Spacer paddingT={progress.length ? myHeight(20) : myHeight(4)} />
+                            contentContainerStyle={{
+                                flexGrow: 1,
+                                paddingHorizontal: myWidth(4)
+                            }}
 
+                            data={AllDrivers}
+                            keyExtractor={(item, index) => index.toString()}
+                            estimatedItemSize={87}
+
+                            renderItem={({ item, index }) => {
+
+                                return (
+                                    <TouchableOpacity activeOpacity={0.8} key={index} style={{ marginEnd: myWidth(3) }} onPress={() => navigation.navigate('DriverDetail', { driver: item })}>
+
+                                        <DriverInfoFull isSmall={true} driver={item} />
+                                    </TouchableOpacity>
+                                )
+
+                            }
+                            }
+
+
+                        />
+
+
+                        {
+
+                        }
                         {/* <Banners />
 
 

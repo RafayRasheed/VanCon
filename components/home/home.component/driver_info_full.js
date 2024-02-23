@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { addFavoriteRest, removeFavoriteRest } from '../../../redux/favorite_reducer'
 import { ImageUri } from '../../common/image_uri'
 import { RFValue } from 'react-native-responsive-fontsize'
-export const DriverInfoFull = ({ driver, request = null, onSend, }) => {
+export const DriverInfoFull = ({ driver, request = null, onSend, isSmall = false }) => {
     const { favoriteDrivers } = useSelector(state => state.favorite)
     const dispatch = useDispatch()
 
@@ -39,11 +39,11 @@ export const DriverInfoFull = ({ driver, request = null, onSend, }) => {
 
     return (
         <View style={{ paddingVertical: myHeight(1.5) }}>
-            <View style={styles.container}>
+            <View style={[styles.container, isSmall && { width: myWidth(84), alignSelf: 'flex-start' }]}>
                 {/* Image & Others*/}
 
                 <View style={{
-                    height: myHeight(16),
+                    height: isSmall ? myHeight(16) : myHeight(16),
                     width: '100%',
                     // resizeMode: 'cover',
                     // borderRadius: myWidth(2.5),
