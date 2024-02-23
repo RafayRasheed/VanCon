@@ -911,7 +911,7 @@ export const RequestRide = ({ navigation, route }) => {
                         </TouchableOpacity> */}
 
 
-                        <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.7} style={{
+                        <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.8} style={{
                             backgroundColor: myColors.primaryT,
                             height: myHeight(4),
                             width: myHeight(4),
