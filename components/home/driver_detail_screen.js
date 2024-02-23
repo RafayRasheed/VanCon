@@ -320,7 +320,7 @@ export const DriverDetail = ({ navigation, route }) => {
                 height: myHeight(3.3),
                 width: myHeight(3.3),
                 resizeMode: 'contain',
-                tintColor: myColors.background
+                tintColor: myColors.primaryL
               }}
                 source={isFav ? require('../assets/home_main/home/heart.png') : require('../assets/home_main/home/heart_o.png')} />
             </TouchableOpacity>
@@ -813,6 +813,57 @@ export const DriverDetail = ({ navigation, route }) => {
 
 
       </ScrollView>
+
+      <View>
+
+        <View style={{ height: myHeight(0.1), backgroundColor: myColors.dot }} />
+        <Spacer paddingT={myHeight(1.5)} />
+
+        <View style={{
+          flexDirection: 'row',
+          justifyContent: 'center', alignItems: 'center',
+        }}>
+          <TouchableOpacity activeOpacity={0.7} onPress={() => { Linking.openURL(`tel:${driver.contact}`); }}
+            style={{
+              paddingVertical: myHeight(1.2),
+              alignItems: 'center', justifyContent: 'center',
+              backgroundColor: myColors.green2, width: '38%', borderRadius: myWidth(100)
+            }}>
+
+            <Text style={[
+              styles.textCommon,
+              {
+                fontSize: myFontSize.body2,
+                fontFamily: myFonts.heading,
+                color: myColors.background
+              }
+            ]}>CALL</Text>
+          </TouchableOpacity>
+          <Spacer paddingEnd={myWidth(4)} />
+
+          <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('Chat',
+            { user2: driver }
+          )}
+            style={{
+              paddingVertical: myHeight(1.2),
+              alignItems: 'center', justifyContent: 'center',
+              backgroundColor: myColors.greenL, width: '38%', borderRadius: myWidth(100)
+            }}>
+
+            <Text style={[
+              styles.textCommon,
+              {
+                fontSize: myFontSize.body2,
+                fontFamily: myFonts.heading,
+                color: myColors.green
+              }
+            ]}>CHAT</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Spacer paddingT={myHeight(1.5)} />
+
+      </View>
       {
         RatingModal &&
         <TouchableOpacity activeOpacity={1} onPress={() => null}

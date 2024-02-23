@@ -54,7 +54,7 @@ export const Banners = () => {
         dotArr.push(<View key={j} style={[{
             height: myHeight(1), width: j == i ? myHeight(1.5) : myHeight(1),
             margin: 3, borderRadius: myHeight(0.8),
-            backgroundColor: j == i ? myColors.primary : myColors.dot,
+            backgroundColor: j == i ? myColors.green : myColors.dot,
         }]} />)
     }
 
