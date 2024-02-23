@@ -384,7 +384,7 @@ const styles = StyleSheet.create({
     backItem: {
         paddingHorizontal: myWidth(4), width: '100%',
         paddingVertical: myHeight(1), borderRadius: myWidth(2),
-        backgroundColor: myColors.background,
+        backgroundColor: myColors.primaryL6,
         borderWidth: myHeight(0.1), borderColor: myColors.dot,
         flexDirection: 'row', alignItems: 'center', marginVertical: myHeight(0.5)
     },

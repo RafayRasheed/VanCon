@@ -11,7 +11,7 @@ import { setProfile } from "../../../redux/profile_reducer";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { FirebaseUser, updateDeviceTokenToFireBase } from "../../functions/firebase";
 
-export const Login = ({ navigation, showError, showLoading }) => {
+export const Login = ({ navigation, showError, showLoading, email, setEmail, password, setPass, onClose }) => {
 
 
     const dispatch = useDispatch()
@@ -58,6 +58,10 @@ export const Login = ({ navigation, showError, showLoading }) => {
 
             // setLogin(myUser)
             showLoading(false)
+            setTimeout(() => {
+                onClose()
+
+            }, 1000)
             navigation.replace("HomeBottomNavigator")
         }
         else {
@@ -144,7 +148,13 @@ export const Login = ({ navigation, showError, showLoading }) => {
                     <Spacer paddingT={myHeight(0.4)} />
                     {/* Forget Password */}
                     <TouchableOpacity activeOpacity={0.8} style={{ alignSelf: 'flex-end' }}
-                        onPress={() => navigation.navigate('ForgetPass')}>
+                        onPress={() => {
+                            navigation.navigate('ForgetPass')
+                            setTimeout(() => {
+                                onClose()
+
+                            }, 1000)
+                        }}>
                         <Text style={styles.textForgetP}>Forget Password?</Text>
                     </TouchableOpacity>
                 </View>
@@ -163,12 +173,12 @@ export const Login = ({ navigation, showError, showLoading }) => {
                 <View style={{ width: myWidth(75), height: 0.8, backgroundColor: myColors.divider }} />
                 <Spacer paddingT={myHeight(1.2)} />
 
-                <TouchableOpacity onPress={() => null} activeOpacity={0.8} style={[styles.button, { backgroundColor: myColors.offColor4 }]}>
+                {/* <TouchableOpacity onPress={() => null} activeOpacity={0.8} style={[styles.button, { backgroundColor: myColors.offColor4 }]}>
                     <Image style={{ resizeMode: 'contain', width: myWidth(5.3), height: myWidth(5.3) }}
                         source={require('../../assets/account/google.png')} />
                     <Spacer paddingEnd={myWidth(6.4)} />
                     <Text style={styles.textGoogle}>Login with Google</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
             </View>
         </View>

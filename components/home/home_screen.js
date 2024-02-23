@@ -118,6 +118,10 @@ export const HomeScreen = ({ navigation }) => {
     useEffect(() => {
         if (profile.city) {
             getAreasLocations(profile.city)
+            setTimeout(() => {
+
+                setIsLoading(false)
+            }, 1000)
             getAllRestuarant(profile)
 
         }
@@ -270,86 +274,84 @@ export const HomeScreen = ({ navigation }) => {
 
         <SafeAreaView style={styles.container}>
             <StatusbarH />
-            {
-                isLoading ? <HomeSkeleton />
-                    :
-                    <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false} >
 
-                        <Spacer paddingT={myHeight(2)} />
-                        {/* <Text style={[styles.textCommon, {
+            <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false} >
+
+                <Spacer paddingT={myHeight(2)} />
+                {/* <Text style={[styles.textCommon, {
                             fontSize: myFontSize.medium2,
                             fontFamily: myFonts.heading,
                             alignSelf: 'center',
 
                         }]}>Van<Text style={{ color: myColors.primaryT }}>Con</Text></Text> */}
 
-                        <View style={{ paddingHorizontal: myWidth(6) }}>
-                            <Text
-                                numberOfLines={1}
-                                style={{
-                                    color: myColors.text, fontSize: myFontSize.xxBody,
-                                    fontFamily: myFonts.bodyBold
-                                }}>
+                <View style={{ paddingHorizontal: myWidth(6) }}>
+                    <Text
+                        numberOfLines={1}
+                        style={{
+                            color: myColors.text, fontSize: myFontSize.xxBody,
+                            fontFamily: myFonts.bodyBold
+                        }}>
 
-                                {Greeting()}, <Text style={{ color: myColors.primaryT }}>{profile.name}</Text>
-                            </Text>
-                        </View>
-
-
-                        <Spacer paddingT={myHeight(1.5)} />
-
-                        {/* Banner */}
-                        <Banners />
-                        <TouchableOpacity activeOpacity={0.75}
-                            onPress={() => {
-                                console.log('21')
-                                navigation.navigate('RequestRide')
-                            }}>
+                        {Greeting()}, <Text style={{ color: myColors.primaryT }}>{profile.name}</Text>
+                    </Text>
+                </View>
 
 
-                            <Text style={[styles.textCommon,
-                            {
-                                fontFamily: myFonts.bodyBold,
-                                fontSize: myFontSize.xBody,
+                <Spacer paddingT={myHeight(1.5)} />
 
-                            }]}>Book Now</Text>
-
-                        </TouchableOpacity>
-
-
-                        <FlashList
-                            horizontal={true}
-                            showsHorizontalScrollIndicator={false}
-
-                            contentContainerStyle={{
-                                flexGrow: 1,
-                                paddingHorizontal: myWidth(4)
-                            }}
-
-                            data={AllDrivers}
-                            keyExtractor={(item, index) => index.toString()}
-                            estimatedItemSize={87}
-
-                            renderItem={({ item, index }) => {
-
-                                return (
-                                    <TouchableOpacity activeOpacity={0.8} key={index} style={{ marginEnd: myWidth(3) }} onPress={() => navigation.navigate('DriverDetail', { driver: item })}>
-
-                                        <DriverInfoFull isSmall={true} driver={item} />
-                                    </TouchableOpacity>
-                                )
-
-                            }
-                            }
+                {/* Banner */}
+                <Banners />
+                <TouchableOpacity activeOpacity={0.75}
+                    onPress={() => {
+                        console.log('21')
+                        navigation.navigate('RequestRide')
+                    }}>
 
 
-                        />
+                    <Text style={[styles.textCommon,
+                    {
+                        fontFamily: myFonts.bodyBold,
+                        fontSize: myFontSize.xBody,
+
+                    }]}>Book Now</Text>
+
+                </TouchableOpacity>
 
 
-                        {
+                <FlashList
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
 
-                        }
-                        {/* <Banners />
+                    contentContainerStyle={{
+                        flexGrow: 1,
+                        paddingHorizontal: myWidth(4)
+                    }}
+
+                    data={AllDrivers}
+                    keyExtractor={(item, index) => index.toString()}
+                    estimatedItemSize={87}
+
+                    renderItem={({ item, index }) => {
+
+                        return (
+                            <TouchableOpacity activeOpacity={0.8} key={index} style={{ marginEnd: myWidth(3) }} onPress={() => navigation.navigate('DriverDetail', { driver: item })}>
+
+                                <DriverInfoFull isSmall={true} driver={item} />
+                            </TouchableOpacity>
+                        )
+
+                    }
+                    }
+
+
+                />
+
+
+                {
+
+                }
+                {/* <Banners />
 
 
 
@@ -386,8 +388,8 @@ export const HomeScreen = ({ navigation }) => {
                                 </View>
 
                         } */}
-                        {/* New Arrival  Complete*/}
-                        {/* <View>
+                {/* New Arrival  Complete*/}
+                {/* <View>
                             <View style={{ paddingHorizontal: myWidth(4), alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' }}>
                                 <Text style={[styles.textCommon, {
                                     fontSize: myFontSize.xxBody,
@@ -430,15 +432,17 @@ export const HomeScreen = ({ navigation }) => {
                         </View> */}
 
 
-                        <Spacer paddingT={progress.length ? myHeight(25) : 0} />
-                    </ScrollView>
-            }
+                <Spacer paddingT={progress.length ? myHeight(25) : 0} />
+            </ScrollView>
+
             {
                 progress.length ?
 
                     <Status notifications={progress} />
                     : null
             }
+            {isLoading && <HomeSkeleton />}
+
         </SafeAreaView>
     )
 }

@@ -228,12 +228,12 @@ export const AccScreen = ({ navigation }) => {
                         {/* <Spacer paddingT={myHeight(4.4)}/> */}
                         {onLogin ?
                             <Login navigation={navigation} showError={showError} showLoading={setLoading}
-                                email={email} setEmail={setEmail} password={password} setPass={setPass}
+                                email={email} setEmail={setEmail} password={password} setPass={setPass} onClose={onClose}
                             />
                             :
                             <CreateAcc navigate={navigation.navigate} showError={showError} showLoading={setLoading} city={city} setShowCityModal={setShowCityModal}
 
-                                email={email} setEmail={setEmail} password={password} setPass={setPass} name={name} setName={setName}
+                                email={email} setEmail={setEmail} password={password} setPass={setPass} name={name} setName={setName} onClose={onClose}
                             />}
                         <Spacer paddingT={myHeight(4.4)} />
 

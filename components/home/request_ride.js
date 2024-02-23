@@ -1252,12 +1252,14 @@ export const RequestRide = ({ navigation, route }) => {
                                 width: '100%',
                                 paddingBottom: ios ? myHeight(1.2) : myHeight(100) > 600 ? myHeight(0.8) : myHeight(0.1),
                                 paddingTop: ios ? myHeight(1.2) : myHeight(100) > 600 ? myHeight(1.2) : myHeight(0.3),
-                                fontSize: myFontSize.body,
+                                fontSize: myFontSize.xxSmall,
                                 color: myColors.text,
                                 includeFontPadding: false,
                                 fontFamily: myFonts.body,
                                 paddingHorizontal: myWidth(3),
-                                backgroundColor: myColors.primaryL5
+                                backgroundColor: myColors.background,
+                                borderWidth: myHeight(0.1),
+                                borderColor: myColors.dot,
                             }}
                         />
                     </View>
