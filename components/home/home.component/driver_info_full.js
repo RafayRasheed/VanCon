@@ -43,7 +43,7 @@ export const DriverInfoFull = ({ driver, request = null, onSend, isSmall = false
                 {/* Image & Others*/}
 
                 <View style={{
-                    height: isSmall ? myHeight(16) : myHeight(16),
+                    height: isSmall ? myHeight(14.5) : myHeight(16),
                     width: '100%',
                     // resizeMode: 'cover',
                     // borderRadius: myWidth(2.5),
@@ -92,10 +92,10 @@ export const DriverInfoFull = ({ driver, request = null, onSend, isSmall = false
                 <Spacer paddingT={myHeight(0.5)} />
 
                 {/* Detals */}
-                <View style={{ paddingHorizontal: isSmall ? myWidth(2) : myWidth(5) }}>
+                <View style={{ paddingHorizontal: isSmall ? myWidth(3) : myWidth(5), backgroundColor: myColors.background }}>
                     <Text numberOfLines={1}
                         style={{
-                            flex: 1,
+
                             fontSize: myFontSize.xBody,
                             fontFamily: myFonts.heading,
                             color: myColors.text,
@@ -105,11 +105,11 @@ export const DriverInfoFull = ({ driver, request = null, onSend, isSmall = false
                         }}>{driver.vehicleName}</Text>
                     <Spacer paddingT={myHeight(0.5)} />
 
-                    <View style={{ height: myHeight(0.15), backgroundColor: myColors.divider }} />
+                    <View style={{ height: myHeight(0.15), backgroundColor: myColors.dot }} />
 
                     <Spacer paddingT={myHeight(1)} />
 
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', flex: 1 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', }}>
                         {
                             request ? null
 
@@ -254,9 +254,8 @@ const styles = StyleSheet.create({
         backgroundColor: myColors.background,
         overflow: 'hidden',
         borderRadius: myWidth(3.5),
-        elevation: 1,
+        elevation: 3,
         alignSelf: 'center',
-
     },
 
     containerIcon: {

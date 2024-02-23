@@ -11,12 +11,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { deleteLogin } from '../functions/storageMMKV';
 import { deleteProfile } from '../../redux/profile_reducer';
 import { FirebaseUser } from '../functions/firebase';
+import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 
 
 export const Profile = ({ navigation }) => {
     const { profile } = useSelector(state => state.profile)
     const dispatch = useDispatch()
-
+    const [shareModal, SetShareModal] = useState(false)
     const Common = ({ navigate, iconSize, icon, tind = myColors.primaryT, name }) => (
         <View onPress={() => navigation.navigate(navigate)}
             style={{}}>
@@ -67,6 +68,21 @@ export const Profile = ({ navigation }) => {
                 console.log('Token delete To Firebase Succesfully')
             }).catch(err => {
                 console.log('Internal error while Updating a Token', err)
+            });
+    }
+    function onCusSupp() {
+        Linking.openURL('whatsapp://send?text=&phone=923308246728')
+            .then(() => { })
+            .catch(e => {
+                Alert.alert(null, `Whatsapp not installed.`);
+            });
+    }
+    function shareAPP(plat) {
+
+        Linking.openURL(`${plat}${'https://drive.google.com/file/d/16QKcLiA5T7nDzHLAj6IqDVFMoQWIOs6W/view?usp=drive_link'}`)
+            .then(() => { })
+            .catch(e => {
+                Alert.alert(null, `App not installed.`);
             });
     }
 
@@ -183,20 +199,21 @@ export const Profile = ({ navigation }) => {
                     {/* <View style={{ borderTopWidth: myHeight(0.18), borderColor: myColors.dot, }} /> */}
 
 
-                    <TouchableOpacity activeOpacity={0.7} onPress={() => null}
+                    {/* <TouchableOpacity activeOpacity={0.7} onPress={() => null}
                         style={{}}>
 
-                        {/* Notifications */}
                         <Common icon={require('../assets/profile/bellF.png')} iconSize={myHeight(2.8)}
                             name={'Notifications'} navigate={'Notification'}
                         />
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
+
+
                     {/* Divider */}
                     {/* <View style={{ borderTopWidth: myHeight(0.18), borderColor: myColors.dot, }} /> */}
 
 
                     {/* Customer Support */}
-                    <TouchableOpacity activeOpacity={0.7} onPress={() => null}
+                    <TouchableOpacity activeOpacity={0.7} onPress={onCusSupp}
                         style={{}}>
 
                         <Common icon={require('../assets/profile/customer.png')} iconSize={myHeight(3.2)}
@@ -209,7 +226,7 @@ export const Profile = ({ navigation }) => {
 
 
                     {/* Share App */}
-                    <TouchableOpacity activeOpacity={0.7} onPress={() => null}
+                    <TouchableOpacity activeOpacity={0.7} onPress={() => SetShareModal(true)}
                         style={{}}>
 
                         <Common icon={require('../assets/profile/share.png')} iconSize={myHeight(2.8)}
@@ -248,6 +265,68 @@ export const Profile = ({ navigation }) => {
                 <Spacer paddingT={myHeight(5)} />
 
             </SafeAreaView>
+
+
+            {
+                shareModal &&
+                <View style={{ height: '100%', width: '100%', position: 'absolute', backgroundColor: "#00000030", }}>
+                    <TouchableOpacity style={{ flex: 1 }} activeOpacity={0.8} onPress={() => SetShareModal(false)} />
+
+                    <Animated.View entering={SlideInDown} exiting={SlideOutDown}
+                        style={{
+                            backgroundColor: myColors.background, borderTopStartRadius: myWidth(6), borderTopEndRadius: myWidth(6),
+                            paddingVertical: myHeight(2.5), flexDirection: "row", alignItems: 'center', justifyContent: 'space-around',
+                            paddingHorizontal: myWidth(6)
+                        }}>
+                        <TouchableOpacity activeOpacity={0.8} onPress={() => shareAPP('http://twitter.com/share?text=&url=')}
+                            style={{ alignItems: 'center' }}>
+                            <Image style={{
+                                height: myHeight(5),
+                                width: myHeight(5),
+                                resizeMode: 'contain',
+                            }} source={require('../assets/profile/twitter.png')} />
+                            <Spacer paddingT={myHeight(0.5)} />
+
+                            <Text numberOfLines={1} style={[styles.textCommon, {
+                                fontSize: myFontSize.xxSmall,
+                                fontFamily: myFonts.bodyBold,
+                            }]}>Twitter</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity activeOpacity={0.8} onPress={() => shareAPP('https://www.facebook.com/sharer/sharer.php?u=')}
+                            style={{ alignItems: 'center' }}>
+                            <Image style={{
+                                height: myHeight(5),
+                                width: myHeight(5),
+                                resizeMode: 'contain',
+                            }} source={require('../assets/profile/facebook2.png')} />
+                            <Spacer paddingT={myHeight(0.5)} />
+
+                            <Text numberOfLines={1} style={[styles.textCommon, {
+                                fontSize: myFontSize.xxSmall,
+                                fontFamily: myFonts.bodyBold,
+                            }]}>Facebook</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity activeOpacity={0.8} onPress={() => shareAPP('whatsapp://send?text=')}
+                            style={{ alignItems: 'center' }}>
+                            <Image style={{
+                                height: myHeight(5),
+                                width: myHeight(5),
+                                resizeMode: 'contain',
+                            }} source={require('../assets/profile/whatsapp.png')} />
+                            <Spacer paddingT={myHeight(0.5)} />
+
+
+                            <Text numberOfLines={1} style={[styles.textCommon, {
+                                fontSize: myFontSize.xxSmall,
+                                fontFamily: myFonts.bodyBold,
+                            }]}>Whatsapp</Text>
+                        </TouchableOpacity>
+
+                    </Animated.View>
+                </View>
+            }
         </>
     )
 }

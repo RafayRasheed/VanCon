@@ -224,6 +224,7 @@ export function getAllRestuarant(profile) {
           drivers.push(driver)
 
         })
+        console.log('drivers')
 
         storeRedux.dispatch(setAllDriver(drivers))
 

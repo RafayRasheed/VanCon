@@ -282,7 +282,7 @@ export const Search = ({ navigation, route }) => {
 
                         <FlashList
                             showsVerticalScrollIndicator={false}
-                            scrollEnabled={false}
+                            scrollEnabled={true}
                             data={filterItems}
                             extraData={[request]}
                             // extraData={[ac, wifi, topRated, search]}

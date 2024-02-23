@@ -41,6 +41,7 @@
     "react-native-animated-spinkit": "^1.5.2",
     "react-native-big-list": "^1.6.1",
     "react-native-collapsible": "^1.6.1",
+    "react-native-fast-image": "^8.6.3",
     "react-native-gesture-handler": "^2.12.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-linear-gradient": "^2.8.1",

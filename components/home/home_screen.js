@@ -40,7 +40,7 @@ export const HomeScreen = ({ navigation }) => {
     const { profile } = useSelector(state => state.profile)
     const { AllDrivers } = useSelector(state => state.data)
 
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
     const [categories, setCategories] = useState([])
     const [nearbyRestaurant, setNearbyRestaurant] = useState([])
     const [RecommendRestaurant, setRecommendRestaurant] = useState([])
@@ -54,7 +54,15 @@ export const HomeScreen = ({ navigation }) => {
 
 
 
+    useEffect(() => {
+        if (AllDrivers.length) {
+            setTimeout(() => {
 
+                setIsLoading(false)
+            }, 1000)
+
+        }
+    }, [AllDrivers]);
 
 
 
@@ -118,10 +126,7 @@ export const HomeScreen = ({ navigation }) => {
     useEffect(() => {
         if (profile.city) {
             getAreasLocations(profile.city)
-            setTimeout(() => {
 
-                setIsLoading(false)
-            }, 1000)
             getAllRestuarant(profile)
 
         }
@@ -318,34 +323,41 @@ export const HomeScreen = ({ navigation }) => {
 
                 </TouchableOpacity>
 
+                {
+                    AllDrivers.length ?
+                        <View>
+                            <Text style={styles.heading}>Inside Universities</Text>
+                            {/* <Spacer paddingT={myHeight(0.5)} /> */}
+                            <FlashList
+                                horizontal={true}
+                                showsHorizontalScrollIndicator={false}
 
-                <FlashList
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}
+                                contentContainerStyle={{
+                                    flexGrow: 1,
+                                    paddingHorizontal: myWidth(4)
+                                }}
 
-                    contentContainerStyle={{
-                        flexGrow: 1,
-                        paddingHorizontal: myWidth(4)
-                    }}
+                                data={AllDrivers.slice(0, 4)}
+                                keyExtractor={(item, index) => index.toString()}
+                                estimatedItemSize={myHeight(30)}
 
-                    data={AllDrivers}
-                    keyExtractor={(item, index) => index.toString()}
-                    estimatedItemSize={87}
+                                renderItem={({ item, index }) => {
+                                    return (
+                                        <TouchableOpacity activeOpacity={0.8} key={index} style={{ marginEnd: myWidth(4) }} onPress={() => navigation.navigate('DriverDetail', { driver: item })}>
 
-                    renderItem={({ item, index }) => {
+                                            <DriverInfoFull isSmall={true} driver={item} />
+                                        </TouchableOpacity>
+                                    )
 
-                        return (
-                            <TouchableOpacity activeOpacity={0.8} key={index} style={{ marginEnd: myWidth(3) }} onPress={() => navigation.navigate('DriverDetail', { driver: item })}>
-
-                                <DriverInfoFull isSmall={true} driver={item} />
-                            </TouchableOpacity>
-                        )
-
-                    }
-                    }
+                                }
+                                }
 
 
-                />
+                            />
+                        </View>
+                        : null
+                }
+
 
 
                 {
@@ -471,6 +483,15 @@ const styles = StyleSheet.create({
         height: myHeight(4.2),
         marginEnd: myWidth(0.5),
         resizeMode: 'contain',
-    }
+    },
+    heading: {
+        fontSize: myFontSize.medium0,
+        fontFamily: myFonts.heading,
+        color: myColors.text,
+        letterSpacing: myLetSpacing.common,
+        includeFontPadding: false,
+        padding: 0,
+        paddingHorizontal: myWidth(4),
+    },
 
 })
