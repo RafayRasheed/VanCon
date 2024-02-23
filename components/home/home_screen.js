@@ -430,7 +430,7 @@ export const HomeScreen = ({ navigation }) => {
                         </View> */}
 
 
-                        {/* <Spacer paddingT={myHeight(3)} /> */}
+                        <Spacer paddingT={progress.length ? myHeight(25) : 0} />
                     </ScrollView>
             }
             {
