@@ -14,10 +14,10 @@ import { FirebaseUser } from "../../functions/firebase";
 
 
 export const CreateAcc = ({ navigate, showError, showLoading, city, setShowCityModal }) => {
-    const [name, setName] = useState(null)
+    // const [name, setName] = useState(null)
     // const [email, setEmail] = useState('shaheerkhan777.rr@gmail.com')
-    const [email, setEmail] = useState(null)
-    const [password, setPass] = useState()
+    // const [email, setEmail] = useState(null)
+    // const [password, setPass] = useState()
     const [hidePass, setHidePass] = useState(true);
 
     function onGoogle() {

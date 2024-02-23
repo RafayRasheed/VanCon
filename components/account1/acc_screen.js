@@ -26,6 +26,13 @@ export const AccScreen = ({ navigation }) => {
     const [city, setCity] = useState(null)
     const [showCityModal, setShowCityModal] = useState(false)
 
+
+
+    const [name, setName] = useState(null)
+
+    const [email, setEmail] = useState(null)
+    const [password, setPass] = useState(null)
+
     function showError(message) {
         setLoading(false)
         setErrorMsg(message)
@@ -220,9 +227,14 @@ export const AccScreen = ({ navigation }) => {
                         </View>
                         {/* <Spacer paddingT={myHeight(4.4)}/> */}
                         {onLogin ?
-                            <Login navigation={navigation} showError={showError} showLoading={setLoading} />
+                            <Login navigation={navigation} showError={showError} showLoading={setLoading}
+                                email={email} setEmail={setEmail} password={password} setPass={setPass}
+                            />
                             :
-                            <CreateAcc navigate={navigation.navigate} showError={showError} showLoading={setLoading} city={city} setShowCityModal={setShowCityModal} />}
+                            <CreateAcc navigate={navigation.navigate} showError={showError} showLoading={setLoading} city={city} setShowCityModal={setShowCityModal}
+
+                                email={email} setEmail={setEmail} password={password} setPass={setPass} name={name} setName={setName}
+                            />}
                         <Spacer paddingT={myHeight(4.4)} />
 
                     </TouchableOpacity>

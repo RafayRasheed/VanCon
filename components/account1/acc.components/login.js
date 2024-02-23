@@ -16,8 +16,8 @@ export const Login = ({ navigation, showError, showLoading }) => {
 
     const dispatch = useDispatch()
 
-    const [email, setEmail] = useState(null)
-    const [password, setPass] = useState()
+    // const [email, setEmail] = useState(null)
+    // const [password, setPass] = useState()
     const [hidePass, setHidePass] = useState(true);
 
 

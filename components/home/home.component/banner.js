@@ -26,7 +26,7 @@ export const Banners = () => {
                 if (prevI + 1 === maxLength) {
                     // scrollRef.current?.scrollTo({ x: 0, y: 0, animated: true });
                     scrollRef.current?.scrollToOffset({ offset: 0, y: 0, animated: false });
-                    return 0;
+                    return prevI;
                 } else {
 
                     scrollRef.current?.scrollToOffset({ offset: (prevI + 1) * offerWidthSScroll, y: 0, animated: true });
@@ -54,7 +54,7 @@ export const Banners = () => {
         dotArr.push(<View key={j} style={[{
             height: myHeight(1), width: j == i ? myHeight(1.5) : myHeight(1),
             margin: 3, borderRadius: myHeight(0.8),
-            backgroundColor: j == i ? myColors.green : myColors.dot,
+            backgroundColor: j == i ? myColors.primary : myColors.dot,
         }]} />)
     }
 
@@ -124,10 +124,11 @@ export const Banners = () => {
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={{
-                    flexGrow: 1, justifyContent: 'center',
+                    flexGrow: 1, justifyContent: 'center', padding: 0, margin: 0
                     // paddingHorizontal: myWidth(5)
                 }}
                 onScrollBeginDrag={() => { }}
+                scrollEnabled={false}
                 ref={scrollRef}
                 pagingEnabled
                 snapToInterval={offerWidthSScroll}
@@ -138,26 +139,21 @@ export const Banners = () => {
                 data={offers2}
                 keyExtractor={(item, index) => index.toString()}
                 estimatedItemSize={87}
-                ItemSeparatorComponent={() => (
-                    <View style={{
-                        height: myHeight(0.35),
-                        backgroundColor: myColors.divider, marginHorizontal: myWidth(0)
-                    }} />
-                )}
+
                 renderItem={({ item, index }) => {
                     return (
 
                         <View key={i} style={{
-                            width: myWidth(100), height: myWidth(90) * 0.47, marginEnd: myWidth(0),
-                            paddingHorizontal: myWidth(5)
+                            width: myWidth(100), height: myWidth(90) * 0.55, marginEnd: myWidth(0),
+                            paddingHorizontal: myWidth(5),
                         }}>
                             <View
                                 style={{
                                     flexDirection: 'row',
                                     height: '100%', width: '100%',
-                                    borderRadius: myHeight(5),
+                                    borderRadius: myWidth(3),
                                     borderWidth: 1, borderColor: myColors.offColor2,
-                                    overflow: 'hidden'
+                                    overflow: 'hidden', elevation: 5,
                                 }}
 
                             >
@@ -177,11 +173,11 @@ export const Banners = () => {
             />
 
 
-            <Spacer paddingT={myHeight(1.6)} />
+            {/* <Spacer paddingT={myHeight(1.6)} /> */}
             {/*Dots */}
-            <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
+            {/* <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
                 {dotArr}
-            </View>
+            </View> */}
         </View>
 
     )
