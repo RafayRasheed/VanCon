@@ -26,6 +26,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { myFontSize, myFonts, myLetSpacing } from '../../../ultils/myFonts';
 import { myColors } from '../../../ultils/myColors';
+import Collapsible from 'react-native-collapsible';
 
 const { StatusBarManager } = NativeModules;
 
@@ -39,39 +40,42 @@ export const Status = ({ notifications = [], }) => {
   const [notificationVisible, setNotificationVisible] = useState(
     notifications.length != 0 ? [notifications[0]] : null,
   );
+
   const iosHeight = useSafeAreaInsets().top
 
   const [notificationExpand, setNotificationExpand] = useState(false);
   const [notificationsFocusID, setNotificationsFocusID] = useState(null);
-  function onNotificationsFocus(RideId) {
-    if (RideId == notificationsFocusID) {
-      setNotificationExpand(false);
-      return;
-    }
-    setNotificationsFocusID(RideId);
-  }
-  function settingNotification() {
-    if (notifications[0] != null) {
 
-      if (notifications.length) {
-        setNotificationVisible([notifications[0]]);
-      } else {
-        setNotificationVisible([]);
-      }
-    }
-  }
-  useEffect(() => {
-    if (notificationExpand) {
-      setNotificationVisible(notifications);
-    } else {
-      settingNotification();
-    }
-  }, [notificationExpand]);
 
-  useEffect(() => {
-    settingNotification();
-    setNotificationExpand(false);
-  }, [notificationsFocusID]);
+  // function onNotificationsFocus(RideId) {
+  //   if (RideId == notificationsFocusID) {
+  //     setNotificationExpand(false);
+  //     return;
+  //   }
+  //   setNotificationsFocusID(RideId);
+  // }
+  // function settingNotification() {
+  //   if (notifications[0] != null) {
+
+  //     if (notifications.length) {
+  //       setNotificationVisible([notifications[0]]);
+  //     } else {
+  //       setNotificationVisible([]);
+  //     }
+  //   }
+  // }
+  // useEffect(() => {
+  //   if (notificationExpand) {
+  //     setNotificationVisible(notifications);
+  //   } else {
+  //     settingNotification();
+  //   }
+  // }, [notificationExpand]);
+
+  // useEffect(() => {
+  //   settingNotification();
+  //   setNotificationExpand(false);
+  // }, [notificationsFocusID]);
 
   // useEffect(() => {
   //   settingNotification();
@@ -86,6 +90,83 @@ export const Status = ({ notifications = [], }) => {
   // });
   if (notifications.length == 0) {
     return null
+  }
+
+  const ItemItem = ({ item, i }) => {
+    return (
+      <TouchableOpacity
+        activeOpacity={0.9}
+
+        onPress={() => navigation.navigate('OrderDetails', { item, code: 1 })}
+
+        style={[
+          styles.containerNotiItem,
+          notificationExpand &&
+          i != 0 && { borderTopWidth: myHeight(0.085) },
+        ]}
+      >
+        <View style={{ flex: 1 }}>
+          <View style={{ flexDirection: 'row' }}>
+            <Text
+              style={[
+                styles.textNotiItem,
+                { fontFamily: myFonts.heading },
+              ]}
+            >
+              Ride ID:{' '}
+            </Text>
+            <Text
+              style={[styles.textNotiItem, { flex: 1 }]}
+              numberOfLines={1}
+            >
+              {item.id}
+            </Text>
+          </View>
+
+
+
+          <View style={{ flexDirection: 'row' }}>
+            <Text
+              style={[
+                styles.textNotiItem,
+                { fontFamily: myFonts.heading },
+              ]}
+            >
+              Driver:{' '}
+            </Text>
+            <Text
+              style={[styles.textNotiItem, { flex: 1 }]}
+              numberOfLines={1}
+            >
+              {item.driverName}
+            </Text>
+          </View>
+          <View style={{ flexDirection: 'row' }}>
+            <Text
+              style={[
+                styles.textNotiItem,
+                { fontFamily: myFonts.heading },
+              ]}
+            >
+              Status:{' '}
+            </Text>
+            <Text
+              style={[styles.textNotiItem, { flex: 1 }]}
+              numberOfLines={1}
+            >Active</Text>
+          </View>
+        </View>
+
+        <TouchableOpacity disabled activeOpacity={0.6} onPress={() => null}>
+          <Spacer paddingT={myHeight(2.15)} />
+          <Image
+            style={[styles.imageGo]}
+            source={require('../../assets/home_main/home/go.png')}
+          />
+          <Spacer paddingT={myHeight(2.15)} />
+        </TouchableOpacity>
+      </TouchableOpacity>
+    )
   }
   return (
 
@@ -102,22 +183,22 @@ export const Status = ({ notifications = [], }) => {
                 setNotificationExpand(true);
                 // LayoutAnimation.configureNext(LayoutAnimation.Presets.linear)
 
-                LayoutAnimation.configureNext({
-                  create: { property: 'opacity', type: 'linear' },
-                  delete: { property: 'opacity', type: 'linear' },
-                  duration: 300,
-                  update: { type: 'linear' },
-                });
+                // LayoutAnimation.configureNext({
+                //   create: { property: 'opacity', type: 'linear' },
+                //   delete: { property: 'opacity', type: 'linear' },
+                //   duration: 300,
+                //   update: { type: 'linear' },
+                // });
               }
             } else if (s > 25) {
               if (notificationExpand) {
                 setNotificationExpand(false);
-                LayoutAnimation.configureNext({
-                  create: { property: 'opacity', type: 'linear' },
-                  delete: { property: 'opacity', type: 'linear' },
-                  duration: 300,
-                  update: { type: 'linear' },
-                });
+                // LayoutAnimation.configureNext({
+                //   create: { property: 'opacity', type: 'linear' },
+                //   delete: { property: 'opacity', type: 'linear' },
+                //   duration: 300,
+                //   update: { type: 'linear' },
+                // });
               }
             }
           }}
@@ -166,96 +247,26 @@ export const Status = ({ notifications = [], }) => {
         </PanGestureHandler>
       ) : null}
       <ScrollView bounces={false} contentContainerStyle={{ flexGrow: 1 }}>
-        <View>
-          {notificationVisible[0] != null
-            ? notificationVisible.map((item, i) => (
 
-              <TouchableOpacity
-                // onLayout={(event) => console.log('item', event.nativeEvent.layout.height)}
-                activeOpacity={0.9}
-                // onPress={() => {
-                //   if (notificationExpand) {
-                //     // LayoutAnimation.configureNext(LayoutAnimation.Presets.linear)
-                //     LayoutAnimation.configureNext({
-                //       create: {property: 'opacity', type: 'linear'},
-                //       delete: {property: 'opacity', type: 'linear'},
-                //       duration: 30å0,
-                //       update: {type: 'linear'},
-                //     });
-                //     onNotificationsFocus(item.RideId);
-                //   }
-                // }}
-                onPress={() => navigation.navigate('OrderDetails', { item, code: 1 })}
-                key={i}
-                style={[
-                  styles.containerNotiItem,
-                  notificationExpand &&
-                  i != 0 && { borderTopWidth: myHeight(0.085) },
-                ]}
-              >
-                <View style={{ flex: 1 }}>
-                  <View style={{ flexDirection: 'row' }}>
-                    <Text
-                      style={[
-                        styles.textNotiItem,
-                        { fontFamily: myFonts.heading },
-                      ]}
-                    >
-                      Ride ID:{' '}
-                    </Text>
-                    <Text
-                      style={[styles.textNotiItem, { flex: 1 }]}
-                      numberOfLines={1}
-                    >
-                      {item.id}
-                    </Text>
-                  </View>
-                  <View style={{ flexDirection: 'row' }}>
-                    {/* <Text
-                        style={[
-                          styles.textNotiItem,
-                          { fontFamily: myFonts.heading },
-                        ]}
-                      >
-                        Estimated Time:{' '}
-                      </Text>
-                      <Text
-                        style={[styles.textNotiItem, { flex: 1 }]}
-                        numberOfLines={1}
-                      >
-                        {item.EstimatedMins} mins
-                      </Text> */}
-                  </View>
-                  <View style={{ flexDirection: 'row' }}>
-                    <Text
-                      style={[
-                        styles.textNotiItem,
-                        { fontFamily: myFonts.heading },
-                      ]}
-                    >
-                      Status:{' '}
-                    </Text>
-                    <Text
-                      style={[styles.textNotiItem, { flex: 1 }]}
-                      numberOfLines={1}
-                    >
-                      {item.Message}
-                    </Text>
-                  </View>
-                </View>
-                <TouchableOpacity disabled activeOpacity={0.6} onPress={() => null}>
-                  <Spacer paddingT={myHeight(2.15)} />
-                  <Image
-                    style={[styles.imageGo]}
-                    source={require('../../assets/home_main/home/go.png')}
-                  />
-                  <Spacer paddingT={myHeight(2.15)} />
-                </TouchableOpacity>
-              </TouchableOpacity>
-            ))
+        <ItemItem item={notifications[0]} i={0} />
+
+        <Collapsible collapsed={!notificationExpand}>
+          {notifications.length
+            ? notifications.map((item, i) => {
+              if (i == 0) {
+                return null
+              }
+              return (
+                <>
+                  <ItemItem item={item} i={i} key={i} />
+
+                </>
+              )
+
+            })
             : null}
 
-        </View>
+        </Collapsible>
       </ScrollView>
     </GestureHandlerRootView>
   );

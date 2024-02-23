@@ -651,6 +651,7 @@ export const RequestRide = ({ navigation, route }) => {
             }
         }
     }
+
     function checkTime(val, date, content, show) {
         const s = { current: date, time: val }
 
@@ -663,6 +664,7 @@ export const RequestRide = ({ navigation, route }) => {
             setDropoffTime({ ...s })
             validateTime(pickupTime, s)
         }
+
 
 
 
@@ -711,6 +713,180 @@ export const RequestRide = ({ navigation, route }) => {
         setChange(!change)
     }
 
+    const DaysShow = ({ list = [], setList }) => {
+        return (
+            <View style={{ width: '100%', flexWrap: 'wrap', flexDirection: 'row', alignItems: 'center' }}>
+                {
+                    allDays.map((it, i) => {
+                        const is = list.findIndex(li => li == it) != -1
+
+                        return (
+
+                            <>
+                                <TouchableOpacity key={i} activeOpacity={0.8} onPress={() =>
+                                    setList(is ? dailyDays.filter(it2 => it2 != it) : [it, ...dailyDays])
+                                } style={[styles.backItem, {
+                                    backgroundColor: is ? myColors.primaryT : myColors.divider, width: myWidth(11.82), paddingVertical: myHeight(0.6),
+                                    paddingHorizontal: myWidth(0), justifyContent: 'center'
+                                }]}>
+
+
+                                    <Text numberOfLines={1}
+
+                                        style={{
+                                            fontSize: myFontSize.small3,
+                                            fontFamily: myFonts.bodyBold,
+                                            color: is ? myColors.background : myColors.text,
+                                            letterSpacing: myLetSpacing.common,
+                                            includeFontPadding: false,
+                                            padding: 0,
+                                        }}>{it}</Text>
+
+                                </TouchableOpacity>
+                                {
+                                    i != 6 &&
+                                    <Spacer key={i} paddingEnd={myWidth(1.5)} />
+                                }
+                            </>
+
+                        )
+                    }
+                    )
+                }
+            </View>
+        )
+    }
+    const YesNo = ({ fav, setFac }) => {
+        return (
+            <View style={{ width: '100%', flexWrap: 'wrap', flexDirection: 'row', alignItems: 'center' }}>
+
+                <TouchableOpacity activeOpacity={0.8} onPress={() =>
+                    setFac(true)
+                } style={[styles.backItem, {
+                    backgroundColor: fav ? myColors.primaryT : myColors.divider,
+                    paddingVertical: myHeight(0.6), width: myWidth(18),
+                    paddingHorizontal: myWidth(0), justifyContent: 'center'
+                }]}>
+
+
+                    <Text numberOfLines={1}
+
+                        style={{
+                            fontSize: myFontSize.body,
+                            fontFamily: myFonts.bodyBold,
+                            color: fav ? myColors.background : myColors.text,
+                            letterSpacing: myLetSpacing.common,
+                            includeFontPadding: false,
+                            padding: 0,
+                        }}>Yes</Text>
+
+                </TouchableOpacity>
+                <Spacer paddingEnd={myWidth(2.5)} />
+
+                <TouchableOpacity activeOpacity={0.8} onPress={() =>
+                    setFac(false)
+                } style={[styles.backItem, {
+                    backgroundColor: !fav ? myColors.primaryT : myColors.background,
+                    paddingVertical: myHeight(0.6), width: myWidth(18),
+                    paddingHorizontal: myWidth(0), justifyContent: 'center'
+                }]}>
+
+
+                    <Text numberOfLines={1}
+
+                        style={{
+                            fontSize: myFontSize.body,
+                            fontFamily: myFonts.bodyBold,
+                            color: !fav ? myColors.background : myColors.text,
+                            letterSpacing: myLetSpacing.common,
+                            includeFontPadding: false,
+                            padding: 0,
+                        }}>No</Text>
+
+                </TouchableOpacity>
+
+            </View>
+        )
+    }
+    const CommonFaci2 = ({ name, fac, setFAc, ImageSize = 0, ImageSrc = null }) => (
+        <TouchableOpacity style={[styles.backItem, { backgroundColor: fac ? myColors.primaryT : myColors.background }]} activeOpacity={0.75}
+            onPress={() => {
+                setFAc(!fac)
+            }}>
+            {
+                ImageSrc ?
+                    <>
+                        <Image style={{
+                            width: ImageSize, height: ImageSize,
+                            resizeMode: 'contain', marginTop: myHeight(0), tintColor: fac ? myColors.background : myColors.textL4
+                        }}
+                            source={ImageSrc} />
+
+
+                        <Spacer paddingEnd={myWidth(1.5)} />
+                    </>
+                    : null
+            }
+
+            <Text
+
+                style={{
+                    fontSize: myFontSize.body,
+                    fontFamily: myFonts.bodyBold,
+                    color: fac ? myColors.background : myColors.text,
+                    letterSpacing: myLetSpacing.common,
+                    includeFontPadding: false,
+                    padding: 0,
+                }}>{name}</Text>
+
+        </TouchableOpacity>
+    )
+    const CommonItem = ({ text, text2, items = [] }) => {
+        return (
+            <View style={{}}>
+                <Text style={styles.heading}>text</Text>
+                {
+                    text2 ?
+                        <Text style={styles.tesxH}>Amenities</Text>
+                        : null
+                }
+
+                <Spacer paddingT={myHeight(1)} />
+
+                {
+                    items.map((item, i) => {
+                        if (item == null) {
+                            return
+                        }
+                        return (
+
+                            <View key={i} style={styles.backItem}>
+                                <Image style={{
+                                    width: myHeight(1.75), height: myHeight(1.75),
+                                    resizeMode: 'contain', marginTop: -myHeight(0.2), tintColor: myColors.textL4
+                                }}
+                                    source={require('../assets/home_main/home/seatSF.png')} />
+                                <Spacer paddingEnd={myWidth(1.8)} />
+
+                                <Text
+
+                                    style={{
+                                        fontSize: myFontSize.body,
+                                        fontFamily: myFonts.bodyBold,
+                                        color: myColors.text,
+                                        letterSpacing: myLetSpacing.common,
+                                        includeFontPadding: false,
+                                        padding: 0,
+                                    }}>{'drive'}</Text>
+                            </View>
+                        )
+                    })
+                }
+
+
+            </View>
+        )
+    }
     return (
         <>
 
@@ -720,7 +896,7 @@ export const RequestRide = ({ navigation, route }) => {
                 {/* Top */}
                 <View>
                     <Spacer paddingT={myHeight(1.5)} />
-                    <View style={{ marginHorizontal: myWidth(4) }}>
+                    <View style={{ marginHorizontal: myWidth(4), flexDirection: 'row', alignItems: 'center' }}>
                         {/* Search */}
 
                         {/* Arrow */}
@@ -734,10 +910,11 @@ export const RequestRide = ({ navigation, route }) => {
                             }} source={require('../assets/home_main/home/back.png')} />
                         </TouchableOpacity> */}
 
+
                         <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.7} style={{
                             backgroundColor: myColors.primaryT,
-                            height: myHeight(4.2),
-                            width: myHeight(4.2),
+                            height: myHeight(4),
+                            width: myHeight(4),
                             borderRadius: myHeight(3),
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -750,11 +927,11 @@ export const RequestRide = ({ navigation, route }) => {
                                 }
                             } source={require('../assets/startup/goL.png')} />
                         </TouchableOpacity>
-                        <Spacer paddingT={myHeight(1.5)} />
+                        <Spacer paddingEnd={myWidth(5)} />
                         <Text style={[styles.textCommon,
                         {
-                            fontFamily: myFonts.body,
-                            fontSize: myFontSize.medium3
+                            fontFamily: myFonts.heading,
+                            fontSize: myFontSize.xxBody
                         }]}>
                             Book Ride
                         </Text>
@@ -767,6 +944,8 @@ export const RequestRide = ({ navigation, route }) => {
                 <KeyboardAwareScrollView contentContainerStyle={{ paddingHorizontal: myWidth(4) }}>
 
                     <Spacer paddingT={myHeight(1.5)} />
+                    {/* Aminities */}
+
                     {/* Pickup Details */}
                     <View>
 
@@ -1193,6 +1372,30 @@ const styles = StyleSheet.create({
     //Text
     textCommon: {
         color: myColors.text,
+        letterSpacing: myLetSpacing.common,
+        includeFontPadding: false,
+        padding: 0,
+    },
+    backItem: {
+        paddingHorizontal: myWidth(5), width: '100%',
+        paddingVertical: myHeight(0.7), borderRadius: myWidth(2),
+        backgroundColor: myColors.background,
+        borderWidth: myHeight(0.1), borderColor: myColors.dot,
+        flexDirection: 'row', alignItems: 'center', marginVertical: myHeight(0.5)
+    },
+    heading: {
+        fontSize: myFontSize.body4,
+        fontFamily: myFonts.bodyBold,
+        color: myColors.textL4,
+        letterSpacing: myLetSpacing.common,
+        includeFontPadding: false,
+        padding: 0,
+    },
+    tesxH: {
+        fontSize: myFontSize.xxSmall,
+        fontFamily: myFonts.bodyBold,
+        paddingHorizontal: myWidth(3),
+        color: myColors.textL4,
         letterSpacing: myLetSpacing.common,
         includeFontPadding: false,
         padding: 0,
