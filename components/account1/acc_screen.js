@@ -104,7 +104,7 @@ export const AccScreen = ({ navigation }) => {
                         }}>
                         <Text style={{
                             color: myColors.background, fontSize: myFontSize.large2, fontFamily: myFonts.heading
-                        }}>Get {'\n'}Started<Text style={{ color: myColors.primaryT }}>,</Text></Text>
+                        }}>Get {'\n'}Started<Text style={{ color: myColors.primaryT }}>.</Text></Text>
 
                     </View>
 
@@ -124,8 +124,7 @@ export const AccScreen = ({ navigation }) => {
                         <Text style={styles.textWel}>Welcome</Text>
 
                         <Spacer paddingT={myHeight(1)} />
-                        <Text style={styles.textDetail}>
-                            Before enjoying Food media services Please register first</Text>
+                        <Text style={styles.textDetail}></Text>
 
                         <Spacer paddingT={myHeight(3)} />
 

@@ -17,10 +17,10 @@ import { RestaurantInfoSkeleton } from '../common/skeletons';
 import { HomeSkeleton } from './home.component/home_skeleton';
 import { ImageUri } from '../common/image_uri';
 import storage from '@react-native-firebase/storage';
-import { setAllDriver, } from '../../redux/data_reducer';
+import { setAllDriver, setOnlineDriver, } from '../../redux/data_reducer';
 import { setAllRequest, setAllUnread, setHistoryOrderse, setPendingOrderse, setProgressOrderse } from '../../redux/order_reducer';
 import database from '@react-native-firebase/database';
-import { SetErrorAlertToFunction, deccodeInfo, getAllRestuarant, getAreasLocations, getCurrentLocations, statusDate } from '../functions/functions';
+import { SetErrorAlertToFunction, dataFullData, deccodeInfo, getAllRestuarant, getAreasLocations, getCurrentLocations, getDistanceFromRes, getProfileFromFirebase, statusDate } from '../functions/functions';
 import messaging from '@react-native-firebase/messaging';
 import notifee from '@notifee/react-native';
 import { FirebaseUser, getDeviceToken, sendPushNotification, updateDeviceTokenToFireBase } from '../functions/firebase';
@@ -31,6 +31,7 @@ import { setChats, setTotalUnread } from '../../redux/chat_reducer';
 import { DriverInfoFull } from './home.component/driver_info_full';
 import { Status } from './home.component/status';
 import { FlashList } from '@shopify/flash-list';
+import storeRedux from '../../redux/store_redux';
 
 if (!ios && UIManager.setLayoutAnimationEnabledExperimental) {
     UIManager.setLayoutAnimationEnabledExperimental(true)
@@ -38,21 +39,78 @@ if (!ios && UIManager.setLayoutAnimationEnabledExperimental) {
 export const HomeScreen = ({ navigation }) => {
     const name = "Someone";
     const { profile } = useSelector(state => state.profile)
-    const { AllDrivers } = useSelector(state => state.data)
+    const { AllDrivers, onlineDrivers } = useSelector(state => state.data)
+    const { current, history } = useSelector(state => state.location)
 
     const [isLoading, setIsLoading] = useState(true)
     const [categories, setCategories] = useState([])
     const [nearbyRestaurant, setNearbyRestaurant] = useState([])
     const [RecommendRestaurant, setRecommendRestaurant] = useState([])
     const [startPro, setStartPro] = useState({})
-    const { pending, progress, history } = useSelector(state => state.orders)
+    const { pending, progress } = useSelector(state => state.orders)
 
 
 
 
     const dispatch = useDispatch()
+    function updateOnline() {
 
 
+        const reff = `/online/${profile.city}/${profile.uid}`
+
+
+        const { actualDate } = dataFullData()
+        const data = { uid: profile.uid, lastUpdate: actualDate.toString(), location: current ? current : { latitude: 0, longitude: 0 } }
+        database()
+            .ref(reff).update(data).then(() => {
+                console.log('updateOnline Successfullly')
+
+            }).catch((er) => {
+                // Alert.alert(er.toString())
+
+                console.log('Error updateOnline', er)
+            })
+
+
+
+    }
+    // Realtime
+    useEffect(() => {
+        updateOnline()
+        const reff = `/online/${profile.city}`
+        const onValueChange = database()
+            .ref(reff)
+            .on('value', snapshot => {
+                const { current } = storeRedux.getState().location
+
+                if (snapshot.exists()) {
+                    const driv = []
+                    snapshot.forEach((documentSnapshot1, i) => {
+                        const key = documentSnapshot1.key.toString()
+                        const val = documentSnapshot1.val()
+                        const from = val.location
+                        // const distance = 10
+                        const { distance, string } = getDistanceFromRes(from, current ? current : { "latitude": 0, "longitude": 0 })
+                        val.distanceInt = distance
+                        val.distance = string
+                        driv.push(val)
+
+
+
+
+                    });
+                    dispatch(setOnlineDriver(driv.sort(function (a, b) { return a.distanceInt - b.distanceInt })))
+                    console.log('hai bhai hai', driv.length)
+                } else {
+                    console.log('nahi hai')
+                    dispatch(setOnlineDriver([]))
+                    // dispatch()
+                }
+            });
+
+        // Stop listening for updates when no longer required
+        return () => database().ref(reff).off('value', onValueChange);
+    }, []);
 
     useEffect(() => {
         if (AllDrivers.length) {
@@ -107,18 +165,18 @@ export const HomeScreen = ({ navigation }) => {
         });
     }
 
-    function getProfileFromFirebase() {
-        FirebaseUser.doc(profile.uid).get().then((documentSnapshot) => {
-            const prf = documentSnapshot.data()
-            dispatch(setProfile(prf))
-            if (prf.favoriteDrivers && prf.favoriteDrivers.length) {
-                dispatch(setFavoriteDrivers(prf.favoriteDrivers))
-            }
+    // function getProfileFromFirebase() {
+    //     FirebaseUser.doc(profile.uid).get().then((documentSnapshot) => {
+    //         const prf = documentSnapshot.data()
+    //         dispatch(setProfile(prf))
+    //         if (prf.favoriteDrivers && prf.favoriteDrivers.length) {
+    //             dispatch(setFavoriteDrivers(prf.favoriteDrivers))
+    //         }
 
-        }).catch(err => {
-            console.log('Internal error while  getProfileFrom')
-        });
-    }
+    //     }).catch(err => {
+    //         console.log('Internal error while  getProfileFrom')
+    //     });
+    // }
     useEffect(() => {
         getProfileFromFirebase()
 
@@ -134,7 +192,7 @@ export const HomeScreen = ({ navigation }) => {
         // updateDeviceTokenToFireBase(profile.uid)
         // sendPushNotification('hi', 'bye',2 )
 
-        // getCurrentLocations()
+        getCurrentLocations()
         // const interval = setInterval(() => {
         //     getCurrentLocations()
 
@@ -145,6 +203,7 @@ export const HomeScreen = ({ navigation }) => {
     useEffect(() => {
 
     }, [profile]);
+
     // Realtime
     useEffect(() => {
         const onValueChange = database()
@@ -281,7 +340,14 @@ export const HomeScreen = ({ navigation }) => {
             <View>
 
                 <View style={{ paddingHorizontal: myWidth(4), alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Text style={styles.heading}>Inside Universities</Text>
+                    <Text style={{
+                        fontSize: myFontSize.xxBody,
+                        fontFamily: myFonts.heading,
+                        color: myColors.text,
+                        letterSpacing: myLetSpacing.common,
+                        includeFontPadding: false,
+                        padding: 0,
+                    }}>{name}</Text>
 
                     <TouchableOpacity style={{
                         flexDirection: 'row', alignItems: 'center', paddingVertical: myHeight(0.4),
@@ -365,47 +431,70 @@ export const HomeScreen = ({ navigation }) => {
 
                 {/* Banner */}
                 <Banners />
-                <Spacer paddingT={myHeight(1.5)} />
+                <Spacer paddingT={myHeight(3)} />
 
+                {/* <View style={{ width: '100%', height: myHeight(0.2), backgroundColor: myColors.primaryT }} /> */}
                 <View style={{
                     flexDirection: 'row', alignItems: 'center',
-                    paddingHorizontal: myWidth(4), justifyContent: 'center'
+                    // paddingHorizontal: myWidth(4),
+                    justifyContent: 'space-between',
+                    borderWidth: myHeight(0.2), borderColor: myColors.primaryL5
                 }}>
 
-                    <TouchableOpacity activeOpacity={0.75}
+                    <TouchableOpacity activeOpacity={0.75} style={{
+                        width: '49%', justifyContent: 'center',
+                        flexDirection: 'row', alignItems: 'center', paddingVertical: myHeight(1)
+                    }}
                         onPress={() => {
-                            console.log('21')
-                            navigation.navigate('RequestRide', { online: true })
+
+                            navigation.navigate('RequestRide', { online: false })
                         }}>
 
+                        <Image style={{
+                            height: myHeight(3.5), width: myHeight(3.5),
+                            resizeMode: 'contain',
+                        }} source={require('../assets/home_main/home/online.png')} />
+                        <Spacer paddingEnd={myWidth(2.5)} />
 
                         <Text style={[styles.textCommon,
                         {
                             fontFamily: myFonts.bodyBold,
                             fontSize: myFontSize.xBody,
 
-                        }]}>Book Now</Text>
+                        }]}>Book Van</Text>
 
                     </TouchableOpacity>
-                    <Spacer paddingEnd={myWidth(7.5)} />
+                    {/* <Spacer paddingEnd={myWidth(7.5)} /> */}
+                    <View style={{ height: '100%', width: myHeight(0.2), backgroundColor: myColors.divider }} />
 
-                    <TouchableOpacity activeOpacity={0.75}
+
+                    <TouchableOpacity activeOpacity={0.75} style={{
+                        width: '50%', justifyContent: 'center',
+                        flexDirection: 'row', alignItems: 'center', paddingVertical: myHeight(1)
+                    }}
                         onPress={() => {
-                            console.log('21')
+
                             navigation.navigate('RequestRide', { online: true })
                         }}>
 
+                        <Image style={{
+                            height: myHeight(3.5), width: myHeight(3.5),
+                            resizeMode: 'contain',
+                        }} source={require('../assets/home_main/home/online2.png')} />
+                        <Spacer paddingEnd={myWidth(2.5)} />
 
                         <Text style={[styles.textCommon,
                         {
                             fontFamily: myFonts.bodyBold,
                             fontSize: myFontSize.xBody,
 
-                        }]}>Book Onilne</Text>
+                        }]}>Vanpool</Text>
 
                     </TouchableOpacity>
                 </View>
-                <Spacer paddingT={myHeight(0.8)} />
+                {/* <View style={{ width: '100%', height: myHeight(0.2), backgroundColor: myColors.primaryT }} /> */}
+
+                <Spacer paddingT={myHeight(2)} />
 
                 {
                     AllDrivers.length ?
@@ -413,7 +502,13 @@ export const HomeScreen = ({ navigation }) => {
                         : null
                 }
 
+                <Spacer paddingT={myHeight(1.5)} />
 
+                {
+                    onlineDrivers.length ?
+                        < CommonMain Deriver={onlineDrivers} name='Nearby Drivers' />
+                        : null
+                }
 
 
                 {
@@ -511,7 +606,7 @@ export const HomeScreen = ({ navigation }) => {
             }
             {isLoading && <HomeSkeleton />}
 
-        </SafeAreaView>
+        </SafeAreaView >
     )
 }
 

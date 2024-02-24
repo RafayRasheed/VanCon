@@ -4,11 +4,12 @@ import { setCurrentLocation } from '../../redux/location_reducer';
 import Geolocation from '@react-native-community/geolocation';
 import { setErrorAlert } from '../../redux/error_reducer';
 import { getDistance } from 'geolib';
-import { FirebaseLocation } from './firebase';
+import { FirebaseLocation, FirebaseUser } from './firebase';
 import firestore from '@react-native-firebase/firestore';
 
 import { setAreasLocation } from '../../redux/areas_reducer';
 import { setAllDriver } from '../../redux/data_reducer';
+import { setProfile } from '../../redux/profile_reducer';
 export function verificationCode() {
   return Math.floor(Math.random() * 899999 + 100000);
 }
@@ -195,7 +196,9 @@ export const getAreasLocations = () => {
         AllAreas.push(value)
       }
 
-      storeRedux.dispatch(setAreasLocation(AllAreas))
+      storeRedux.dispatch(setAreasLocation(AllAreas.sort(function (a, b) {
+        return a.name.localeCompare(b.name);
+      })))
       getCurrentLocations()
 
     }
@@ -206,10 +209,23 @@ export const getAreasLocations = () => {
 
 
 }
+export function getProfileFromFirebase() {
+  const { profile } = storeRedux.getState().profile
 
+  FirebaseUser.doc(profile.uid).get().then((documentSnapshot) => {
+    const prf = documentSnapshot.data()
+    storeRedux.dispatch(setProfile(prf))
+    console.log('Profile Update')
+
+
+  }).catch(err => {
+    console.log('Internal error while  getProfileFrom', err)
+  });
+}
 export function containString(contain, thiss) {
   return (contain.toLowerCase().includes(thiss.toLowerCase()))
 }
+
 export function getAllRestuarant(profile) {
 
   firestore().collection('drivers')

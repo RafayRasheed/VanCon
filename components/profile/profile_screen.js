@@ -67,7 +67,7 @@ export const Profile = ({ navigation }) => {
             .update({
                 deviceToken: null
             }).then((data) => {
-                navigation.navigate('AccountNavigator')
+                navigation.replace('AccountNavigator')
                 dispatch(deleteProfile())
                 SetCancelRideLoader(false)
 

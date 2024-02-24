@@ -19,7 +19,7 @@ const storeRedux = configureStore({
         data: data_reducer,
         orders: order_reducer,
 
-        locations: location_reducer,
+        location: location_reducer,
         error: error_reducer,
         areas: areas_reducer,
         chats: chat_reducer,
