@@ -193,10 +193,10 @@ export const RequestInfo = ({ item, navigation, code }) => {
                                         height: myHeight(2),
                                         width: myHeight(2),
                                         resizeMode: 'contain',
-                                        tintColor: myColors.primaryT,
+                                        tintColor: myColors.text,
 
                                     }}
-                                        source={require('../../assets/home_main/home/edit.png')} />
+                                        source={require('../../assets/home_main/home/edit2.png')} />
                                 </TouchableOpacity>
                             }
                         </>
@@ -491,7 +491,7 @@ export const RequestInfo = ({ item, navigation, code }) => {
                                         </TouchableOpacity>
                                         <Spacer paddingEnd={myWidth(3)} />
 
-                                        <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('Search', { requestId: item.id, code })}>
+                                        <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('Search', { requestId: item.id, code, name: 'Ride Request' })}>
                                             <Text
                                                 style={[
                                                     styles.textCommon,

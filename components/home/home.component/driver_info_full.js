@@ -105,7 +105,7 @@ export const DriverInfoFull = ({ driver, request = null, onSend, isSmall = false
                         }}>{driver.vehicleName}</Text>
                     <Spacer paddingT={myHeight(0.5)} />
 
-                    <View style={{ height: myHeight(0.15), backgroundColor: myColors.dot }} />
+                    <View style={{ height: myHeight(0.15), backgroundColor: myColors.offColor }} />
 
                     <Spacer paddingT={myHeight(1)} />
 
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
         backgroundColor: myColors.background,
         overflow: 'hidden',
         borderRadius: myWidth(3.5),
-        elevation: 3,
+        elevation: 5,
         alignSelf: 'center',
     },
 

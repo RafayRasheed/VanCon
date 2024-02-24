@@ -28,6 +28,8 @@ const allDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 export const RequestRide = ({ navigation, route }) => {
     const disptach = useDispatch()
     const preReq = route.params ? route.params.preReq : null
+    const online = route.params ? route.params.online : null
+
     const TimeAndLoc = [
         { id: 59, time: '5AM - 9AM', locations: [], show: false },
         { id: 912, time: '9AM - 12PM', locations: [], show: false },
@@ -284,7 +286,7 @@ export const RequestRide = ({ navigation, route }) => {
                     // navigation.goBack()
                     setTimeout(() => {
                         console.log(id)
-                        navigation.replace('Search', { requestId: id, code: 2 })
+                        navigation.replace('Search', { requestId: id, code: 2, name: 'Ride Request' })
                     }, 200)
                 })
                 .catch((er) => {
@@ -328,131 +330,8 @@ export const RequestRide = ({ navigation, route }) => {
         }
     }, [errorMsg])
 
-    async function chooseFile() {
-        const options = {
-            mediaType: 'photo',
-            selectionLimit: 1,
-        }
-        // launchCamera(options, callback => {
-        //     if (callback.assets) {
-        //         console.log(callback.assets)
-        //     }
-        //     else if (callback.didCancel) {
-        //         console.log('didCancel')
-        //     }
-        //     else if (callback.errorCode) {
-        //         console.log('errorCode')
-        //     }
-
-        // });
 
 
-
-    };
-
-
-    const uploadImage = async (uri, name, i) => {
-        const path = `images/drivers/${profile.uid}/${name}`
-        storage()
-            .ref(path)
-            .putFile(uri)
-            .then((s) => {
-                storage().ref(path).getDownloadURL().then((uri) => {
-                    if (name == 'vehicle') {
-
-                        setVehicleImage(uri)
-                        setImageLoading(null)
-                        console.log('uri recieved background', uri)
-
-                    } else {
-                        // MenuImagesURI.push(uri)
-                        // setMenuImagesURI(MenuImagesURI)
-                        // console.log('uri recieved' + name)
-                        if (i != null) {
-                            let copy = [...MenuImages]
-                            copy[i] = uri
-                            setMenuImages(copy)
-
-                            console.log('uri recieved ', name, typeof i)
-
-                            setChange(!change)
-
-                        } else {
-
-                            let copy = [...MenuImages]
-                            copy.push(uri)
-                            setMenuImages(copy)
-                            console.log('uri recieved ', name)
-
-                        }
-                        setImageLoading(null)
-
-                    }
-
-                }).catch((e) => {
-                    setImageLoading(null)
-                    setErrorMsg('Something Wrong')
-
-                    console.log('er', e)
-
-                })
-
-            }).catch((e) => {
-                setImageLoading(null)
-                setErrorMsg('Something Wrong')
-
-                console.log('er', e)
-
-            })
-
-        // try {
-        //     await task;
-        // } catch (e) {
-        //     console.error(e);
-        // }
-
-    };
-
-    const CommonFaciUnies = ({ name, small = false }) => {
-        const fac = insideUniversities.findIndex(it => it == name) != -1
-        return (
-            <TouchableOpacity activeOpacity={0.75}
-                onPress={() => {
-                    if (fac) {
-                        setInsideUniversities(insideUniversities.filter(it => it != name))
-                    } else {
-                        setInsideUniversities([name, ...insideUniversities])
-                    }
-                }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', }}>
-                    <View style={{
-                        height: myHeight(3.5),
-                        width: myHeight(3.5),
-                        paddingTop: myHeight(0.75)
-                    }}>
-                        <View style={{ width: myHeight(2.2), height: myHeight(2.2), borderWidth: 1.5, borderColor: myColors.textL4 }} />
-                        {
-                            fac &&
-                            <Image style={{
-                                height: myHeight(3.3),
-                                width: myHeight(3.3),
-                                resizeMode: 'contain',
-                                tintColor: myColors.primaryT,
-                                marginTop: -myHeight(3.1)
-                            }} source={require('../assets/home_main/home/check.png')} />
-                        }
-                    </View>
-                    {/* <Spacer paddingEnd={myWidth(0.3)} /> */}
-                    <Text style={[styles.textCommon,
-                    {
-                        fontFamily: myFonts.bodyBold,
-                        fontSize: small ? myFontSize.body : myFontSize.xBody,
-
-                    }]}>{name}</Text>
-                </View>
-            </TouchableOpacity>
-        )
-    }
     // For Packages
     const CommonFaciPackage = ({ name }) => {
         // const fac = packages.findIndex(it => it == name) != -1
@@ -515,117 +394,6 @@ export const RequestRide = ({ navigation, route }) => {
             </TouchableOpacity>
         )
     }
-    // For Days
-
-    const CommonFaciDays = ({ name, setDailyDays, dailyDays }) => {
-        const isAll = dailyDays.length == 7
-        const fac = (name == 'All' && isAll) ? true : (dailyDays.findIndex(it => it == name) != -1 && !isAll)
-        return (
-            <TouchableOpacity disabled={isAll && name != 'All'} activeOpacity={0.75}
-                onPress={() => {
-                    if (name == 'All') {
-                        setDailyDays(isAll ? [] : allDays)
-                    }
-                    else {
-                        setDailyDays(fac ? dailyDays.filter(it => it != name) : [name, ...dailyDays])
-                    }
-                }}>
-                {/* <View style={{ flexDirection: 'row', width: myWidth(23), alignItems: 'center', }}>
-                    <View style={{
-                        height: myHeight(3.5),
-                        width: myHeight(3.5),
-                        paddingTop: myHeight(0.75)
-                    }}>
-                        <View style={{ width: myHeight(2.2), height: myHeight(2.2), borderWidth: 1.5, borderColor: myColors.textL4 }} />
-                        {
-                            fac &&
-                            <Image style={{
-                                height: myHeight(3.3),
-                                width: myHeight(3.3),
-                                resizeMode: 'contain',
-                                tintColor: myColors.primaryT,
-                                marginTop: -myHeight(3.1)
-                            }} source={require('../assets/home_main/home/check.png')} />
-                        }
-                    </View>
-                    <Text style={[styles.textCommon,
-                    {
-                        fontFamily: myFonts.bodyBold,
-                        fontSize: myFontSize.xBody,
-                        color: isAll && name != 'All' ? myColors.offColor : myColors.text
-
-                    }]}>{name}</Text>
-                </View> */}
-                <View style={{
-                    flexDirection: 'row', width: myWidth(21),
-                    alignItems: 'center', justifyContent: 'center',
-                    backgroundColor: isAll && name != 'All' ? myColors.background : fac ? myColors.text2 : myColors.background
-                    , borderRadius: myHeight(100), paddingVertical: myHeight(0.2),
-                    marginHorizontal: myWidth(1), marginVertical: myHeight(0.5)
-                }}>
-
-
-                    <Text style={[styles.textCommon,
-                    {
-                        fontFamily: myFonts.heading,
-                        fontSize: myFontSize.body2,
-                        // alignItems: 'center',
-                        color: isAll && name != 'All' ? myColors.textL4 : fac ? myColors.background : myColors.text
-
-                    }]}>{name}</Text>
-                </View>
-            </TouchableOpacity>
-        )
-    }
-    const CommonFaci = ({ name, fac, setFAc }) => (
-        <TouchableOpacity activeOpacity={0.75}
-            onPress={() => {
-                setFAc(!fac)
-            }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', }}>
-                <View style={{
-                    height: myHeight(3.5),
-                    width: myHeight(3.5),
-                    paddingTop: myHeight(0.75)
-                }}>
-                    <View style={{ width: myHeight(2.3), height: myHeight(2.3), borderWidth: 1.5, borderColor: myColors.textL4 }} />
-                    {
-                        fac &&
-                        <Image style={{
-                            height: myHeight(3.3),
-                            width: myHeight(3.3),
-                            resizeMode: 'contain',
-                            tintColor: myColors.primaryT,
-                            marginTop: -myHeight(3.1)
-                        }} source={require('../assets/home_main/home/check.png')} />
-                    }
-                </View>
-                {/* <Spacer paddingEnd={myWidth(0.3)} /> */}
-                <Text style={[styles.textCommon,
-                {
-                    fontFamily: myFonts.bodyBold,
-                    fontSize: myFontSize.body3,
-
-                }]}>{name}</Text>
-            </View>
-        </TouchableOpacity>
-    )
-
-    const verifyLink = async () => {
-        const text = '2'
-        const isValid = text.toString().includes(('https' || 'http') && 'maps')
-        //    (https|http)maps
-        if (isValid) {
-            setLocLink(text)
-            return
-        } else {
-
-            setErrorMsg('Invalid Url')
-        }
-
-        // setLocLink(text);
-    };
-
 
 
 
@@ -757,91 +525,7 @@ export const RequestRide = ({ navigation, route }) => {
             </View>
         )
     }
-    const YesNo = ({ fav, setFac }) => {
-        return (
-            <View style={{ width: '100%', flexWrap: 'wrap', flexDirection: 'row', alignItems: 'center' }}>
 
-                <TouchableOpacity activeOpacity={0.8} onPress={() =>
-                    setFac(true)
-                } style={[styles.backItem, {
-                    backgroundColor: fav ? myColors.primaryT : myColors.divider,
-                    paddingVertical: myHeight(0.6), width: myWidth(18),
-                    paddingHorizontal: myWidth(0), justifyContent: 'center'
-                }]}>
-
-
-                    <Text numberOfLines={1}
-
-                        style={{
-                            fontSize: myFontSize.body,
-                            fontFamily: myFonts.bodyBold,
-                            color: fav ? myColors.background : myColors.text,
-                            letterSpacing: myLetSpacing.common,
-                            includeFontPadding: false,
-                            padding: 0,
-                        }}>Yes</Text>
-
-                </TouchableOpacity>
-                <Spacer paddingEnd={myWidth(2.5)} />
-
-                <TouchableOpacity activeOpacity={0.8} onPress={() =>
-                    setFac(false)
-                } style={[styles.backItem, {
-                    backgroundColor: !fav ? myColors.primaryT : myColors.background,
-                    paddingVertical: myHeight(0.6), width: myWidth(18),
-                    paddingHorizontal: myWidth(0), justifyContent: 'center'
-                }]}>
-
-
-                    <Text numberOfLines={1}
-
-                        style={{
-                            fontSize: myFontSize.body,
-                            fontFamily: myFonts.bodyBold,
-                            color: !fav ? myColors.background : myColors.text,
-                            letterSpacing: myLetSpacing.common,
-                            includeFontPadding: false,
-                            padding: 0,
-                        }}>No</Text>
-
-                </TouchableOpacity>
-
-            </View>
-        )
-    }
-    const CommonFaci2 = ({ name, fac, setFAc, ImageSize = 0, ImageSrc = null }) => (
-        <TouchableOpacity style={[styles.backItem, { backgroundColor: fac ? myColors.primaryT : myColors.background }]} activeOpacity={0.75}
-            onPress={() => {
-                setFAc(!fac)
-            }}>
-            {
-                ImageSrc ?
-                    <>
-                        <Image style={{
-                            width: ImageSize, height: ImageSize,
-                            resizeMode: 'contain', marginTop: myHeight(0), tintColor: fac ? myColors.background : myColors.textL4
-                        }}
-                            source={ImageSrc} />
-
-
-                        <Spacer paddingEnd={myWidth(1.5)} />
-                    </>
-                    : null
-            }
-
-            <Text
-
-                style={{
-                    fontSize: myFontSize.body,
-                    fontFamily: myFonts.bodyBold,
-                    color: fac ? myColors.background : myColors.text,
-                    letterSpacing: myLetSpacing.common,
-                    includeFontPadding: false,
-                    padding: 0,
-                }}>{name}</Text>
-
-        </TouchableOpacity>
-    )
 
     return (
         <>
@@ -869,8 +553,8 @@ export const RequestRide = ({ navigation, route }) => {
 
                         <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.8} style={{
                             backgroundColor: myColors.primaryT,
-                            height: myHeight(4),
-                            width: myHeight(4),
+                            height: myHeight(3.5),
+                            width: myHeight(3.5),
                             borderRadius: myHeight(3),
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -892,7 +576,7 @@ export const RequestRide = ({ navigation, route }) => {
                             Book Ride
                         </Text>
                     </View>
-                    {/* <Spacer paddingT={myHeight(1.5)} /> */}
+                    <Spacer paddingT={myHeight(1)} />
 
                 </View>
                 {/* <View style={{ height: myHeight(0.6), backgroundColor: myColors.divider }} /> */}

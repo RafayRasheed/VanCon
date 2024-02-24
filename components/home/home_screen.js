@@ -275,6 +275,64 @@ export const HomeScreen = ({ navigation }) => {
         else if (hrs >= 0 && hrs < 5) greet = 'Mid Night Owl...';
         return greet;
     }
+
+    const CommonMain = ({ Deriver = [], code = 0, name = '' }) => {
+        return (
+            <View>
+
+                <View style={{ paddingHorizontal: myWidth(4), alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text style={styles.heading}>Inside Universities</Text>
+
+                    <TouchableOpacity style={{
+                        flexDirection: 'row', alignItems: 'center', paddingVertical: myHeight(0.4),
+                        paddingStart: myWidth(2)
+                    }} activeOpacity={0.6} onPress={() => navigation.navigate('Search', { name })}>
+
+                        <Text
+                            style={[styles.textCommon, {
+                                fontSize: myFontSize.body2,
+                                fontFamily: myFonts.bodyBold,
+                                color: myColors.primaryT
+                            }]}>See All</Text>
+                        <Image style={{
+                            height: myHeight(1.5), width: myHeight(1.5), marginStart: myWidth(1),
+                            resizeMode: 'contain', tintColor: myColors.primaryT
+                        }} source={require('../assets/home_main/home/go.png')} />
+                        <Image style={{
+                            height: myHeight(1.5), width: myHeight(1.5), marginStart: -myWidth(1),
+                            resizeMode: 'contain', tintColor: myColors.primaryT
+                        }} source={require('../assets/home_main/home/go.png')} />
+                    </TouchableOpacity>
+                </View>
+                <FlashList
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+
+                    contentContainerStyle={{
+                        // flexGrow: 1,
+                        paddingHorizontal: myWidth(4)
+                    }}
+
+                    data={Deriver.slice(0, 4)}
+                    keyExtractor={(item, index) => index.toString()}
+                    estimatedItemSize={myHeight(30)}
+
+                    renderItem={({ item, index }) => {
+                        return (
+                            <TouchableOpacity activeOpacity={0.8} key={index} style={{ marginEnd: myWidth(4) }} onPress={() => navigation.navigate('DriverDetail', { driver: item })}>
+
+                                <DriverInfoFull isSmall={true} driver={item} code={code} />
+                            </TouchableOpacity>
+                        )
+
+                    }
+                    }
+
+
+                />
+            </View>
+        )
+    }
     return (
 
         <SafeAreaView style={styles.container}>
@@ -307,56 +365,54 @@ export const HomeScreen = ({ navigation }) => {
 
                 {/* Banner */}
                 <Banners />
-                <TouchableOpacity activeOpacity={0.75}
-                    onPress={() => {
-                        console.log('21')
-                        navigation.navigate('RequestRide')
-                    }}>
+                <Spacer paddingT={myHeight(1.5)} />
+
+                <View style={{
+                    flexDirection: 'row', alignItems: 'center',
+                    paddingHorizontal: myWidth(4), justifyContent: 'center'
+                }}>
+
+                    <TouchableOpacity activeOpacity={0.75}
+                        onPress={() => {
+                            console.log('21')
+                            navigation.navigate('RequestRide', { online: true })
+                        }}>
 
 
-                    <Text style={[styles.textCommon,
-                    {
-                        fontFamily: myFonts.bodyBold,
-                        fontSize: myFontSize.xBody,
+                        <Text style={[styles.textCommon,
+                        {
+                            fontFamily: myFonts.bodyBold,
+                            fontSize: myFontSize.xBody,
 
-                    }]}>Book Now</Text>
+                        }]}>Book Now</Text>
 
-                </TouchableOpacity>
+                    </TouchableOpacity>
+                    <Spacer paddingEnd={myWidth(7.5)} />
+
+                    <TouchableOpacity activeOpacity={0.75}
+                        onPress={() => {
+                            console.log('21')
+                            navigation.navigate('RequestRide', { online: true })
+                        }}>
+
+
+                        <Text style={[styles.textCommon,
+                        {
+                            fontFamily: myFonts.bodyBold,
+                            fontSize: myFontSize.xBody,
+
+                        }]}>Book Onilne</Text>
+
+                    </TouchableOpacity>
+                </View>
+                <Spacer paddingT={myHeight(0.8)} />
 
                 {
                     AllDrivers.length ?
-                        <View>
-                            <Text style={styles.heading}>Inside Universities</Text>
-                            {/* <Spacer paddingT={myHeight(0.5)} /> */}
-                            <FlashList
-                                horizontal={true}
-                                showsHorizontalScrollIndicator={false}
-
-                                contentContainerStyle={{
-                                    flexGrow: 1,
-                                    paddingHorizontal: myWidth(4)
-                                }}
-
-                                data={AllDrivers.slice(0, 4)}
-                                keyExtractor={(item, index) => index.toString()}
-                                estimatedItemSize={myHeight(30)}
-
-                                renderItem={({ item, index }) => {
-                                    return (
-                                        <TouchableOpacity activeOpacity={0.8} key={index} style={{ marginEnd: myWidth(4) }} onPress={() => navigation.navigate('DriverDetail', { driver: item })}>
-
-                                            <DriverInfoFull isSmall={true} driver={item} />
-                                        </TouchableOpacity>
-                                    )
-
-                                }
-                                }
-
-
-                            />
-                        </View>
+                        < CommonMain Deriver={AllDrivers} name='Inside Universities' />
                         : null
                 }
+
 
 
 
@@ -491,7 +547,6 @@ const styles = StyleSheet.create({
         letterSpacing: myLetSpacing.common,
         includeFontPadding: false,
         padding: 0,
-        paddingHorizontal: myWidth(4),
     },
 
 })

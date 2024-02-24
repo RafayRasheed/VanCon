@@ -347,7 +347,7 @@ export const DriverDetail = ({ navigation, route }) => {
 
           <Text style={{
             color: myColors.background, fontSize: myFontSize.medium2, fontFamily: myFonts.heading, paddingHorizontal: myWidth(16),
-          }}>{profile.name}</Text>
+          }}>{driver.name}</Text>
           <View
             style={{
               flexDirection: 'row',
@@ -417,6 +417,52 @@ export const DriverDetail = ({ navigation, route }) => {
 
         {/* Details */}
         <View style={{ paddingHorizontal: myWidth(4) }}>
+          {/* Van Info */}
+          <View style={{}}>
+            <Text
+
+              style={styles.heading}>Van Info</Text>
+
+            <Spacer paddingT={myHeight(0.8)} />
+            <View style={{ width: '100%', flexWrap: 'wrap', flexDirection: 'row', alignItems: 'center' }}>
+
+              <View style={styles.backItem}>
+
+                <Text
+
+                  style={{
+                    fontSize: myFontSize.body,
+                    fontFamily: myFonts.bodyBold,
+                    color: myColors.text,
+                    letterSpacing: myLetSpacing.common,
+                    includeFontPadding: false,
+                    padding: 0,
+                  }}>{driver.vehicleName}</Text>
+
+              </View>
+              <Spacer paddingEnd={myWidth(2.8)} />
+
+              <View style={styles.backItem}>
+
+                <Text
+
+                  style={{
+                    fontSize: myFontSize.body,
+                    fontFamily: myFonts.bodyBold,
+                    color: myColors.text,
+                    letterSpacing: myLetSpacing.common,
+                    includeFontPadding: false,
+                    padding: 0,
+                  }}>{driver.vehicleModal}</Text>
+
+              </View>
+
+
+
+            </View>
+          </View>
+          <Spacer paddingT={myHeight(3)} />
+
           {/* Description */}
           <View>
             <Text

@@ -21,12 +21,36 @@ import storeRedux from '../../redux/store_redux';
 import { containString } from '../functions/functions';
 import firestore from '@react-native-firebase/firestore';
 
-const CommonFaci = ({ name, fac, setFAc }) => (
-    <TouchableOpacity activeOpacity={0.75}
-        onPress={() => {
-            setFAc(!fac)
-        }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', }}>
+const CommonFaci = ({ name, fac, setFAc }) => {
+    return (
+        <TouchableOpacity style={{
+            paddingHorizontal: myWidth(5),
+            paddingVertical: myHeight(0.55), borderRadius: myWidth(200),
+            backgroundColor: fac ? myColors.primaryT : myColors.background,
+            borderWidth: myHeight(0.1), borderColor: myColors.primaryL2,
+            flexDirection: 'row', alignItems: 'center', marginEnd: myWidth(3)
+        }} activeOpacity={0.75}
+            onPress={() => {
+                setFAc(!fac)
+            }}>
+
+
+            <Text style={[styles.textCommon,
+            {
+                fontFamily: myFonts.bodyBold,
+                fontSize: myFontSize.body2,
+                color: fac ? myColors.background : myColors.textL0,
+
+            }]}>{name}</Text>
+
+        </TouchableOpacity>
+    )
+    return (
+        <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', }} activeOpacity={0.75}
+            onPress={() => {
+                setFAc(!fac)
+            }}>
+
             <View style={{
                 height: myHeight(3.5),
                 width: myHeight(3.5),
@@ -51,9 +75,10 @@ const CommonFaci = ({ name, fac, setFAc }) => (
                 fontSize: myFontSize.body4,
 
             }]}>{name}</Text>
-        </View>
-    </TouchableOpacity>
-)
+
+        </TouchableOpacity>
+    )
+}
 
 export const Search = ({ navigation, route }) => {
     const { AllDrivers } = useSelector(State => State.data)
@@ -73,6 +98,8 @@ export const Search = ({ navigation, route }) => {
 
     const dispatch = useDispatch()
     const requestId = route.params.requestId
+    const name = route.params.name
+
     // const [fullRest, setFullRest] = useState([])
     const Loader = () => (
         <View style={{ flex: 1, justifyContent: 'center' }}>
@@ -99,11 +126,18 @@ export const Search = ({ navigation, route }) => {
         </View>
     )
     useEffect(() => {
-        if (allRequest.length) {
+        if (allRequest.length && requestId) {
 
             setRequest(allRequest.find(it => it.id == requestId))
         }
     }, [allRequest])
+
+    useEffect(() => {
+        if (!requestId && AllDrivers.length) {
+
+            setAllItems(AllDrivers)
+        }
+    }, [AllDrivers])
     useEffect(() => {
         if (request) {
             const simple = []
@@ -211,9 +245,27 @@ export const Search = ({ navigation, route }) => {
             }}>
                 <StatusbarH />
                 <Spacer paddingT={myHeight(1)} />
+
                 {/* Top */}
                 {/* Search */}
-                <View style={{ paddingHorizontal: myWidth(4), flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{
+                    paddingHorizontal: myWidth(4),
+                }}>
+
+                    <Text style={[styles.textCommon,
+                    {
+                        fontFamily: myFonts.bodyBold,
+                        fontSize: myFontSize.xBody2,
+
+                    }]}>{name}</Text>
+                </View>
+                <Spacer paddingT={myHeight(0.9)} />
+
+                <View style={{
+                    paddingHorizontal: myWidth(4), flexDirection: 'row',
+                    alignItems: 'center'
+                }}>
+
 
                     {/* Search */}
                     <View style={{
@@ -221,7 +273,7 @@ export const Search = ({ navigation, route }) => {
                         flexDirection: 'row',
                         alignItems: 'center',
                         paddingHorizontal: myWidth(4),
-                        borderRadius: myWidth(2.5),
+                        borderRadius: myWidth(20.5),
                         backgroundColor: myColors.offColor7,
                         // marginHorizontal: myWidth(4)
                     }}>
@@ -265,19 +317,25 @@ export const Search = ({ navigation, route }) => {
                 </View>
                 <Spacer paddingT={myHeight(1.5)} />
 
-                <View style={{ marginHorizontal: myWidth(5), flexDirection: 'row', justifyContent: 'space-between' }}>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}
+                    style={{}} contentContainerStyle={{
+                        flexGrow: 1, paddingHorizontal: myWidth(4),
+                        marginVertical: myHeight(0.3)
+                    }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <CommonFaci name={'Top Rated'} fac={topRated} setFAc={setTopRated} />
+                        <CommonFaci name={'With AC'} fac={ac} setFAc={setAc} />
+                        <CommonFaci name={'With Wifi'} fac={wifi} setFAc={setWifi} />
 
-                    <CommonFaci name={'Top Rated'} fac={topRated} setFAc={setTopRated} />
-                    <CommonFaci name={'With AC'} fac={ac} setFAc={setAc} />
-                    <CommonFaci name={'With Wifi'} fac={wifi} setFAc={setWifi} />
-                </View>
+                    </View>
+                </ScrollView>
 
                 <Spacer paddingT={myHeight(1.2)} />
 
                 {/* Icon Empty Or Content */}
                 <View style={{ height: myHeight(0.30), marginHorizontal: myWidth(4), backgroundColor: myColors.divider }} />
 
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 4000 }}>
                     {filterItems.length ?
 
                         <FlashList
@@ -287,9 +345,9 @@ export const Search = ({ navigation, route }) => {
                             extraData={[request]}
                             // extraData={[ac, wifi, topRated, search]}
                             // contentContainerStyle={{ flexGrow: 1 }}
-                            ItemSeparatorComponent={() =>
-                                <View style={{ borderTopWidth: myHeight(0.08), borderColor: myColors.offColor, width: "100%" }} />
-                            }
+                            // ItemSeparatorComponent={() =>
+                            //     <View style={{ borderTopWidth: myHeight(0.08), borderColor: myColors.offColor, width: "100%" }} />
+                            // }
                             estimatedItemSize={myHeight(10)}
                             renderItem={({ item, index }) => {
                                 return (
