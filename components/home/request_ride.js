@@ -286,6 +286,7 @@ export const RequestRide = ({ navigation, route }) => {
                 twoWay,
                 unread: true,
                 contact,
+                location: current ? current : { "latitude": 0, "longitude": 0 }
 
             }
             console.log('New Profile', newProfile)

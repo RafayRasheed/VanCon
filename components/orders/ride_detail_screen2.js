@@ -59,8 +59,8 @@ export const RideDetails2 = ({ navigation, route }) => {
             const others2 = []
             item.sendDrivers?.map((it, i) => {
                 const d = item[it.did]
-                const dri = onlineDrivers.find(it => it.did == d.did)
-                const from = dri ? dri.location : it.location
+                let dri2 = onlineDrivers.find(it => it.did == d.did)
+                const from = dri2 ? dri2.location : it.location
                 const { distance, string } = getDistanceFromRes(from, current ? current : { "latitude": 0, "longitude": 0 }, true)
                 d.distanceInt = distance
                 d.distance = string
@@ -522,6 +522,10 @@ export const RideDetails2 = ({ navigation, route }) => {
 
                     <CommonItem text={'Status'} text2={'The status of the request.'}
                         items={[statusMessages]} color={(item.status < 0 || item.status == 1) ? myColors.red : myColors.green} />
+
+                    <CommonItem text={'Date'} text2={'The date of the request.'}
+                        items={[`${item.date}`]} />
+
 
 
                     <CommonItem text={'Pickup'} text2={'Pickup location and timing.'}

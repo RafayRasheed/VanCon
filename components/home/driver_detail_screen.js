@@ -31,7 +31,7 @@ export const DriverDetail = ({ navigation, route }) => {
   const [review, setReview] = useState(null)
   const [errorMsg, setErrorMsg] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
-  const [reviews, setReviews] = useState(driver.reviews)
+  const [reviews, setReviews] = useState(driver.reviews ? driver.reviews : [])
   const [myReview, setMyRewiew] = useState()
 
   const dispatch = useDispatch()
@@ -49,7 +49,7 @@ export const DriverDetail = ({ navigation, route }) => {
   useEffect(() => {
     let myRew = null
     let allReviews = []
-    driver.reviews.map(it => {
+    driver.reviews?.map(it => {
       if (it.id == profile.uid) {
         myRew = it
       }
@@ -330,17 +330,26 @@ export const DriverDetail = ({ navigation, route }) => {
           {/* image */}
           <View style={{
             borderRadius: myWidth(100), overflow: 'hidden',
+            width: myHeight(13),
+            height: myHeight(13),
             // backgroundColor: myColors.primaryL5, padding: myHeight(1.3),
             // borderWidth: myWidth(0.1), borderColor: myColors.textL4, 
           }}>
-            <Image source={require('../assets/profile/profile.png')}
-              style={{
-                width: myHeight(13),
-                height: myHeight(13),
-                resizeMode: 'contain',
-                // tintColor: myColors.primaryT
-              }}
-            />
+            {
+              driver.image ?
+
+                <ImageUri width={'100%'} height={'100%'} resizeMode='cover' uri={driver.image} />
+                :
+                <Image source={require('../assets/profile/profile.png')}
+                  style={{
+                    width: myHeight(13),
+                    height: myHeight(13),
+                    resizeMode: 'contain',
+                    // tintColor: myColors.primaryT
+                  }}
+                />
+            }
+
 
           </View>
           <Spacer paddingT={myHeight(1)} />
@@ -747,7 +756,7 @@ export const DriverDetail = ({ navigation, route }) => {
 
           {/* Reviews */}
           {
-            reviews.length ?
+            reviews?.length ?
               <View style={{}}>
                 <Text
 
@@ -955,15 +964,25 @@ export const DriverDetail = ({ navigation, route }) => {
                 backgroundColor: myColors.background
               }}
             >
-              {/* <ImageUri width={'100%'} height={'100%'} resizeMode='cover' uri={null} /> */}
-              <Image source={require('../assets/profile/profile.png')}
-                style={{
-                  width: myHeight(13),
-                  height: myHeight(13),
-                  resizeMode: 'contain',
-                  // tintColor: myColors.primaryT
-                }}
-              />
+
+              {
+                driver.image ?
+
+                  <ImageUri width={'100%'} height={'100%'} resizeMode='cover' uri={driver.image} />
+                  :
+                  <Image source={require('../assets/profile/profile.png')}
+                    style={{
+                      width: myHeight(13),
+                      height: myHeight(13),
+                      resizeMode: 'contain',
+                      // tintColor: myColors.primaryT
+                    }}
+                  />
+              }
+
+
+
+
             </View>
             <Spacer paddingT={myHeight(0.5)} />
             <Text

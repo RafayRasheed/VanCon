@@ -333,16 +333,26 @@ export const HomeScreen = ({ navigation }) => {
 
                 if (snapshot.exists()) {
                     const driv = []
+                    let { actualDate } = dataFullData()
+
                     snapshot.forEach((documentSnapshot1, i) => {
                         const key = documentSnapshot1.key.toString()
                         const val = documentSnapshot1.val()
-                        const from = val.location
-                        // const distance = 10
-                        const { distance, string } = getDistanceFromRes(from, current ? current : { "latitude": 0, "longitude": 0 }, true)
-                        val.distanceInt = distance
-                        val.distance = string
-                        driv.push(val)
 
+
+                        const update = new Date(val.lastUpdate)
+                        const isReady = ((actualDate - update) / 1000) <= 50
+
+                        if (isReady) {
+
+                            const from = val.location
+                            // const distance = 10
+                            const { distance, string } = getDistanceFromRes(from, current ? current : { "latitude": 0, "longitude": 0 }, true)
+                            val.distanceInt = distance
+                            val.distance = string
+
+                            driv.push(val)
+                        }
 
 
 
