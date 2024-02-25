@@ -18,7 +18,7 @@ import { HomeSkeleton } from './home.component/home_skeleton';
 import { ImageUri } from '../common/image_uri';
 import storage from '@react-native-firebase/storage';
 import { setAllDriver, setOnlineDriver, } from '../../redux/data_reducer';
-import { setAllRequest, setAllUnread, setHistoryOrderse, setPendingOrderse, setProgressOrderse } from '../../redux/order_reducer';
+import { setAllRequest, setAllUnread, setHistoryOrderse, setOnlineReq, setPendingOrderse, setProgressOrderse } from '../../redux/order_reducer';
 import database from '@react-native-firebase/database';
 import { SetErrorAlertToFunction, dataFullData, deccodeInfo, getAllRestuarant, getAreasLocations, getCurrentLocations, getDistanceFromRes, getProfileFromFirebase, statusDate } from '../functions/functions';
 import messaging from '@react-native-firebase/messaging';
@@ -47,7 +47,7 @@ export const HomeScreen = ({ navigation }) => {
     const [nearbyRestaurant, setNearbyRestaurant] = useState([])
     const [RecommendRestaurant, setRecommendRestaurant] = useState([])
     const [startPro, setStartPro] = useState({})
-    const { pending, progress } = useSelector(state => state.orders)
+    const { pending, progress, onlineReq } = useSelector(state => state.orders)
 
 
 
@@ -55,12 +55,23 @@ export const HomeScreen = ({ navigation }) => {
     const dispatch = useDispatch()
     function updateOnline() {
 
-
-        const reff = `/online/${profile.city}/${profile.uid}`
+        return
+        const plus = ''
+        const reff = `/online/${profile.city}/drivers/${profile.uid}` + plus
 
 
         const { actualDate } = dataFullData()
-        const data = { uid: profile.uid, lastUpdate: actualDate.toString(), location: current ? current : { latitude: 0, longitude: 0 } }
+        const data = {
+            did: profile.uid + plus,
+            uid: profile.uid + plus,
+            name: profile.name,
+            contact: '100000000000',
+            lastUpdate: actualDate.toString(),
+            vehicleName: 'jeee',
+            token: profile.deviceToken,
+
+            location: current ? current : { latitude: 0, longitude: 0 }
+        }
         database()
             .ref(reff).update(data).then(() => {
                 console.log('updateOnline Successfullly')
@@ -74,10 +85,247 @@ export const HomeScreen = ({ navigation }) => {
 
 
     }
+    useEffect(() => {
+        if (current) {
+            updateOnline()
+
+        }
+    }, [current]);
+
     // Realtime
     useEffect(() => {
-        updateOnline()
-        const reff = `/online/${profile.city}`
+
+        // const reff = `/online/${profile.city}/requests/${profile.uid}`
+        // const onValueChange = database()
+        //     .ref(reff)
+        //     .orderByChild('dateInt')
+        //     .on('value', snapshot => {
+        //         if (snapshot.exists()) {
+
+        //             let Pending = []
+        //             let InProgress = []
+        //             let History = []
+        //             let all = []
+        //             const unread = []
+
+        //             snapshot.forEach((documentSnapshot1, i) => {
+        //                 const val = documentSnapshot1.val()
+        //                 all.push(val)
+        //                 // if ( val.status == 2) {
+        //                 //     Pending.push(val)
+        //                 //     if (val.unread) {
+        //                 //         unread.push({ id: val.id, code: 2 })
+        //                 //     }
+        //                 // }
+
+        //                 if (val.status == 2 || val.status == 3) {
+
+        //                     InProgress.push(val)
+        //                     if (val.unread) {
+        //                         unread.push({ id: val.id, code: 1 })
+        //                     }
+        //                 }
+        //                 else {
+        //                     History.push(val)
+        //                     if (val.unread) {
+        //                         unread.push({ id: val.id, code: 3 })
+        //                     }
+        //                 }
+
+
+        //             });
+
+        //             console.log('online',)
+        //             Pending.reverse()
+        //             InProgress.reverse()
+        //             History.reverse()
+        //             // dispatch(setPendingOrderse(Pending))
+        //             // dispatch(setProgressOrderse(InProgress))
+        //             // dispatch(setHistoryOrderse(History))
+        //             // dispatch(setAllRequest(all))
+        //             // dispatch(setAllUnread(unread))
+
+        //         } else {
+        //             console.log('online not fount')
+
+        //             // dispatch(setPendingOrderse([]))
+        //             // dispatch(setProgressOrderse([]))
+        //             // dispatch(setHistoryOrderse([]))
+        //             // dispatch(setAllUnread([]))
+        //             // dispatch(setAllRequest([]))
+
+        //         }
+        //     });
+
+        // // Stop listening for updates when no longer required
+        // return () => database().ref(reff).off('value', onValueChange);
+    }, []);
+    // Realtime
+    useEffect(() => {
+        const onValueChange = database()
+            .ref(`/chats`)
+            .on('value', snapshot => {
+                if (snapshot.exists()) {
+                    let Chats = []
+                    let totalUnread = 0
+                    snapshot.forEach((documentSnapshot1, i) => {
+                        const key = documentSnapshot1.key.toString()
+                        if (key.includes(profile.uid)) {
+                            const val = documentSnapshot1.val()
+                            if (val.captain && val.user) {
+
+                                let messages = { ...val.messages }
+                                let latest = null
+                                let unreadmasseges = 0
+                                let allMessages = []
+                                let allUnreadMessagesToRead = {}
+                                // messages = Object.keys(messages).sort(function (a, b) { return messages[a].dateInt - messages[b].dateInt })
+                                Object.keys(messages).map((it, i) => {
+                                    const mm = messages[it]
+                                    allMessages.push(mm)
+                                    if (latest == null || mm.dateInt > latest.dateInt) {
+                                        latest = mm
+                                    }
+                                    if (mm.senderId != profile.uid && mm.read == false) {
+                                        unreadmasseges += 1
+                                        allUnreadMessagesToRead[it] = { ...mm, read: true }
+
+                                    }
+                                })
+                                if (unreadmasseges) {
+
+                                    totalUnread += 1
+                                }
+                                const chat = {
+                                    ...latest, unreadmasseges, chatId: key,
+                                    user2: val.captain,
+                                    statusTime: statusDate(latest.date, latest.time),
+                                    allMessages, allUnreadMessagesToRead,
+                                    colorC: getAvatarColor(val.captain.name)
+                                }
+                                Chats.push(chat)
+                            }
+                        }
+
+                    });
+                    dispatch(setChats(Chats.sort(function (a, b) { return b.dateInt - a.dateInt })))
+                    dispatch(setTotalUnread(totalUnread))
+                } else {
+                    dispatch(setChats([]))
+                    dispatch(setTotalUnread(0))
+                }
+            });
+
+        // Stop listening for updates when no longer required
+        return () => database().ref(`/chats`).off('value', onValueChange);
+    }, []);
+
+    // Realtime
+    useEffect(() => {
+        const onValueChange = database()
+            .ref(`/requests/${profile.uid}`).orderByChild('dateInt')
+            .on('value', snapshot => {
+                if (snapshot.exists()) {
+                    let Pending = []
+                    let InProgress = []
+                    let History = []
+                    let all = []
+                    const unread = []
+
+
+                    let onlineReq = null
+
+                    snapshot.forEach((documentSnapshot1, i) => {
+                        const val = documentSnapshot1.val()
+                        all.push(val)
+                        if (val.isOnline) {
+                            if (val.status == 2 || val.status == 3) {
+                                let valUpadate = val
+                                let accepted = 0
+                                val.sendDrivers.map(diii => {
+                                    const di = val[diii.did]
+                                    if (di.status == 2) {
+                                        accepted += 1
+                                    }
+
+                                })
+                                valUpadate.accepted = accepted
+                                onlineReq = valUpadate
+                                // InProgress.push(val)
+                                if (val.unread) {
+                                    unread.push({ id: val.id, code: 1 })
+                                }
+                            }
+                            else {
+                                History.push(val)
+                                if (val.unread) {
+                                    unread.push({ id: val.id, code: 3 })
+                                }
+                            }
+                        }
+                        else {
+
+                            if (val.status == 1 || val.status == 2) {
+                                Pending.push(val)
+                                if (val.unread) {
+                                    unread.push({ id: val.id, code: 2 })
+                                }
+                            }
+                            else if (val.status == 3) {
+
+                                InProgress.push(val)
+                                if (val.unread) {
+                                    unread.push({ id: val.id, code: 1 })
+                                }
+                            }
+                            else {
+                                History.push(val)
+                                if (val.unread) {
+                                    unread.push({ id: val.id, code: 3 })
+                                }
+                            }
+                        }
+
+
+
+                    });
+                    if (onlineReq) {
+                        InProgress = [...InProgress, onlineReq]
+                        dispatch(setOnlineReq(onlineReq))
+
+                    }
+                    else {
+                        dispatch(setOnlineReq(null))
+
+                    }
+                    Pending.reverse()
+                    InProgress.reverse()
+                    History.reverse()
+                    dispatch(setPendingOrderse(Pending))
+                    dispatch(setProgressOrderse(InProgress))
+                    dispatch(setHistoryOrderse(History))
+                    dispatch(setAllRequest(all))
+                    dispatch(setAllUnread(unread))
+
+                } else {
+                    dispatch(setPendingOrderse([]))
+                    dispatch(setProgressOrderse([]))
+                    dispatch(setHistoryOrderse([]))
+                    dispatch(setAllUnread([]))
+                    dispatch(setAllRequest([]))
+                    dispatch(setOnlineReq(null))
+
+
+                }
+            });
+
+        // Stop listening for updates when no longer required
+        return () => database().ref(`/requests/${profile.uid}`).off('value', onValueChange);
+    }, []);
+    // Realtime
+    useEffect(() => {
+
+        const reff = `/online/${profile.city}/drivers`
         const onValueChange = database()
             .ref(reff)
             .on('value', snapshot => {
@@ -90,7 +338,7 @@ export const HomeScreen = ({ navigation }) => {
                         const val = documentSnapshot1.val()
                         const from = val.location
                         // const distance = 10
-                        const { distance, string } = getDistanceFromRes(from, current ? current : { "latitude": 0, "longitude": 0 })
+                        const { distance, string } = getDistanceFromRes(from, current ? current : { "latitude": 0, "longitude": 0 }, true)
                         val.distanceInt = distance
                         val.distance = string
                         driv.push(val)
@@ -204,125 +452,7 @@ export const HomeScreen = ({ navigation }) => {
 
     }, [profile]);
 
-    // Realtime
-    useEffect(() => {
-        const onValueChange = database()
-            .ref(`/chats`)
-            .on('value', snapshot => {
-                if (snapshot.exists()) {
-                    let Chats = []
-                    let totalUnread = 0
-                    snapshot.forEach((documentSnapshot1, i) => {
-                        const key = documentSnapshot1.key.toString()
-                        if (key.includes(profile.uid)) {
-                            const val = documentSnapshot1.val()
-                            if (val.captain && val.user) {
 
-                                let messages = { ...val.messages }
-                                let latest = null
-                                let unreadmasseges = 0
-                                let allMessages = []
-                                let allUnreadMessagesToRead = {}
-                                // messages = Object.keys(messages).sort(function (a, b) { return messages[a].dateInt - messages[b].dateInt })
-                                Object.keys(messages).map((it, i) => {
-                                    const mm = messages[it]
-                                    allMessages.push(mm)
-                                    if (latest == null || mm.dateInt > latest.dateInt) {
-                                        latest = mm
-                                    }
-                                    if (mm.senderId != profile.uid && mm.read == false) {
-                                        unreadmasseges += 1
-                                        allUnreadMessagesToRead[it] = { ...mm, read: true }
-
-                                    }
-                                })
-                                if (unreadmasseges) {
-
-                                    totalUnread += 1
-                                }
-                                const chat = {
-                                    ...latest, unreadmasseges, chatId: key,
-                                    user2: val.captain,
-                                    statusTime: statusDate(latest.date, latest.time),
-                                    allMessages, allUnreadMessagesToRead,
-                                    colorC: getAvatarColor(val.captain.name)
-                                }
-                                Chats.push(chat)
-                            }
-                        }
-
-                    });
-                    dispatch(setChats(Chats.sort(function (a, b) { return b.dateInt - a.dateInt })))
-                    dispatch(setTotalUnread(totalUnread))
-                } else {
-                    dispatch(setChats([]))
-                    dispatch(setTotalUnread(0))
-                }
-            });
-
-        // Stop listening for updates when no longer required
-        return () => database().ref(`/chats`).off('value', onValueChange);
-    }, []);
-
-    // Realtime
-    useEffect(() => {
-        const onValueChange = database()
-            .ref(`/requests/${profile.uid}`).orderByChild('dateInt')
-            .on('value', snapshot => {
-                if (snapshot.exists()) {
-                    let Pending = []
-                    let InProgress = []
-                    let History = []
-                    let all = []
-                    const unread = []
-
-                    snapshot.forEach((documentSnapshot1, i) => {
-                        const val = documentSnapshot1.val()
-                        all.push(val)
-                        if (val.status == 1 || val.status == 2) {
-                            Pending.push(val)
-                            if (val.unread) {
-                                unread.push({ id: val.id, code: 2 })
-                            }
-                        }
-                        else if (val.status == 3) {
-
-                            InProgress.push(val)
-                            if (val.unread) {
-                                unread.push({ id: val.id, code: 1 })
-                            }
-                        }
-                        else {
-                            History.push(val)
-                            if (val.unread) {
-                                unread.push({ id: val.id, code: 3 })
-                            }
-                        }
-
-
-                    });
-                    Pending.reverse()
-                    InProgress.reverse()
-                    History.reverse()
-                    dispatch(setPendingOrderse(Pending))
-                    dispatch(setProgressOrderse(InProgress))
-                    dispatch(setHistoryOrderse(History))
-                    dispatch(setAllRequest(all))
-                    dispatch(setAllUnread(unread))
-
-                } else {
-                    dispatch(setPendingOrderse([]))
-                    dispatch(setProgressOrderse([]))
-                    dispatch(setHistoryOrderse([]))
-                    dispatch(setAllUnread([]))
-                    dispatch(setAllRequest([]))
-
-                }
-            });
-
-        // Stop listening for updates when no longer required
-        return () => database().ref(`/requests/${profile.uid}`).off('value', onValueChange);
-    }, []);
     function Greeting() {
         let greet = '';
         const myDate = new Date();
@@ -473,7 +603,10 @@ export const HomeScreen = ({ navigation }) => {
                         flexDirection: 'row', alignItems: 'center', paddingVertical: myHeight(1)
                     }}
                         onPress={() => {
-
+                            if (onlineReq) {
+                                navigation.navigate("OrderDetails2", { item: onlineReq, code: 1 })
+                                return
+                            }
                             navigation.navigate('RequestRide', { online: true })
                         }}>
 
@@ -489,6 +622,19 @@ export const HomeScreen = ({ navigation }) => {
                             fontSize: myFontSize.xBody,
 
                         }]}>Vanpool</Text>
+
+
+                        {
+                            onlineReq ?
+                                <View style={{ position: 'absolute', top: myHeight(0.8), right: myWidth(2) }}>
+
+                                    <View style={{
+                                        height: myHeight(1.5), width: myHeight(1.5), borderRadius: myHeight(1),
+                                        backgroundColor: myColors.primaryT
+                                    }} />
+                                </View>
+                                : null
+                        }
 
                     </TouchableOpacity>
                 </View>

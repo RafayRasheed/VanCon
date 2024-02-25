@@ -10,6 +10,7 @@ import firestore, { Filter } from '@react-native-firebase/firestore';
 import { RequestInfo } from '../home/home.component/request_info';
 import { FlashList } from '@shopify/flash-list';
 import { containString } from '../functions/functions';
+import { RequestInfo2 } from '../home/home.component/request_info2';
 
 
 export const RidesScreen = ({ navigation }) => {
@@ -140,6 +141,17 @@ export const RidesScreen = ({ navigation }) => {
 
                         estimatedItemSize={myHeight(10)}
                         renderItem={({ item, index }) => {
+                            if (item.isOnline) {
+                                return (
+                                    <TouchableOpacity key={index} activeOpacity={0.95}
+                                        onPress={() => navigation.navigate('OrderDetails2', { item, code: i + 1 })}>
+
+
+
+                                        <RequestInfo2 item={item} navigation={navigation} code={i + 1} />
+                                    </TouchableOpacity>
+                                )
+                            }
                             return (
                                 <TouchableOpacity key={index} activeOpacity={0.95}
                                     onPress={() => navigation.navigate('OrderDetails', { item, code: i + 1 })}>

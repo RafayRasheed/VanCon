@@ -8,11 +8,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { addFavoriteRest, removeFavoriteRest } from '../../../redux/favorite_reducer'
 import { ImageUri } from '../../common/image_uri'
 import database from '@react-native-firebase/database';
-import { FirebaseUser, sendPushNotification } from '../../functions/firebase'
+import { FirebaseUser, getTokenAndServerKey, sendPushNotification } from '../../functions/firebase'
 import { setErrorAlert } from '../../../redux/error_reducer'
 import firestore from '@react-native-firebase/firestore';
 
-export const RequestInfo = ({ item, navigation, code }) => {
+export const RequestInfo2 = ({ item, navigation, code }) => {
     const { profile } = useSelector(state => state.profile)
     const [load, setLoad] = useState(false)
     const dispatch = useDispatch()
@@ -29,7 +29,54 @@ export const RequestInfo = ({ item, navigation, code }) => {
             }, 3000)
         }
     }, [item])
+    function onCancelRide() {
 
+        // console.log(item.tokens)
+        // return
+        setLoad(true)
+        const update = { status: -5 }
+        item.sendDrivers.map(diii => {
+            const di = item[diii.did]
+            update[diii.did] = { ...di, unread: true }
+        })
+        database()
+            .ref(`/requests/${profile.uid}/${item.id}`).update(update)
+            .then(() => {
+                console.log('To onRemove successfully')
+                dispatch(setErrorAlert({ Title: 'Request Remove Successfully', Body: null, Status: 2 }))
+                setTimeout(() => {
+
+                    setLoad(false)
+                }, item.status == 1 ? 0 : 1000)
+
+                if (item.status != 1) {
+                    let tokens = []
+                    item.sendDrivers.map(diii => {
+                        const di = item[diii.did]
+                        if (di.status == 1) {
+                            tokens.push(diii.token)
+                            // firestore().collection('drivers').doc(di.did).get().then((data) => {
+                            //     const captain = data.data()
+                            //     const token = captain.deviceToken
+                            //     sendPushNotification('Request Cancelled', `Request ${item.id} is cancelled by ${profile.name}`, 0, [token])
+                            //     console.log('Successfully')
+
+                            // }).catch((err) => { console.log(err) })
+
+                        }
+                    })
+                    sendPushNotification('Request Cancelled', `Request is cancelled by ${profile.name}`, 0, tokens)
+
+                }
+
+
+            })
+            .catch((err) => {
+                console.log('error on accept unread err', err)
+                setLoad(false)
+
+            })
+    }
     function onRemove() {
 
 
@@ -90,14 +137,37 @@ export const RequestInfo = ({ item, navigation, code }) => {
                 backgroundColor: myColors.text, alignSelf: 'center',
                 borderRadius: myWidth(100), flexDirection: 'row', alignItems: 'center'
             }}>
-                <Image
-                    style={{
-                        width: myHeight(2),
-                        height: myHeight(2),
-                        resizeMode: 'contain',
-                        tintColor: myColors.divider
-                    }} source={item.twoWay ? require('../../assets/home_main/home/twoArrow.png') : require('../../assets/home_main/home/oneArrow.png')}
-                />
+                {
+                    isOnline ?
+                        <View style={{
+                            paddingVertical: myHeight(0.3), paddingHorizontal: myWidth(4),
+                            marginEnd: myWidth(1),
+                            backgroundColor: myColors.background, alignSelf: 'center',
+                            borderRadius: myWidth(100), flexDirection: 'row', alignItems: 'center'
+                        }}>
+                            <Text
+                                style={[
+                                    styles.textCommon,
+                                    {
+
+                                        fontSize: myFontSize.xxSmall,
+                                        fontFamily: myFonts.heading,
+                                        color: myColors.text
+                                    },
+                                ]}
+                            >Vanpool</Text>
+                        </View>
+                        :
+                        <Image
+                            style={{
+                                width: myHeight(2),
+                                height: myHeight(2),
+                                resizeMode: 'contain',
+                                tintColor: myColors.divider
+                            }} source={item.twoWay ? require('../../assets/home_main/home/twoArrow.png') : require('../../assets/home_main/home/oneArrow.png')}
+                        />
+                }
+
 
                 <Spacer paddingEnd={myWidth(2.2)} />
                 <Text
@@ -117,9 +187,27 @@ export const RequestInfo = ({ item, navigation, code }) => {
 
 
                 <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+                    {
+                        (item.status == 2 && isOnline) ?
+                            <>
+                                <Text
+                                    style={[
+                                        styles.textCommon,
+                                        {
+                                            flex: 1,
+                                            fontSize: myFontSize.body,
+                                            fontFamily: myFonts.body,
+                                            color: item.accepted ? myColors.green : 'red'
+                                        },
+                                    ]}
+                                >{item.accepted ? `${item.accepted} ${item.accepted == 1 ? 'driver' : 'drivers'} waiting for your response` : 'No driver accepted yet'}</Text>
+
+                            </>
+                            : null
+                    }
 
                     {
-                        code == 2 ?
+                        (code == 2 && !isOnline) ?
                             <>
                                 <Text
                                     style={[
@@ -137,6 +225,7 @@ export const RequestInfo = ({ item, navigation, code }) => {
 
                             :
                             <>
+
                                 {
                                     item.driverName &&
                                     <>
@@ -172,7 +261,7 @@ export const RequestInfo = ({ item, navigation, code }) => {
                 </View>
 
                 {
-                    code == 2 ?
+                    (code == 2 && !isOnline) ?
                         <>
                             {
                                 (item.status == 1 || item.status == 2) &&
@@ -206,49 +295,56 @@ export const RequestInfo = ({ item, navigation, code }) => {
                 }
 
                 {
-                    code != 1 ? null :
+                    (code != 1) ? null :
+                        <>
+                            {console.log(item.driverContact)}
+                            {item.driverContact ?
 
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <TouchableOpacity activeOpacity={0.85} style={{
-                                padding: myHeight(0.8), backgroundColor: myColors.background,
-                                elevation: 3,
-                                borderRadius: 100
-                            }}
-                                onPress={() => { Linking.openURL(`tel:${item.driverContact}`); }}
-                            >
-                                <Image source={require('../../assets/home_main/home/phone.png')}
-                                    style={{
-                                        width: myHeight(1.8),
-                                        height: myHeight(1.8),
-                                        resizeMode: 'contain',
-                                        tintColor: myColors.text
+                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                    <TouchableOpacity activeOpacity={0.85} style={{
+                                        padding: myHeight(0.8), backgroundColor: myColors.background,
+                                        elevation: 3,
+                                        borderRadius: 100
                                     }}
-                                />
+                                        onPress={() => { Linking.openURL(`tel:${item.driverContact}`); }}
+                                    >
+                                        <Image source={require('../../assets/home_main/home/phone.png')}
+                                            style={{
+                                                width: myHeight(1.8),
+                                                height: myHeight(1.8),
+                                                resizeMode: 'contain',
+                                                tintColor: myColors.text
+                                            }}
+                                        />
 
-                            </TouchableOpacity>
-                            <Spacer paddingEnd={myWidth(3.5)} />
+                                    </TouchableOpacity>
+                                    <Spacer paddingEnd={myWidth(3.5)} />
 
-                            <TouchableOpacity activeOpacity={0.85} style={{
-                                padding: myHeight(0.8), backgroundColor: myColors.background,
-                                elevation: 3,
-                                borderRadius: 100
-                            }}
-                                onPress={() => {
-                                    navigation.navigate('Chat',
-                                        { user2: { uid: item.did, name: item.driverName } }
-                                    )
-                                }}
-                            >
-                                <Image source={require('../../assets/home_main/home/navigator/chat2.png')}
-                                    style={{
-                                        width: myHeight(1.8),
-                                        height: myHeight(1.8),
-                                        resizeMode: 'contain',
-                                        tintColor: myColors.text
+                                    <TouchableOpacity activeOpacity={0.85} style={{
+                                        padding: myHeight(0.8), backgroundColor: myColors.background,
+                                        elevation: 3,
+                                        borderRadius: 100
                                     }}
-                                />
-                            </TouchableOpacity>
-                        </View>
+                                        onPress={() => {
+                                            navigation.navigate('Chat',
+                                                { user2: { uid: item.did, name: item.driverName } }
+                                            )
+                                        }}
+                                    >
+                                        <Image source={require('../../assets/home_main/home/navigator/chat2.png')}
+                                            style={{
+                                                width: myHeight(1.8),
+                                                height: myHeight(1.8),
+                                                resizeMode: 'contain',
+                                                tintColor: myColors.text
+                                            }}
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+                                : null
+                            }
+                        </>
+
 
 
                 }
@@ -458,72 +554,136 @@ export const RequestInfo = ({ item, navigation, code }) => {
                         },
                     ]}
                 >{item.distance} </Text>
-
                 {
-                    code == 2 ?
+                    isOnline ?
                         <>
                             {
-                                load ?
-                                    <Text
-                                        style={[
-                                            styles.textCommon,
-                                            {
+                                (code == 1 && item.status == 2) ?
+                                    <>
+                                        {
+                                            load ?
+                                                <Text
+                                                    style={[
+                                                        styles.textCommon,
+                                                        {
 
-                                                fontSize: myFontSize.body,
-                                                fontFamily: myFonts.bodyBold,
-                                                color: myColors.green
-                                            },
-                                        ]}
-                                    >Loading...</Text>
+                                                            fontSize: myFontSize.body,
+                                                            fontFamily: myFonts.bodyBold,
+                                                            color: myColors.green
+                                                        },
+                                                    ]}
+                                                >Loading...</Text>
+                                                :
+                                                <>
+
+                                                    <TouchableOpacity activeOpacity={0.7} onPress={() => onCancelRide()}>
+                                                        <Text
+                                                            style={[
+                                                                styles.textCommon,
+                                                                {
+                                                                    fontSize: myFontSize.body,
+                                                                    fontFamily: myFonts.heading,
+                                                                    color: myColors.red
+                                                                },
+                                                            ]}
+                                                        >{'Cancel Ride'}</Text>
+                                                    </TouchableOpacity>
+
+
+                                                    {/* <Spacer paddingEnd={myWidth(3)} /> */}
+
+
+                                                </>
+                                        }
+                                    </>
+
                                     :
                                     <>
 
-                                        <TouchableOpacity activeOpacity={0.7} onPress={() => onRemove()}>
-                                            <Text
-                                                style={[
-                                                    styles.textCommon,
-                                                    {
-                                                        fontSize: myFontSize.body,
-                                                        fontFamily: myFonts.heading,
-                                                        color: myColors.red
-                                                    },
-                                                ]}
-                                            >{'Remove'}</Text>
-                                        </TouchableOpacity>
-                                        <Spacer paddingEnd={myWidth(3)} />
+                                        <Text
+                                            style={[
+                                                styles.textCommon,
+                                                {
 
-                                        <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('Search', { requestId: item.id, code, name: 'Ride Request' })}>
-                                            <Text
-                                                style={[
-                                                    styles.textCommon,
-                                                    {
-                                                        fontSize: myFontSize.body,
-                                                        fontFamily: myFonts.heading,
-                                                        color: myColors.green
-                                                    },
-                                                ]}
-                                            >{'Send'}</Text>
-                                        </TouchableOpacity>
+                                                    fontSize: myFontSize.body2,
+                                                    fontFamily: myFonts.bodyBold,
+                                                    color: item.status < 0 ? 'red' : myColors.green
+                                                },
+                                            ]}
+                                        >{item.status < 0 ? 'Cancelled' : item.status == 5 ? 'Completed' : `In Progress`}</Text>
                                     </>
+
                             }
                         </>
-
                         :
                         <>
+                            {
+                                code == 2 ?
+                                    <>
+                                        {
+                                            load ?
+                                                <Text
+                                                    style={[
+                                                        styles.textCommon,
+                                                        {
 
-                            <Text
-                                style={[
-                                    styles.textCommon,
-                                    {
+                                                            fontSize: myFontSize.body,
+                                                            fontFamily: myFonts.bodyBold,
+                                                            color: myColors.green
+                                                        },
+                                                    ]}
+                                                >Loading...</Text>
+                                                :
+                                                <>
 
-                                        fontSize: myFontSize.body2,
-                                        fontFamily: myFonts.bodyBold,
-                                        color: item.status < 0 ? 'red' : myColors.green
-                                    },
-                                ]}
-                            >{item.status < 0 ? 'Cancelled' : item.status == 5 ? 'Completed' : `Active`}</Text>
+                                                    <TouchableOpacity activeOpacity={0.7} onPress={() => onRemove()}>
+                                                        <Text
+                                                            style={[
+                                                                styles.textCommon,
+                                                                {
+                                                                    fontSize: myFontSize.body,
+                                                                    fontFamily: myFonts.heading,
+                                                                    color: myColors.red
+                                                                },
+                                                            ]}
+                                                        >{'Remove'}</Text>
+                                                    </TouchableOpacity>
+                                                    <Spacer paddingEnd={myWidth(3)} />
+
+                                                    <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('Search', { requestId: item.id, code, name: 'Ride Request' })}>
+                                                        <Text
+                                                            style={[
+                                                                styles.textCommon,
+                                                                {
+                                                                    fontSize: myFontSize.body,
+                                                                    fontFamily: myFonts.heading,
+                                                                    color: myColors.green
+                                                                },
+                                                            ]}
+                                                        >{'Send'}</Text>
+                                                    </TouchableOpacity>
+                                                </>
+                                        }
+                                    </>
+
+                                    :
+                                    <>
+
+                                        <Text
+                                            style={[
+                                                styles.textCommon,
+                                                {
+
+                                                    fontSize: myFontSize.body2,
+                                                    fontFamily: myFonts.bodyBold,
+                                                    color: item.status < 0 ? 'red' : myColors.green
+                                                },
+                                            ]}
+                                        >{item.status < 0 ? 'Cancelled' : item.status == 5 ? 'Completed' : `Active`}</Text>
+                                    </>
+
+                            }
                         </>
-
                 }
             </View>
             {/* {

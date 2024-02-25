@@ -130,7 +130,7 @@ export const NotiAlertNew = () => {
                 }}>
                     <View style={{
                         width: myWidth(2), height: '100%',
-                        backgroundColor: Status == 0 ? myColors.red : Status == 1 ? myColors.offColor : myColors.primary
+                        backgroundColor: Status == 0 ? myColors.red : Status == 1 ? myColors.offColor : myColors.green
                     }} />
                     <View style={{
                         paddingHorizontal: myWidth(2.4),

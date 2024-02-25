@@ -97,7 +97,7 @@ export const Status = ({ notifications = [], }) => {
       <TouchableOpacity
         activeOpacity={0.9}
 
-        onPress={() => navigation.navigate('OrderDetails', { item, code: 1 })}
+        onPress={() => navigation.navigate(item.isOnline ? "OrderDetails2" : 'OrderDetails', { item, code: 1 })}
 
         style={[
           styles.containerNotiItem,
@@ -106,6 +106,32 @@ export const Status = ({ notifications = [], }) => {
         ]}
       >
         <View style={{ flex: 1 }}>
+
+          {
+            item.isOnline ?
+
+              <View style={{
+                paddingVertical: myHeight(0.1), paddingHorizontal: myWidth(2.5),
+                marginEnd: myWidth(1), marginStart: -myWidth(2.5),
+                marginBottom: myHeight(0.8),
+                backgroundColor: myColors.background, alignSelf: 'flex-start',
+                borderRadius: myWidth(100), flexDirection: 'row', alignItems: 'center'
+              }}>
+                <Text
+                  style={[
+                    styles.textCommon,
+                    {
+
+                      fontSize: myFontSize.xxSmall,
+                      fontFamily: myFonts.heading,
+                      color: myColors.text
+                    },
+                  ]}
+                >Vanpool</Text>
+              </View>
+              :
+              null
+          }
           <View style={{ flexDirection: 'row' }}>
             <Text
               style={[
@@ -123,24 +149,30 @@ export const Status = ({ notifications = [], }) => {
             </Text>
           </View>
 
+          {
+            item.isOnline ?
 
+              null
+              :
 
-          <View style={{ flexDirection: 'row' }}>
-            <Text
-              style={[
-                styles.textNotiItem,
-                { fontFamily: myFonts.heading },
-              ]}
-            >
-              Driver:{' '}
-            </Text>
-            <Text
-              style={[styles.textNotiItem, { flex: 1 }]}
-              numberOfLines={1}
-            >
-              {item.driverName}
-            </Text>
-          </View>
+              <View style={{ flexDirection: 'row' }}>
+                <Text
+                  style={[
+                    styles.textNotiItem,
+                    { fontFamily: myFonts.heading },
+                  ]}
+                >
+                  Driver:{' '}
+                </Text>
+                <Text
+                  style={[styles.textNotiItem, { flex: 1 }]}
+                  numberOfLines={1}
+                >
+                  {item.driverName}
+                </Text>
+              </View>
+          }
+
           <View style={{ flexDirection: 'row' }}>
             <Text
               style={[
@@ -301,7 +333,12 @@ const styles = StyleSheet.create({
     paddingVertical: myHeight(1.3),
     paddingHorizontal: myWidth(4.6),
   },
-
+  textCommon: {
+    color: myColors.text,
+    letterSpacing: myLetSpacing.common,
+    includeFontPadding: false,
+    padding: 0,
+  },
   //Text
   textNotiSwipe: {
     fontSize: myFontSize.body,

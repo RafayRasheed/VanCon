@@ -34,7 +34,7 @@ export const RideDetails = ({ navigation, route }) => {
     useEffect(() => {
         if (item) {
             const statusMessages = code == 1 ? 'Active' : code == 2 ?
-                item.status == 1 ? 'Not send to any driver yet' : `Send to ${item.sendDrivers.length} ${item.sendDrivers.length > 1 ? 'drivers' : 'driver'} yet` : item.status < 0 ?
+                item.status == 1 ? 'Not send to any driver yet' : `Send to ${item.sendDrivers?.length} ${item.sendDrivers?.length > 1 ? 'drivers' : 'driver'} yet` : item.status < 0 ?
                     'Cancelled' : 'Completed'
 
             setStatusMessages(statusMessages)
@@ -168,15 +168,19 @@ export const RideDetails = ({ navigation, route }) => {
                     backgroundColor: myColors.background, flexGrow: 1, paddingHorizontal: myWidth(4)
                 }}>
                     <Spacer paddingT={myHeight(1)} />
+                    <CommonItem text={'Ride ID'} text2={'The ride id of the request.'}
+                        items={[item.id]} />
+
+
                     <CommonItem text={'Status'} text2={'The status of the request.'}
                         items={[statusMessages]} color={(item.status < 0 || item.status == 1) ? myColors.red : myColors.green} />
 
 
                     <CommonItem text={'Pickup'} text2={'Pickup location and timing.'}
-                        items={[item.pickup.name, item.pickupTime.time]} />
+                        items={[item.pickup.name, item.pickupTime?.time]} />
 
                     <CommonItem text={'Dropoff'} text2={'Dropoff location and timing.'}
-                        items={[item.dropoff.name, item.twoWay ? item.dropoffTime.time : null]} />
+                        items={[item.dropoff.name, item.twoWay ? item.dropoffTime?.time : null]} />
 
 
 

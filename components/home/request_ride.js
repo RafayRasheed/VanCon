@@ -17,7 +17,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import Collapsible from 'react-native-collapsible';
 import firestore from '@react-native-firebase/firestore';
 import { setProfile } from '../../redux/profile_reducer';
-import { FirebaseUser } from '../functions/firebase';
+import { FirebaseUser, sendPushNotification } from '../functions/firebase';
 import { setErrorAlert } from '../../redux/error_reducer';
 import { Search } from './locations_screen';
 import { CalenderDate } from './home.component/calender';
@@ -271,7 +271,7 @@ export const RequestRide = ({ navigation, route }) => {
                 id,
                 dateInt, actualDate,
                 date, time,
-
+                isOnline: online,
                 distance: string, actualDistance: distance,
                 pickup, pickupTime, dropoff,
                 dropoffTime, seats, selectedDays,
@@ -309,10 +309,41 @@ export const RequestRide = ({ navigation, route }) => {
                 if (Drivers.length == 0) {
                     setIsLoading(false)
                     disptach(setErrorAlert({ Title: 'No Driver Found', Body: 'Please retry after some time', Status: 0 }))
-
+                    return
 
                 }
 
+                newProfile.sendDrivers = Drivers
+                //    profile.sendDrivers = sendDrivers
+                const tokens = []
+
+                Drivers.map((dr) => {
+                    const driverDetail = { ...dr, status: 1, unread: true }
+                    tokens.push(dr.token)
+                    newProfile[dr.uid] = driverDetail
+                })
+                newProfile.tokens = tokens
+
+                // console.log(tokens)
+                // setIsLoading(false)
+                // return
+
+                // .ref(`online/${profile.city}/requests/${profile.uid}/${newProfile.id}`)
+                database()
+                    .ref(`/requests/${profile.uid}/${newProfile.id}`)
+                    .update(newProfile).then(() => {
+                        disptach(setErrorAlert({ Title: `Request Send Successfully`, Body: `Request send to ${Drivers.length} ${Drivers.length == 1 ? 'driver' : 'drivers'}`, Status: 10 }))
+                        sendPushNotification('New Vanpool Request', `You have a vanpool request from ${profile.name}`, 10, tokens)
+                        setIsLoading(false)
+
+                        navigation.replace("OrderDetails2", { item: newProfile, code: 1 })
+
+
+                    }).catch((err) => {
+                        setIsLoading(false)
+
+                        console.log('error on send request', err)
+                    })
             }
             else {
 
