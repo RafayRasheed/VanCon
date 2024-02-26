@@ -107,14 +107,22 @@ export const RideDetails2 = ({ navigation, route }) => {
     }, [errorMsg])
 
 
-    function onCancelRide() {
+    function onCancelRide(rechange) {
 
 
         setLoad(true)
         const update = { status: -5 }
         item.sendDrivers.map(diii => {
             const di = item[diii.did]
-            update[diii.did] = { ...di, unread: true }
+
+            if (rechange && rechange.did == di.did) {
+
+
+            }
+            else {
+
+                update[diii.did] = { ...di, unread: true }
+            }
         })
         database()
             .ref(`/requests/${profile.uid}/${item.id}`).update(update)
@@ -158,12 +166,30 @@ export const RideDetails2 = ({ navigation, route }) => {
     }
 
     function onRideReject(dr) {
+        const more = false
+
+        item.sendDrivers?.map((it, i) => {
+            const d = item[it.did]
+            if (d.did != dr.did && (d.status > 0)) {
+                more = true
+            }
+
+        })
+
+
+
+
         database()
             .ref(`/requests/${item.uid}/${item.id}/${dr.did}`).update({ status: -1 }).
             then(() => {
 
 
-                sendPushNotification('Request Rejected', `Request is rejected by ${profile.name}`, 0, [dr.token])
+                if (!more) {
+
+                    onCancelRide(dr)
+
+                }
+
                 console.log('To onRideReject successfully')
             })
             .catch((err) => {
@@ -171,6 +197,10 @@ export const RideDetails2 = ({ navigation, route }) => {
 
                 console.log('error on update unread err')
             })
+
+
+
+
 
     }
     function onRideAccept(dr) {
@@ -325,7 +355,7 @@ export const RideDetails2 = ({ navigation, route }) => {
                                     const driver = item
                                     const showChat = item.status > 0 && (!item2.did || item2.did == item.did)
                                     return (
-                                        <TouchableOpacity disabled key={index} activeOpacity={0.85}
+                                        <TouchableOpacity key={index} activeOpacity={0.85}
                                             onPress={() => navigation.navigate('DriverDetail', { driver: item })}>
 
                                             <View style={{
@@ -534,10 +564,13 @@ export const RideDetails2 = ({ navigation, route }) => {
 
 
                     <CommonItem text={'Status'} text2={'The status of the request.'}
-                        items={[statusMessages]} color={(item.status < 0 || item.status == 1) ? myColors.red : myColors.green} />
+                        items={[statusMessages]} color={(item.status < 0) ? myColors.red : myColors.green} />
 
                     <CommonItem text={'Date'} text2={'The date of the request.'}
                         items={[`${item.date}`]} />
+
+                    <CommonItem text={'Offer'} text2={'The offer of the request by you.'}
+                        items={[`${item.offer} Rs`]} />
 
 
 
@@ -551,7 +584,6 @@ export const RideDetails2 = ({ navigation, route }) => {
 
                     <CommonItem text={'Seats'} text2={'Amount of seats booked.'}
                         items={[item.seats]} />
-
 
 
                     <CommonItem text={'Distance Traveled '} text2={'The distance traveled from the pickup to dropoff'}

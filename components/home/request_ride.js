@@ -77,7 +77,7 @@ export const RequestRide = ({ navigation, route }) => {
     const [errorMsg, setErrorMsg] = useState(null)
     const [showTimeModal, setShowTimeModal] = useState(false)
     const [showLoc, setShowLoc] = useState(false)
-    const [contact, setContact] = useState(null)
+    const [contact, setContact] = useState(preReq ? preReq.contact : null)
 
 
     const [pickup, setPickup] = useState(preReq ? preReq.pickup : null)
@@ -228,7 +228,7 @@ export const RequestRide = ({ navigation, route }) => {
             setErrorMsg('Please Select Paid')
             return false
         }
-        if (!online && !checkOffer()) {
+        if (!checkOffer()) {
             return false
         }
 
@@ -844,6 +844,110 @@ export const RequestRide = ({ navigation, route }) => {
                     </View>
 
                     <Spacer paddingT={myHeight(2.5)} />
+
+                    {
+                        online ?
+                            <>
+                                {/* Contact */}
+                                <View style={{}}>
+                                    <Text
+
+                                        style={styles.heading}>Offer</Text>
+
+
+                                    <View style={{ paddingHorizontal: myWidth(2) }}>
+                                        <Text
+
+                                            style={styles.tesxH}>Enter your Offer.</Text>
+                                        <Spacer paddingT={myHeight(0.8)} />
+                                        <View style={[styles.backItem, { flexDirection: 'row', alignItems: 'center' }]}>
+
+                                            <Text style={[styles.heading,
+                                            {
+                                                flex: 1,
+                                                fontSize: myFontSize.body,
+
+
+                                            }]}>Your Offer</Text>
+
+
+                                            <View style={{
+                                                flexDirection: 'row',
+                                                // borderRadius: myWidth(2),
+                                                width: myFontSize.body2 + myWidth(26),
+                                                paddingVertical: myHeight(0),
+                                                paddingHorizontal: myWidth(3),
+                                                color: myColors.text,
+                                                backgroundColor: myColors.background,
+                                                borderBottomWidth: 0.7,
+                                                borderColor: myColors.primaryT
+                                            }}>
+
+                                                <TextInput placeholder=""
+                                                    autoCorrect={false}
+                                                    placeholderTextColor={myColors.text}
+                                                    selectionColor={myColors.primary}
+                                                    cursorColor={myColors.primaryT}
+                                                    editable={false}
+                                                    style={{
+                                                        width: 0,
+                                                        padding: 0,
+                                                        textAlignVertical: 'center',
+                                                        fontFamily: myFonts.body,
+                                                        fontSize: myFontSize.xxSmall,
+                                                        backgroundColor: myColors.background,
+
+                                                        // textAlign: 'center'
+                                                    }}
+                                                />
+                                                <TextInput placeholder="Ex 5000"
+                                                    maxLength={3242}
+                                                    autoCorrect={false}
+                                                    placeholderTextColor={myColors.offColor}
+                                                    selectionColor={myColors.primary}
+                                                    cursorColor={myColors.primaryT}
+                                                    value={offer} onChangeText={setOffer}
+                                                    keyboardType='numeric'
+                                                    style={{
+                                                        fontFamily: myFonts.body,
+                                                        fontSize: myFontSize.xxSmall,
+                                                        flex: 1,
+                                                        padding: 0,
+                                                        backgroundColor: myColors.background,
+
+                                                        // textAlign: 'center'
+                                                    }}
+                                                />
+
+                                                <TextInput placeholder=" Rs"
+                                                    autoCorrect={false}
+                                                    placeholderTextColor={myColors.text}
+                                                    selectionColor={myColors.primary}
+                                                    cursorColor={myColors.primaryT}
+                                                    editable={false}
+                                                    style={{
+
+                                                        padding: 0,
+                                                        textAlignVertical: 'center',
+                                                        fontFamily: myFonts.body,
+                                                        fontSize: myFontSize.xxSmall,
+                                                        backgroundColor: myColors.background,
+
+                                                        // textAlign: 'center'
+                                                    }}
+                                                />
+
+
+                                            </View>
+                                        </View>
+                                    </View>
+                                </View>
+
+                                <Spacer paddingT={myHeight(2.5)} />
+                            </>
+                            : null
+                    }
+
 
                     {/* Seats */}
                     <View style={[styles.backItem, { flexDirection: 'row', alignItems: 'center' }]}>

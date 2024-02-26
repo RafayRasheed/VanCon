@@ -771,14 +771,14 @@ export const DriverDetail = ({ navigation, route }) => {
 
                   contentContainerStyle={{ flexGrow: 1 }}
                   ItemSeparatorComponent={() =>
-                    <View style={{ borderTopWidth: myHeight(0.08), borderColor: myColors.offColor, width: "100%" }} />
+                    <View style={{ borderTopWidth: myHeight(0.08), borderColor: myColors.background, width: "100%" }} />
                   }
                   estimatedItemSize={myHeight(10)}
                   renderItem={({ item, index }) => {
                     // const item = data
 
                     return (
-                      <View key={index} style={{ borderWidth: myHeight(0.1), backgroundColor: myColors.background, elevation: 1, borderColor: myColors.divider, borderRadius: myWidth(2), paddingHorizontal: myWidth(2) }}>
+                      <View key={index} style={{ borderWidth: myHeight(0.1), marginBottom: myHeight(1), backgroundColor: myColors.background, elevation: 1, borderColor: myColors.divider, borderRadius: myWidth(2), paddingHorizontal: myWidth(2) }}>
                         <Spacer paddingT={myHeight(0.8)} />
 
 

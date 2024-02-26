@@ -22,6 +22,7 @@ export const RideDetails = ({ navigation, route }) => {
     const { allRequest } = useSelector(State => State.orders)
     const [item, setRequest] = useState(null)
     const item2 = item
+    const { AllDrivers } = useSelector(state => state.data)
 
     const allDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
@@ -231,7 +232,7 @@ export const RideDetails = ({ navigation, route }) => {
                         items={[item.seats]} />
 
 
-                    <CommonItem text={'Billing & Offer'} text2={'The billing & offer of the request by customer.'}
+                    <CommonItem text={'Billing & Offer'} text2={'The billing & offer of the request by you.'}
                         items={[item.packages, `${item.offer} Rs`]} />
 
 
@@ -286,8 +287,13 @@ export const RideDetails = ({ navigation, route }) => {
                                         const driver = item
                                         const showChat = item.status > 0 && (!item2.did || item2.did == item.did)
                                         return (
-                                            <TouchableOpacity disabled key={index} activeOpacity={0.85}
-                                                onPress={() => navigation.navigate('DriverDetail', { driver: item })}>
+                                            <TouchableOpacity key={index} activeOpacity={0.85}
+                                                onPress={() => {
+                                                    const find = AllDrivers.find(it => it.uid == item.did)
+
+
+                                                    navigation.navigate('DriverDetail', { driver: find })
+                                                }}>
 
                                                 <View style={{
                                                     backgroundColor: myColors.background,

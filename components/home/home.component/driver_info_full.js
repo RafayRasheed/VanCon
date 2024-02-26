@@ -53,7 +53,9 @@ export const DriverInfoFull = ({ driver, request = null, onSend, isSmall = false
                 }}>
 
                     <ImageUri width={'100%'} height={'100%'} resizeMode='cover' useFastImage={false} uri={driver.vehicleImage} />
+                    {/* <Image
 
+                        style={{ width: '100%', height: isSmall ? myHeight(14.5) : myHeight(16), resizeMode: 'cover' }} source={{ uri: driver.vehicleImage }} /> */}
                     <View style={{ flexDirection: 'row', alignItems: 'center', position: 'absolute', top: myHeight(0.8) }}>
 
                         <View style={{ flex: 1, marginHorizontal: myWidth(4) }}>

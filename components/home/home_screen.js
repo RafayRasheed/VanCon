@@ -485,7 +485,7 @@ export const HomeScreen = ({ navigation }) => {
                         }} source={require('../assets/home_main/home/go.png')} />
                     </TouchableOpacity>
                 </View>
-                <FlashList
+                <FlatList
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
 
@@ -499,6 +499,7 @@ export const HomeScreen = ({ navigation }) => {
                     estimatedItemSize={myHeight(30)}
 
                     renderItem={({ item, index }) => {
+
                         return (
                             <TouchableOpacity activeOpacity={0.8} key={index} style={{ marginEnd: myWidth(4) }} onPress={() => navigation.navigate('DriverDetail', { driver: item })}>
 
@@ -518,7 +519,6 @@ export const HomeScreen = ({ navigation }) => {
 
         <SafeAreaView style={styles.container}>
             <StatusbarH />
-
             <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false} >
 
                 <Spacer paddingT={myHeight(2)} />

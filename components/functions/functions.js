@@ -92,7 +92,7 @@ export function getDistanceFromRes(from, to, extra) {
 
     }
     else if (d < 1000) {
-      d = d + ' M'
+      d = Math.round(d) + ' M'
     }
     else {
       d = 0 + ' KM'
@@ -254,6 +254,7 @@ export function getAllRestuarant(profile) {
         let drivers = []
         let eventDrivers = []
         let insideUniDrivers = []
+        let recomended = []
 
         result.forEach((res, i) => {
           const driver = res.data()
@@ -266,12 +267,15 @@ export function getAllRestuarant(profile) {
             insideUniDrivers.push(driver)
 
           }
+          if (driver.rating >= 4) {
+            recomended.push(driver)
+          }
 
         })
         console.log('drivers', drivers.length)
 
 
-        storeRedux.dispatch(setRecommendedDrivers(drivers.sort(function (a, b) { return b.rating - a.rating })))
+        storeRedux.dispatch(setRecommendedDrivers(recomended.sort(function (a, b) { return b.rating - a.rating })))
         storeRedux.dispatch(setEventDrivers(eventDrivers))
         storeRedux.dispatch(setInsideUniDrivers(insideUniDrivers))
 
