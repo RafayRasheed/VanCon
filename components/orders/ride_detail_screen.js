@@ -23,7 +23,50 @@ export const RideDetails = ({ navigation, route }) => {
     const [item, setRequest] = useState(null)
     const item2 = item
 
+    const allDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+
     // const driver = item?.sendDrivers[0]
+    const DaysShow = ({ list = [] }) => {
+        return (
+            <View style={{ width: '100%', flexWrap: 'wrap', flexDirection: 'row', alignItems: 'center' }}>
+                {
+                    allDays.map((it, i) => {
+                        const is = list.findIndex(li => li == it) != -1
+
+                        return (
+
+                            <>
+                                <View key={i} style={[styles.backItem2, {
+                                    backgroundColor: is ? myColors.primaryT : myColors.divider, width: myWidth(11), paddingVertical: myHeight(0.6),
+                                    paddingHorizontal: myWidth(0), justifyContent: 'center'
+                                }]}>
+
+
+                                    <Text numberOfLines={1}
+
+                                        style={{
+                                            fontSize: myFontSize.small3,
+                                            fontFamily: myFonts.bodyBold,
+                                            color: is ? myColors.background : myColors.text,
+                                            letterSpacing: myLetSpacing.common,
+                                            includeFontPadding: false,
+                                            padding: 0,
+                                        }}>{it}</Text>
+
+                                </View>
+                                {
+                                    i != 6 &&
+                                    <Spacer key={i} paddingEnd={myWidth(1.5)} />
+                                }
+                            </>
+
+                        )
+                    }
+                    )
+                }
+            </View>
+        )
+    }
 
     useEffect(() => {
         if (allRequest.length) {
@@ -34,7 +77,7 @@ export const RideDetails = ({ navigation, route }) => {
     useEffect(() => {
         if (item) {
             const statusMessages = code == 1 ? 'Active' : code == 2 ?
-                item.status == 1 ? 'Not send to any driver yet' : `Send to ${item.sendDrivers?.length} ${item.sendDrivers?.length > 1 ? 'drivers' : 'driver'} yet` : item.status < 0 ?
+                item.status == 1 ? 'Not sent to any driver yet' : `Sent to ${item.sendDrivers?.length} ${item.sendDrivers?.length > 1 ? 'drivers' : 'driver'}` : item.status < 0 ?
                     'Cancelled' : 'Completed'
 
             setStatusMessages(statusMessages)
@@ -188,6 +231,23 @@ export const RideDetails = ({ navigation, route }) => {
                         items={[item.seats]} />
 
 
+                    <CommonItem text={'Billing & Offer'} text2={'The billing & offer of the request by customer.'}
+                        items={[item.packages, `${item.offer} Rs`]} />
+
+
+                    <View style={{}}>
+                        <Text style={styles.heading}>{'Ride Days'}</Text>
+                        <View style={{ marginHorizontal: myWidth(2) }}>
+                            <Text style={styles.tesxH}>The ride days of the request</Text>
+                            <Spacer paddingT={myHeight(0.8)} />
+
+
+
+                            <DaysShow list={item.selectedDays} />
+
+                        </View>
+                    </View>
+                    <Spacer paddingT={myHeight(2.8)} />
 
                     <CommonItem text={'Distance Traveled '} text2={'The distance traveled from the pickup to dropoff'}
                         items={[item.distance]} />
@@ -335,7 +395,7 @@ export const RideDetails = ({ navigation, route }) => {
 
                                                                     color: driver.status < 0 ? myColors.red : driver.status == 1 ? myColors.textL4 : myColors.green
                                                                 },
-                                                            ]}>{driver.status < 0 ? 'Rejected' : driver.status == 1 ? 'Sended' : 'Accepted'}</Text>
+                                                            ]}>{driver.status < 0 ? 'Rejected' : driver.status == 1 ? 'Sent' : 'Accepted'}</Text>
 
 
                                                     </View>
@@ -391,6 +451,11 @@ const styles = StyleSheet.create({
         backgroundColor: myColors.primaryL6,
         borderWidth: myHeight(0.1), borderColor: myColors.dot,
         flexDirection: 'row', alignItems: 'center', marginVertical: myHeight(0.5)
+    },
+    backItem2: {
+        paddingHorizontal: myWidth(5), paddingVertical: myHeight(0.75), borderRadius: myWidth(100),
+        backgroundColor: myColors.background, borderWidth: myHeight(0.1), borderColor: myColors.divider,
+        flexDirection: 'row', alignItems: 'center'
     },
     heading: {
         fontSize: myFontSize.body4,

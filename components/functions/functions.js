@@ -8,7 +8,7 @@ import { FirebaseLocation, FirebaseUser } from './firebase';
 import firestore from '@react-native-firebase/firestore';
 
 import { setAreasLocation } from '../../redux/areas_reducer';
-import { setAllDriver } from '../../redux/data_reducer';
+import { setAllDriver, setEventDrivers, setInsideUniDrivers, setRecommendedDrivers } from '../../redux/data_reducer';
 import { setProfile } from '../../redux/profile_reducer';
 export function verificationCode() {
   return Math.floor(Math.random() * 899999 + 100000);
@@ -209,6 +209,7 @@ export const getAreasLocations = () => {
 
 
 }
+
 export function getProfileFromFirebase() {
   const { profile } = storeRedux.getState().profile
 
@@ -226,6 +227,23 @@ export function containString(contain, thiss) {
   return (contain.toLowerCase().includes(thiss.toLowerCase()))
 }
 
+export function updateProfileToFirebase(object) {
+  const { profile } = storeRedux.getState().profile
+
+  FirebaseUser.doc(profile.uid).update(object).then((documentSnapshot) => {
+
+    getProfileFromFirebase()
+    storeRedux.dispatch(setProfile({ ...profile, ...object }))
+
+    console.log('Profile Updated', object)
+
+
+  }).catch(err => {
+    storeRedux.dispatch(setProfile({ ...profile }))
+
+    console.log('Internal error while  updateProfileToFirebase', err)
+  });
+}
 export function getAllRestuarant(profile) {
 
   firestore().collection('drivers')
@@ -234,13 +252,28 @@ export function getAllRestuarant(profile) {
     .get().then((result) => {
       if (!result.empty) {
         let drivers = []
+        let eventDrivers = []
+        let insideUniDrivers = []
 
         result.forEach((res, i) => {
           const driver = res.data()
           drivers.push(driver)
 
+          if (driver.isOneRide) {
+            eventDrivers.push(driver)
+          }
+          if (driver.isInsideUni) {
+            insideUniDrivers.push(driver)
+
+          }
+
         })
-        console.log('drivers')
+        console.log('drivers', drivers.length)
+
+
+        storeRedux.dispatch(setRecommendedDrivers(drivers.sort(function (a, b) { return b.rating - a.rating })))
+        storeRedux.dispatch(setEventDrivers(eventDrivers))
+        storeRedux.dispatch(setInsideUniDrivers(insideUniDrivers))
 
         storeRedux.dispatch(setAllDriver(drivers))
 

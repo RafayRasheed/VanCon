@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { addFavoriteRest, removeFavoriteRest } from '../../../redux/favorite_reducer'
 import { ImageUri } from '../../common/image_uri'
 import { RFValue } from 'react-native-responsive-fontsize'
-export const DriverInfoFull = ({ driver, request = null, onSend, isSmall = false }) => {
+export const DriverInfoFull = ({ driver, request = null, onSend, isSmall = false, code = 0 }) => {
     const { favoriteDrivers } = useSelector(state => state.favorite)
     const dispatch = useDispatch()
 
@@ -52,27 +52,83 @@ export const DriverInfoFull = ({ driver, request = null, onSend, isSmall = false
                     overflow: 'hidden'
                 }}>
 
-                    <ImageUri width={'100%'} height={'100%'} resizeMode='cover' uri={driver.vehicleImage} />
+                    <ImageUri width={'100%'} height={'100%'} resizeMode='cover' useFastImage={false} uri={driver.vehicleImage} />
 
                     <View style={{ flexDirection: 'row', alignItems: 'center', position: 'absolute', top: myHeight(0.8) }}>
 
-                        <View style={{ flex: 1 }}>
+                        <View style={{ flex: 1, marginHorizontal: myWidth(4) }}>
 
 
 
-                            {/* <View style={{
-                                backgroundColor: myColors.primaryT,
-                                paddingHorizontal: myWidth(3.5),
-                                borderTopEndRadius: myWidth(1.5), paddingVertical: myHeight(0.5),
-                                borderBottomEndRadius: myWidth(1.5), alignSelf: 'flex-start'
-                            }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', }}>
-                                    <Image style={styles.imageStar} source={require('../../assets/home_main/home/star.png')} />
 
-                                    <Spacer paddingEnd={myWidth(1.6)} />
-                                    <Text style={styles.textRating}>{driver.rating} ({driver.noOfRatings})</Text>
-                                </View>
-                            </View> */}
+                            {
+
+                                code == 104 ?
+                                    <View style={{
+                                        backgroundColor: myColors.background,
+                                        paddingHorizontal: myWidth(2),
+                                        paddingEnd: myWidth(2),
+                                        paddingVertical: myHeight(0.5),
+                                        marginStart: -myWidth(2),
+                                        borderRadius: myWidth(100), alignSelf: 'flex-start'
+                                    }}>
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', }}>
+                                            <Image style={{
+                                                height: myHeight(2),
+                                                width: myHeight(2), marginTop: -myHeight(0.2),
+                                                tintColor: myColors.green,
+                                                resizeMode: 'contain',
+                                            }} source={require('../../assets/home_main/home/locS.png')} />
+
+                                            <Spacer paddingEnd={myWidth(0.6)} />
+                                            <Text style={{
+                                                fontSize: myFontSize.xxSmall,
+                                                fontFamily: myFonts.heading,
+                                                color: myColors.green,
+                                                letterSpacing: myLetSpacing.common,
+                                                includeFontPadding: false,
+                                                padding: 0,
+                                            }}>{driver.distance}</Text>
+                                        </View>
+                                    </View>
+                                    :
+                                    <>
+                                        {
+                                            driver.isOneRide ?
+                                                <View style={{
+                                                    backgroundColor: myColors.orange,
+                                                    paddingHorizontal: myWidth(3),
+                                                    paddingVertical: myHeight(0.7),
+                                                    marginStart: -myWidth(2),
+
+                                                    borderRadius: myWidth(100), alignSelf: 'flex-start'
+                                                }}>
+                                                    <View style={{ flexDirection: 'row', alignItems: 'center', }}>
+                                                        <Image style={{
+                                                            height: myHeight(1.85),
+                                                            width: myHeight(1.85), marginTop: -myHeight(0.2),
+                                                            tintColor: myColors.background,
+                                                            resizeMode: 'contain',
+                                                        }} source={require('../../assets/home_main/home/event.png')} />
+
+                                                        <Spacer paddingEnd={myWidth(1.6)} />
+                                                        <Text style={{
+                                                            fontSize: myFontSize.small3,
+                                                            fontFamily: myFonts.bodyBold,
+                                                            color: myColors.background,
+                                                            letterSpacing: myLetSpacing.common,
+                                                            includeFontPadding: false,
+                                                            padding: 0,
+                                                        }}>{'Events'}</Text>
+                                                    </View>
+                                                </View>
+                                                : null
+                                        }
+                                    </>
+
+
+                            }
+
 
 
                         </View>

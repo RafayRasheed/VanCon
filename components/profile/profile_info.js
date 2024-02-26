@@ -8,11 +8,15 @@ import { Loader, MyError, Spacer, StatusbarH, errorTime, ios, myHeight, myWidth 
 import { myColors } from '../../ultils/myColors';
 import { myFontSize, myFonts, myLetSpacing } from '../../ultils/myFonts';
 import { useDispatch, useSelector } from 'react-redux';
-import { deccodeInfo, encodeInfo } from '../functions/functions';
+import { deccodeInfo, encodeInfo, updateProfileToFirebase } from '../functions/functions';
 import firestore from '@react-native-firebase/firestore';
 import { setProfile } from '../../redux/profile_reducer';
 import { SelectCity } from '../account1/select_city';
 import { FirebaseUser } from '../functions/firebase';
+import { launchImageLibrary } from 'react-native-image-picker';
+import storage from '@react-native-firebase/storage';
+import { ImageUri } from '../common/image_uri';
+import { setErrorAlert } from '../../redux/error_reducer';
 
 
 export const ProfileInfo = ({ navigation }) => {
@@ -27,6 +31,9 @@ export const ProfileInfo = ({ navigation }) => {
     const [errorMsg, setErrorMsg] = useState(null)
     const [city, setCity] = useState(profile.city)
     const [showCityModal, setShowCityModal] = useState(false)
+
+    const [image, setImage] = useState(profile.image ? profile.image : null);
+    const [imageLoading, setImageLoading] = useState(null)
 
 
     const disptach = useDispatch()
@@ -63,6 +70,91 @@ export const ProfileInfo = ({ navigation }) => {
         return false
     }
 
+    async function chooseFile() {
+        const options = {
+            mediaType: 'photo',
+            selectionLimit: 1,
+        }
+        // launchCamera(options, callback => {
+        //     if (callback.assets) {
+        //         console.log(callback.assets)
+        //     }
+        //     else if (callback.didCancel) {
+        //         console.log('didCancel')
+        //     }
+        //     else if (callback.errorCode) {
+        //         console.log('errorCode')
+        //     }
+
+        // });
+
+        launchImageLibrary(options, callback => {
+            if (callback.assets) {
+                const asset = callback.assets[0]
+                const sizeKB = asset.fileSize / 1000000
+                const source = asset.uri
+                console.log(sizeKB)
+                if (sizeKB <= 1) {
+                    setImageLoading(true)
+                    uploadImage(source, 'icon')
+
+                }
+                else {
+                    setErrorMsg(`Maximum Icon Size is 1 MB`)
+                }
+                // console.log(source);
+            }
+            else if (callback.didCancel) {
+                console.log('didCancel')
+            }
+            else if (callback.errorCode) {
+                console.log('errorCode')
+            }
+
+        });
+
+
+    };
+
+
+    const uploadImage = async (uri, name, i) => {
+        const path = `images/restaurants/${profile.uid}/${name}`
+        storage()
+            .ref(path)
+            .putFile(uri)
+            .then((s) => {
+                storage().ref(path).getDownloadURL().then((uri) => {
+
+
+                    setImage(uri)
+                    updateProfileToFirebase({ image: uri })
+                    disptach(setErrorAlert({ Title: 'Profile Updated Successfully', Status: 10 }))
+                    setImageLoading(null)
+                    console.log('uri recieved icon')
+
+                }).catch((e) => {
+                    setImageLoading(null)
+                    setErrorMsg('Something Wrong')
+
+                    console.log('er', e)
+
+                })
+
+            }).catch((e) => {
+                setImageLoading(null)
+                setErrorMsg('Something Wrong')
+
+                console.log('er', e)
+
+            })
+
+        // try {
+        //     await task;
+        // } catch (e) {
+        //     console.error(e);
+        // }
+
+    };
     function checking() {
         if (isEditMode) {
 
@@ -154,22 +246,80 @@ export const ProfileInfo = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
                 {/* image */}
-                <View style={{
-                    borderRadius: myWidth(100), overflow: 'hidden',
-                    // backgroundColor: myColors.primaryL5, padding: myHeight(1.3),
-                    // borderWidth: myWidth(0.1), borderColor: myColors.textL4, 
-                }}>
-                    <Image source={require('../assets/profile/profile.png')}
-                        style={{
-                            width: myHeight(13),
-                            height: myHeight(13),
-                            resizeMode: 'contain',
-                            // tintColor: myColors.primaryT
-                        }}
-                    />
+                <TouchableOpacity disabled={imageLoading}
+                    activeOpacity={0.75} onPress={() => {
 
-                </View>
+                        chooseFile()
+
+
+                    }}
+                    style={{
+                        borderRadius: myWidth(100),
+                        overflow: 'hidden',
+                        width: myHeight(13),
+                        height: myHeight(13),
+                        // backgroundColor: myColors.primaryL5, padding: myHeight(1.3),
+                        // borderWidth: myWidth(0.1), borderColor: myColors.textL4, 
+                    }}>
+
+
+                    {
+                        imageLoading ?
+                            <View style={{
+                                width: '100%', height: '100%',
+                                alignItems: 'center', justifyContent: 'center',
+                                backgroundColor: myColors.offColor7
+                            }} >
+                                <Text style={[styles.textCommon,
+                                {
+                                    fontFamily: myFonts.body,
+                                    fontSize: myFontSize.body,
+                                    textAlign: 'center',
+
+
+                                }]}>Loading...</Text>
+                            </View>
+
+                            :
+                            <>
+
+
+
+                                {
+                                    image ?
+
+                                        <ImageUri width={'100%'} height={'100%'} resizeMode='cover' uri={image} />
+                                        :
+                                        <Image source={require('../assets/profile/profile.png')}
+                                            style={{
+                                                width: myHeight(13),
+                                                height: myHeight(13),
+                                                resizeMode: 'contain',
+                                                // tintColor: myColors.primaryT
+                                            }}
+                                        />
+                                }
+
+                            </>
+
+                    }
+
+
+                </TouchableOpacity>
+                <Spacer paddingT={myHeight(0.8)} />
+
+                <Text style={[styles.textCommon,
+                {
+                    fontFamily: myFonts.body,
+                    fontSize: myFontSize.body,
+                    textAlign: 'center',
+                    color: myColors.background
+
+
+                }]}>Change Profile</Text>
                 <Spacer paddingT={myHeight(6)} />
+
+
 
 
             </View>

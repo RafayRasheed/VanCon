@@ -17,7 +17,7 @@ import { RestaurantInfoSkeleton } from '../common/skeletons';
 import { HomeSkeleton } from './home.component/home_skeleton';
 import { ImageUri } from '../common/image_uri';
 import storage from '@react-native-firebase/storage';
-import { setAllDriver, setOnlineDriver, } from '../../redux/data_reducer';
+import { setAllDriver, setOnlineDriver, setOnlineDriverAll, } from '../../redux/data_reducer';
 import { setAllRequest, setAllUnread, setHistoryOrderse, setOnlineReq, setPendingOrderse, setProgressOrderse } from '../../redux/order_reducer';
 import database from '@react-native-firebase/database';
 import { SetErrorAlertToFunction, dataFullData, deccodeInfo, getAllRestuarant, getAreasLocations, getCurrentLocations, getDistanceFromRes, getProfileFromFirebase, statusDate } from '../functions/functions';
@@ -39,7 +39,7 @@ if (!ios && UIManager.setLayoutAnimationEnabledExperimental) {
 export const HomeScreen = ({ navigation }) => {
     const name = "Someone";
     const { profile } = useSelector(state => state.profile)
-    const { AllDrivers, onlineDrivers } = useSelector(state => state.data)
+    const { AllDrivers, insideUniDrivers, onlineDrivers, onlineDriversAll, recommendedDrivers, eventDrivers } = useSelector(state => state.data)
     const { current, history } = useSelector(state => state.location)
 
     const [isLoading, setIsLoading] = useState(true)
@@ -85,81 +85,49 @@ export const HomeScreen = ({ navigation }) => {
 
 
     }
+    function updateOnlineDrivers() {
+        const driv = []
+        let { actualDate } = dataFullData()
+
+        onlineDriversAll.map((val, i) => {
+
+
+
+            const update = new Date(val.lastUpdate)
+            const isReady = ((actualDate - update) / 1000) <= 50
+
+            const from = val.location
+            const { distance, string } = getDistanceFromRes(from, current ? current : { "latitude": 0, "longitude": 0 }, true)
+            val.distanceInt = distance
+            val.distance = string
+            console.log(distance)
+
+            if (isReady && distance < 3000) {
+                driv.push(val)
+
+
+
+            }
+
+
+
+        });
+        dispatch(setOnlineDriver(driv.sort(function (a, b) { return a.distanceInt - b.distanceInt })))
+        console.log('hai bhai hai', driv.length)
+    }
+
     useEffect(() => {
         if (current) {
             updateOnline()
 
         }
-    }, [current]);
+        if (onlineDriversAll.length && current) {
+            updateOnlineDrivers()
 
-    // Realtime
-    useEffect(() => {
-
-        // const reff = `/online/${profile.city}/requests/${profile.uid}`
-        // const onValueChange = database()
-        //     .ref(reff)
-        //     .orderByChild('dateInt')
-        //     .on('value', snapshot => {
-        //         if (snapshot.exists()) {
-
-        //             let Pending = []
-        //             let InProgress = []
-        //             let History = []
-        //             let all = []
-        //             const unread = []
-
-        //             snapshot.forEach((documentSnapshot1, i) => {
-        //                 const val = documentSnapshot1.val()
-        //                 all.push(val)
-        //                 // if ( val.status == 2) {
-        //                 //     Pending.push(val)
-        //                 //     if (val.unread) {
-        //                 //         unread.push({ id: val.id, code: 2 })
-        //                 //     }
-        //                 // }
-
-        //                 if (val.status == 2 || val.status == 3) {
-
-        //                     InProgress.push(val)
-        //                     if (val.unread) {
-        //                         unread.push({ id: val.id, code: 1 })
-        //                     }
-        //                 }
-        //                 else {
-        //                     History.push(val)
-        //                     if (val.unread) {
-        //                         unread.push({ id: val.id, code: 3 })
-        //                     }
-        //                 }
+        }
+    }, [current, onlineDriversAll]);
 
 
-        //             });
-
-        //             console.log('online',)
-        //             Pending.reverse()
-        //             InProgress.reverse()
-        //             History.reverse()
-        //             // dispatch(setPendingOrderse(Pending))
-        //             // dispatch(setProgressOrderse(InProgress))
-        //             // dispatch(setHistoryOrderse(History))
-        //             // dispatch(setAllRequest(all))
-        //             // dispatch(setAllUnread(unread))
-
-        //         } else {
-        //             console.log('online not fount')
-
-        //             // dispatch(setPendingOrderse([]))
-        //             // dispatch(setProgressOrderse([]))
-        //             // dispatch(setHistoryOrderse([]))
-        //             // dispatch(setAllUnread([]))
-        //             // dispatch(setAllRequest([]))
-
-        //         }
-        //     });
-
-        // // Stop listening for updates when no longer required
-        // return () => database().ref(reff).off('value', onValueChange);
-    }, []);
     // Realtime
     useEffect(() => {
         const onValueChange = database()
@@ -244,7 +212,7 @@ export const HomeScreen = ({ navigation }) => {
                                 let accepted = 0
                                 val.sendDrivers.map(diii => {
                                     const di = val[diii.did]
-                                    if (di.status == 2) {
+                                    if (di.status == 1.5) {
                                         accepted += 1
                                     }
 
@@ -333,6 +301,7 @@ export const HomeScreen = ({ navigation }) => {
 
                 if (snapshot.exists()) {
                     const driv = []
+                    const drivAll = []
                     let { actualDate } = dataFullData()
 
                     snapshot.forEach((documentSnapshot1, i) => {
@@ -343,21 +312,27 @@ export const HomeScreen = ({ navigation }) => {
                         const update = new Date(val.lastUpdate)
                         const isReady = ((actualDate - update) / 1000) <= 50
 
+                        const from = val.location
+                        const { distance, string } = getDistanceFromRes(from, current ? current : { "latitude": 0, "longitude": 0 }, true)
+                        val.distanceInt = distance
+                        val.distance = string
+                        console.log(distance)
+
                         if (isReady) {
+                            drivAll.push(val)
+                            if (distance < 3000) {
+                                driv.push(val)
 
-                            const from = val.location
-                            // const distance = 10
-                            const { distance, string } = getDistanceFromRes(from, current ? current : { "latitude": 0, "longitude": 0 }, true)
-                            val.distanceInt = distance
-                            val.distance = string
+                            }
 
-                            driv.push(val)
+
                         }
 
 
 
                     });
                     dispatch(setOnlineDriver(driv.sort(function (a, b) { return a.distanceInt - b.distanceInt })))
+                    dispatch(setOnlineDriverAll(drivAll))
                     console.log('hai bhai hai', driv.length)
                 } else {
                     console.log('nahi hai')
@@ -481,9 +456,9 @@ export const HomeScreen = ({ navigation }) => {
 
                 <View style={{ paddingHorizontal: myWidth(4), alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={{
-                        fontSize: myFontSize.xxBody,
+                        fontSize: myFontSize.xBody,
                         fontFamily: myFonts.heading,
-                        color: myColors.text,
+                        color: myColors.textL4,
                         letterSpacing: myLetSpacing.common,
                         includeFontPadding: false,
                         padding: 0,
@@ -492,7 +467,7 @@ export const HomeScreen = ({ navigation }) => {
                     <TouchableOpacity style={{
                         flexDirection: 'row', alignItems: 'center', paddingVertical: myHeight(0.4),
                         paddingStart: myWidth(2)
-                    }} activeOpacity={0.6} onPress={() => navigation.navigate('Search', { name })}>
+                    }} activeOpacity={0.6} onPress={() => navigation.navigate('Search', { name, code })}>
 
                         <Text
                             style={[styles.textCommon, {
@@ -601,7 +576,7 @@ export const HomeScreen = ({ navigation }) => {
                             fontFamily: myFonts.bodyBold,
                             fontSize: myFontSize.xBody,
 
-                        }]}>Book Van</Text>
+                        }]}>Book Ride</Text>
 
                     </TouchableOpacity>
                     {/* <Spacer paddingEnd={myWidth(7.5)} /> */}
@@ -653,16 +628,42 @@ export const HomeScreen = ({ navigation }) => {
                 <Spacer paddingT={myHeight(2)} />
 
                 {
-                    AllDrivers.length ?
-                        < CommonMain Deriver={AllDrivers} name='Inside Universities' />
+                    recommendedDrivers.length ?
+                        <>
+                            < CommonMain Deriver={recommendedDrivers} name='Recommended' code={101} />
+                            <Spacer paddingT={myHeight(1.5)} />
+
+                        </>
+                        : null
+                }
+                {
+
+                    insideUniDrivers.length ?
+                        <>
+                            < CommonMain Deriver={insideUniDrivers} name='Inside Universities' code={102} />
+                            <Spacer paddingT={myHeight(1.5)} />
+
+                        </>
+                        : null
+                }
+                {
+                    eventDrivers.length ?
+                        <>
+                            < CommonMain Deriver={eventDrivers} name='For Events' code={103} />
+                            <Spacer paddingT={myHeight(1.5)} />
+
+                        </>
                         : null
                 }
 
-                <Spacer paddingT={myHeight(1.5)} />
 
                 {
                     onlineDrivers.length ?
-                        < CommonMain Deriver={onlineDrivers} name='Nearby Drivers' />
+                        <>
+                            < CommonMain Deriver={onlineDrivers} name='Nearby Drivers' code={104} />
+                            <Spacer paddingT={myHeight(1.5)} />
+
+                        </>
                         : null
                 }
 

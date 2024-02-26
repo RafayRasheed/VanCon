@@ -156,7 +156,7 @@ export const CreateAcc = ({ navigate, showError, showLoading, city, setShowCityM
                     <Text style={[styles.heading, { color: myColors.text }]}>Email address</Text>
                     <View style={styles.containerInput}>
 
-                        <TextInput placeholder="Eg namaemail@emailkamu.com"
+                        <TextInput placeholder="Eg abc@example.com"
                             placeholderTextColor={myColors.textL4}
                             autoCorrect={false}
                             style={styles.input} cursorColor={myColors.primaryT}

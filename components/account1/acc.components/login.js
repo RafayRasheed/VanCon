@@ -113,7 +113,7 @@ export const Login = ({ navigation, showError, showLoading, email, setEmail, pas
                     <Text style={[styles.heading, { color: email ? myColors.textL4 : myColors.text }]}>Email address</Text>
                     <View style={styles.containerInput}>
 
-                        <TextInput placeholder="Eg namaemail@emailkamu.com"
+                        <TextInput placeholder="Eg abc@example.com"
                             placeholderTextColor={myColors.textL4}
                             autoCorrect={false}
                             style={styles.input} cursorColor={myColors.primaryT}

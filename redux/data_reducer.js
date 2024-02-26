@@ -9,6 +9,11 @@ const dataReducer = createSlice({
         AllItems: [],
         AllDrivers: [],
         onlineDrivers: [],
+        onlineDriversAll: [],
+        recommendedDrivers: [],
+        eventDrivers: [],
+        insideUniDrivers: [],
+
     },
     reducers: {
 
@@ -27,9 +32,22 @@ const dataReducer = createSlice({
         setOnlineDriver(state, action) {
             state.onlineDrivers = action.payload
         },
+        setOnlineDriverAll(state, action) {
+            state.onlineDriversAll = action.payload
+        },
+
+        setRecommendedDrivers(state, action) {
+            state.recommendedDrivers = action.payload
+        },
+        setEventDrivers(state, action) {
+            state.eventDrivers = action.payload
+        },
+        setInsideUniDrivers(state, action) {
+            state.insideUniDrivers = action.payload
+        },
 
     },
 });
 
-export const { setNearby, setRecommend, setAllItems, setAllDriver, setOnlineDriver } = dataReducer.actions;
+export const { setNearby, setRecommend, setAllItems, setAllDriver, setInsideUniDrivers, setOnlineDriver, setOnlineDriverAll, setRecommendedDrivers, setEventDrivers } = dataReducer.actions;
 export default dataReducer.reducer;

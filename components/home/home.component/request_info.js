@@ -35,7 +35,8 @@ export const RequestInfo = ({ item, navigation, code }) => {
 
         setLoad(true)
         const update = { status: -5 }
-        item.sendDrivers.map(diii => {
+
+        item.sendDrivers?.map(diii => {
             const di = item[diii.did]
             update[diii.did] = { ...di, unread: true }
         })
@@ -43,14 +44,14 @@ export const RequestInfo = ({ item, navigation, code }) => {
             .ref(`/requests/${profile.uid}/${item.id}`).update(update)
             .then(() => {
                 console.log('To onRemove successfully')
-                dispatch(setErrorAlert({ Title: 'Request Remove Successfully', Body: null, Status: 2 }))
+                dispatch(setErrorAlert({ Title: 'Request Cancelled Successfully', Body: null, Status: 2 }))
                 setTimeout(() => {
 
                     setLoad(false)
                 }, item.status == 1 ? 0 : 1000)
 
                 if (item.status != 1) {
-                    item.sendDrivers.map(diii => {
+                    item.sendDrivers?.map(diii => {
                         const di = item[diii.did]
                         if (di.status == 1) {
 
@@ -131,7 +132,7 @@ export const RequestInfo = ({ item, navigation, code }) => {
                                             color: item.status == 1 ? 'red' : myColors.text
                                         },
                                     ]}
-                                >{item.status == 1 ? 'Not send to any driver yet' : `Send to ${item.sendDrivers?.length} ${item.sendDrivers?.length > 1 ? 'drivers' : 'driver'} yet`}</Text>
+                                >{item.status == 1 ? 'Not sent to any driver yet' : `Sent to ${item.sendDrivers?.length} ${item.sendDrivers?.length > 1 ? 'drivers' : 'driver'}`}</Text>
 
                             </>
 

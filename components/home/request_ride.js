@@ -309,7 +309,7 @@ export const RequestRide = ({ navigation, route }) => {
                 })
                 if (Drivers.length == 0) {
                     setIsLoading(false)
-                    disptach(setErrorAlert({ Title: 'No Driver Found', Body: 'Please retry after some time', Status: 0 }))
+                    disptach(setErrorAlert({ Title: 'No Driver Found', Body: 'Please retry after sometime', Status: 0 }))
                     return
 
                 }
@@ -333,7 +333,7 @@ export const RequestRide = ({ navigation, route }) => {
                 database()
                     .ref(`/requests/${profile.uid}/${newProfile.id}`)
                     .update(newProfile).then(() => {
-                        disptach(setErrorAlert({ Title: `Request Send Successfully`, Body: `Request send to ${Drivers.length} ${Drivers.length == 1 ? 'driver' : 'drivers'}`, Status: 10 }))
+                        disptach(setErrorAlert({ Title: `Request Sent Successfully`, Body: `Request sent to ${Drivers.length} ${Drivers.length == 1 ? 'driver' : 'drivers'}`, Status: 10 }))
                         sendPushNotification('New Vanpool Request', `You have a vanpool request from ${profile.name}`, 10, tokens)
                         setIsLoading(false)
 

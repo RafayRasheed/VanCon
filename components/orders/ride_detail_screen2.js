@@ -43,8 +43,14 @@ export const RideDetails2 = ({ navigation, route }) => {
 
     useEffect(() => {
         if (item) {
-            const statusMessages = code == 1 ? 'Active' : code == 2 ?
-                item.status == 1 ? 'Not send to any driver yet' : `Send to ${item.sendDrivers?.length} ${item.sendDrivers?.length > 1 ? 'drivers' : 'driver'} yet` : item.status < 0 ?
+
+            const statusMessages = (code == 1 && (item.status == 2 || (item.status == 3))) ? item.status == 2 ?
+                item.accepted ? `${item.accepted} ${item.accepted == 1 ? 'driver is' : 'drivers are'} waiting for your response` : 'No driver responded yet' :
+                'In Progress' :
+                item.status < 0 ? 'Cancelled' : 'Completed'
+
+            const statusMessages1 = code == 1 ? 'In Progress' : code == 2 ?
+                item.status == 1 ? 'Not sent to any driver yet' : `Sent to ${item.sendDrivers?.length} ${item.sendDrivers?.length > 1 ? 'drivers' : 'driver'}` : item.status < 0 ?
                     'Cancelled' : 'Completed'
 
             setStatusMessages(statusMessages)
@@ -114,7 +120,7 @@ export const RideDetails2 = ({ navigation, route }) => {
             .ref(`/requests/${profile.uid}/${item.id}`).update(update)
             .then(() => {
                 console.log('To onRemove successfully')
-                dispatch(setErrorAlert({ Title: 'Request Remove Successfully', Body: null, Status: 2 }))
+                dispatch(setErrorAlert({ Title: 'Request Cancelled Successfully', Body: null, Status: 2 }))
 
                 navigation.goBack()
                 setTimeout(() => {
@@ -186,8 +192,8 @@ export const RideDetails2 = ({ navigation, route }) => {
             .ref(`/requests/${item.uid}/${item.id}`).update({ ...update, unread: true })
             .then(() => {
                 console.log('To accept user successfully')
-                dispatch(setErrorAlert({ Title: 'Request Accept Successfully', Body: null, Status: 2 }))
-                sendPushNotification('Request Accepted', `Ride confirm by the ${profile.name}`, 2, [dr.token])
+                dispatch(setErrorAlert({ Title: 'Request Accepted Successfully', Body: null, Status: 2 }))
+                sendPushNotification('Request Accepted', `Ride confirmed by ${profile.name}`, 2, [dr.token])
                 sendPushNotification('Request Rejected', `Request is rejected by ${profile.name}`, 0, rejectTokens)
 
 
@@ -410,28 +416,35 @@ export const RideDetails2 = ({ navigation, route }) => {
                                                                         />
                                                                     </TouchableOpacity>
 
-                                                                    <Spacer paddingEnd={myWidth(4.5)} />
+                                                                    {
+                                                                        (code != 3 && (item2.status == 2 || (item2.status == 3))) ?
+                                                                            <>
 
-                                                                    <Image
-                                                                        style={{
-                                                                            width: myHeight(2.5),
-                                                                            height: myHeight(2.5),
-                                                                            resizeMode: 'contain',
-                                                                            tintColor: myColors.primaryT
-                                                                        }} source={require('../assets/home_main/home/distance.png')}
-                                                                    />
-                                                                    <Spacer paddingEnd={myWidth(1.8)} />
+                                                                                <Spacer paddingEnd={myWidth(4.5)} />
 
-                                                                    <Text
-                                                                        style={[
-                                                                            styles.textCommon,
-                                                                            {
-                                                                                flex: 1,
-                                                                                fontSize: myFontSize.body,
-                                                                                fontFamily: myFonts.body,
-                                                                            },
-                                                                        ]}
-                                                                    >{driver.distance} Away</Text>
+                                                                                <Image
+                                                                                    style={{
+                                                                                        width: myHeight(2.5),
+                                                                                        height: myHeight(2.5),
+                                                                                        resizeMode: 'contain',
+                                                                                        tintColor: myColors.primaryT
+                                                                                    }} source={require('../assets/home_main/home/distance.png')}
+                                                                                />
+                                                                                <Spacer paddingEnd={myWidth(1.8)} />
+
+                                                                                <Text
+                                                                                    style={[
+                                                                                        styles.textCommon,
+                                                                                        {
+                                                                                            flex: 1,
+                                                                                            fontSize: myFontSize.body,
+                                                                                            fontFamily: myFonts.body,
+                                                                                        },
+                                                                                    ]}
+                                                                                >{driver.distance} Away</Text>
+                                                                            </>
+                                                                            : null
+                                                                    }
                                                                 </>
 
                                                                 : null
@@ -491,7 +504,7 @@ export const RideDetails2 = ({ navigation, route }) => {
 
                                                                         color: driver.status < 0 ? myColors.red : driver.status == 1 ? myColors.textL4 : myColors.green
                                                                     },
-                                                                ]}>{driver.status < 0 ? 'Rejected' : driver.status == 1 ? 'Sended' : 'Accepted'}</Text>
+                                                                ]}>{driver.status < 0 ? 'Rejected' : driver.status == 1 ? 'Sent' : 'Accepted'}</Text>
                                                     }
 
 

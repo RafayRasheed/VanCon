@@ -81,7 +81,7 @@ const CommonFaci = ({ name, fac, setFAc }) => {
 }
 
 export const Search = ({ navigation, route }) => {
-    const { AllDrivers } = useSelector(State => State.data)
+    const { AllDrivers, insideUniDrivers, onlineDrivers, recommendedDrivers, eventDrivers } = useSelector(state => state.data)
     const { allRequest } = useSelector(State => State.orders)
 
 
@@ -99,6 +99,7 @@ export const Search = ({ navigation, route }) => {
     const dispatch = useDispatch()
     const requestId = route.params.requestId
     const name = route.params.name
+    const code = route.params.code
 
     // const [fullRest, setFullRest] = useState([])
     const Loader = () => (
@@ -134,10 +135,28 @@ export const Search = ({ navigation, route }) => {
 
     useEffect(() => {
         if (!requestId && AllDrivers.length) {
+            if (code == 101) {
+                setAllItems(recommendedDrivers)
 
-            setAllItems(AllDrivers)
+            }
+            else if (code == 102) {
+                setAllItems(insideUniDrivers)
+
+            }
+            else if (code == 103) {
+                setAllItems(eventDrivers)
+
+            }
+            else if (code == 104) {
+                setAllItems(onlineDrivers)
+
+            }
+            else {
+
+                setAllItems(AllDrivers)
+            }
         }
-    }, [AllDrivers])
+    }, [AllDrivers, onlineDrivers])
     useEffect(() => {
         if (request) {
             const simple = []
@@ -189,7 +208,7 @@ export const Search = ({ navigation, route }) => {
         database()
             .ref(`/requests/${request.uid}/${request.id}`)
             .update(newUpdate).then(() => {
-                storeRedux.dispatch(setErrorAlert({ Title: `Request Send to ${driver.name} Successfully`, Status: 2 }))
+                storeRedux.dispatch(setErrorAlert({ Title: `Request Sent to ${driver.name} Successfully`, Status: 2 }))
                 firestore().collection('drivers').doc(driver.uid).get().then((data) => {
                     const captain = data.data()
                     const token = captain.deviceToken
@@ -249,8 +268,26 @@ export const Search = ({ navigation, route }) => {
                 {/* Top */}
                 {/* Search */}
                 <View style={{
-                    paddingHorizontal: myWidth(4),
+                    paddingHorizontal: myWidth(4), flexDirection: 'row',
+                    alignItems: 'center',
                 }}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.7} style={{
+                        backgroundColor: myColors.primaryT,
+                        height: myHeight(3.3),
+                        width: myHeight(3.3),
+                        borderRadius: myHeight(3),
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}  >
+                        <Image style={
+                            {
+                                height: myHeight(1.6),
+                                width: myHeight(1.6),
+                                resizeMode: 'contain'
+                            }
+                        } source={require('../assets/startup/goL.png')} />
+                    </TouchableOpacity>
+                    <Spacer paddingEnd={myWidth(3)} />
 
                     <Text style={[styles.textCommon,
                     {
@@ -259,7 +296,7 @@ export const Search = ({ navigation, route }) => {
 
                     }]}>{name}</Text>
                 </View>
-                <Spacer paddingT={myHeight(0.9)} />
+                <Spacer paddingT={myHeight(1.2)} />
 
                 <View style={{
                     paddingHorizontal: myWidth(4), flexDirection: 'row',
@@ -278,7 +315,7 @@ export const Search = ({ navigation, route }) => {
                         // marginHorizontal: myWidth(4)
                     }}>
                         {/* Arrow */}
-                        <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.goBack()} style={{}}>
+                        {/* <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.goBack()} style={{}}>
                             <Image style={{
                                 height: myHeight(2.3),
                                 width: myHeight(2.3),
@@ -286,7 +323,7 @@ export const Search = ({ navigation, route }) => {
                                 tintColor: myColors.textL0
                             }} source={require('../assets/home_main/home/back.png')} />
                         </TouchableOpacity>
-                        <Spacer paddingEnd={myWidth(2.5)} />
+                        <Spacer paddingEnd={myWidth(2.5)} /> */}
                         <TextInput placeholder=" Search"
                             placeholderTextColor={myColors.textL5}
                             autoCorrect={false}
@@ -351,9 +388,10 @@ export const Search = ({ navigation, route }) => {
                             estimatedItemSize={myHeight(10)}
                             renderItem={({ item, index }) => {
                                 return (
-                                    <TouchableOpacity disabled key={index} activeOpacity={0.85}
+                                    <TouchableOpacity key={index} activeOpacity={0.85}
+
                                         onPress={() => navigation.navigate('DriverDetail', { driver: item, request })}>
-                                        <DriverInfoFull onSend={onSend} driver={item} request={request} />
+                                        <DriverInfoFull onSend={onSend} driver={item} request={request} code={code} />
                                     </TouchableOpacity>
                                 )
                             }

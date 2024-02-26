@@ -12,6 +12,7 @@ import { deleteLogin } from '../functions/storageMMKV';
 import { deleteProfile } from '../../redux/profile_reducer';
 import { FirebaseUser } from '../functions/firebase';
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
+import { ImageUri } from '../common/image_uri';
 
 
 export const Profile = ({ navigation }) => {
@@ -128,17 +129,27 @@ export const Profile = ({ navigation }) => {
                     {/* image */}
                     <View style={{
                         borderRadius: myWidth(100), overflow: 'hidden',
+                        width: myHeight(13),
+                        height: myHeight(13),
                         // backgroundColor: myColors.primaryL5, padding: myHeight(1.3),
                         // borderWidth: myWidth(0.1), borderColor: myColors.textL4, 
                     }}>
-                        <Image source={require('../assets/profile/profile.png')}
-                            style={{
-                                width: myHeight(13),
-                                height: myHeight(13),
-                                resizeMode: 'contain',
-                                // tintColor: myColors.primaryT
-                            }}
-                        />
+
+                        {
+                            profile.image ?
+
+                                <ImageUri width={'100%'} height={'100%'} resizeMode='cover' uri={profile.image} />
+                                :
+                                <Image source={require('../assets/profile/profile.png')}
+                                    style={{
+                                        width: myHeight(13),
+                                        height: myHeight(13),
+                                        resizeMode: 'contain',
+                                        // tintColor: myColors.primaryT
+                                    }}
+                                />
+                        }
+
 
                     </View>
                     <Spacer paddingT={myHeight(1)} />
@@ -285,7 +296,7 @@ export const Profile = ({ navigation }) => {
                     } style={{ flex: 1 }} />
                     <Animated.View entering={SlideInDown} exiting={SlideOutDown}
                         style={{
-                            height: myHeight(37),
+                            height: myHeight(30),
                             backgroundColor: '#fff',
                             borderTopStartRadius: myWidth(4),
                             borderTopEndRadius: myWidth(4),
@@ -294,14 +305,15 @@ export const Profile = ({ navigation }) => {
                             width: '100%',
                         }}
                     >
-                        <Spacer paddingT={myHeight(1.5)} />
+                        <Spacer paddingT={myHeight(3)} />
 
                         <Text
                             style={[
                                 styles.textCommon,
                                 {
-                                    fontSize: myFontSize.xMedium,
+                                    fontSize: myFontSize.xBody,
                                     fontFamily: myFonts.bodyBold,
+                                    textAlign: 'center'
                                 },
                             ]}
                         >
@@ -326,7 +338,7 @@ export const Profile = ({ navigation }) => {
                                     activeOpacity={0.8}
                                     style={{
                                         backgroundColor: myColors.primaryT,
-                                        borderRadius: myHeight(0.5),
+                                        borderRadius: myWidth(4),
                                         paddingVertical: myHeight(1.4),
                                         width: '100%',
                                         justifyContent: 'center',
@@ -355,7 +367,7 @@ export const Profile = ({ navigation }) => {
                                     activeOpacity={0.8}
                                     style={{
                                         borderColor: myColors.primaryT,
-                                        borderRadius: myHeight(0.5),
+                                        borderRadius: myWidth(4),
                                         borderWidth: myHeight(0.2),
                                         paddingVertical: myHeight(1.4),
                                         width: '100%',
