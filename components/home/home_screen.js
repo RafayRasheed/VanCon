@@ -495,7 +495,7 @@ export const HomeScreen = ({ navigation }) => {
                     }}
 
                     data={Deriver.slice(0, 4)}
-                    keyExtractor={(item, index) => index.toString()}
+                    keyExtractor={(item, index) => item.uid}
                     estimatedItemSize={myHeight(30)}
 
                     renderItem={({ item, index }) => {

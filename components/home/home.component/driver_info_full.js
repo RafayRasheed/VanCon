@@ -52,7 +52,7 @@ export const DriverInfoFull = ({ driver, request = null, onSend, isSmall = false
                     overflow: 'hidden'
                 }}>
 
-                    <ImageUri width={'100%'} height={'100%'} resizeMode='cover' useFastImage={false} uri={driver.vehicleImage} />
+                    <ImageUri width={'100%'} height={'100%'} resizeMode='cover' useFastImage={true} uri={driver.vehicleImage} />
                     {/* <Image
 
                         style={{ width: '100%', height: isSmall ? myHeight(14.5) : myHeight(16), resizeMode: 'cover' }} source={{ uri: driver.vehicleImage }} /> */}

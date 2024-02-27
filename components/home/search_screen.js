@@ -385,8 +385,10 @@ export const Search = ({ navigation, route }) => {
                             // ItemSeparatorComponent={() =>
                             //     <View style={{ borderTopWidth: myHeight(0.08), borderColor: myColors.offColor, width: "100%" }} />
                             // }
+                            keyExtractor={(item, index) => item.uid}
                             estimatedItemSize={myHeight(10)}
                             renderItem={({ item, index }) => {
+                                console.log(item.uid)
                                 return (
                                     <TouchableOpacity key={index} activeOpacity={0.85}
 
