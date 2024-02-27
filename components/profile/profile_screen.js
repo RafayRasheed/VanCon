@@ -13,6 +13,7 @@ import { deleteProfile } from '../../redux/profile_reducer';
 import { FirebaseUser } from '../functions/firebase';
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 import { ImageUri } from '../common/image_uri';
+import { setErrorAlert } from '../../redux/error_reducer';
 
 
 export const Profile = ({ navigation }) => {
@@ -69,7 +70,10 @@ export const Profile = ({ navigation }) => {
                 deviceToken: null
             }).then((data) => {
                 navigation.replace('AccountNavigator')
-                dispatch(deleteProfile())
+                setTimeout(() => {
+
+                    dispatch(deleteProfile())
+                }, 2000)
                 SetCancelRideLoader(false)
 
                 console.log('Token delete To Firebase Succesfully')
@@ -83,7 +87,7 @@ export const Profile = ({ navigation }) => {
         Linking.openURL('whatsapp://send?text=&phone=923308246728')
             .then(() => { })
             .catch(e => {
-                Alert.alert(null, `Whatsapp not installed.`);
+                dispatch(setErrorAlert({ Title: 'Alert!', Body: 'Whatsapp Not Installed', Status: 0 }))
             });
     }
     function shareAPP(plat) {
@@ -91,7 +95,7 @@ export const Profile = ({ navigation }) => {
         Linking.openURL(`${plat}${'https://drive.google.com/drive/folders/1TEYyEzjuXRjMJi0_p4nJLsIzHTCG7fhU?usp=drive_link'}`)
             .then(() => { })
             .catch(e => {
-                Alert.alert(null, `App not installed.`);
+                dispatch(setErrorAlert({ Title: 'Alert!', Body: 'App Not Installed', Status: 0 }))
             });
     }
 
@@ -410,16 +414,16 @@ export const Profile = ({ navigation }) => {
                         <TouchableOpacity activeOpacity={0.8} onPress={() => shareAPP('http://twitter.com/share?text=&url=')}
                             style={{ alignItems: 'center' }}>
                             <Image style={{
-                                height: myHeight(5),
-                                width: myHeight(5),
+                                height: myHeight(4.3),
+                                width: myHeight(4.3),
                                 resizeMode: 'contain',
-                            }} source={require('../assets/profile/twitter.png')} />
-                            <Spacer paddingT={myHeight(0.5)} />
+                            }} source={require('../assets/profile/twitterX.png')} />
+                            <Spacer paddingT={myHeight(1)} />
 
                             <Text numberOfLines={1} style={[styles.textCommon, {
                                 fontSize: myFontSize.xxSmall,
                                 fontFamily: myFonts.bodyBold,
-                            }]}>Twitter</Text>
+                            }]}>Twitter X</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity activeOpacity={0.8} onPress={() => shareAPP('https://www.facebook.com/sharer/sharer.php?u=')}

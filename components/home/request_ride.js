@@ -24,6 +24,7 @@ import { CalenderDate } from './home.component/calender';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { offers } from './home_data';
 import { dataFullData, getCurrentLocations, getDistanceFromRes } from '../functions/functions';
+import { DriverInfoFull } from './home.component/driver_info_full';
 const allDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 export const RequestRide = ({ navigation, route }) => {
     const disptach = useDispatch()
@@ -31,6 +32,7 @@ export const RequestRide = ({ navigation, route }) => {
 
     const preReq = route.params ? route.params.preReq : null
     const online = route.params ? route.params.online : null
+    const driver = route.params ? route.params.driver : null
 
     const TimeAndLoc = [
         { id: 59, time: '5AM - 9AM', locations: [], show: false },
@@ -292,29 +294,38 @@ export const RequestRide = ({ navigation, route }) => {
             console.log('New Profile', newProfile)
 
             if (online) {
-
-                const Drivers = onlineDrivers.filter(it => {
+                const checkDriver = (it) => {
+                    if (!it) {
+                        return false
+                    }
                     const update = new Date(it.lastUpdate)
                     const isReady = ((actualDate - update) / 1000) <= 50
 
                     const alrea = alreadySend.find(l => l == it.uid) != -1
                     const from = it.location
                     const { distance } = getDistanceFromRes(from, current ? current : { "latitude": 0, "longitude": 0 })
+                    console.log(from, current, distance, isReady, update, actualDate)
 
 
                     if (isReady && distance < 3000) {
                         return true
                     }
                     return false
-                })
+                }
+
+
+                const Drivers = driver ? checkDriver(onlineDrivers.find(it => driver.did == it.did)) ? [driver] : []
+                    : onlineDrivers.filter(it => checkDriver(it))
                 if (Drivers.length == 0) {
                     setIsLoading(false)
                     disptach(setErrorAlert({ Title: 'No Driver Found', Body: 'Please retry after sometime', Status: 0 }))
                     return
 
                 }
+                newProfile.token = profile.deviceToken,
+                    newProfile.sendDrivers = Drivers
+                newProfile.isSpecific = driver ? true : false
 
-                newProfile.sendDrivers = Drivers
                 //    profile.sendDrivers = sendDrivers
                 const tokens = []
 
@@ -324,7 +335,6 @@ export const RequestRide = ({ navigation, route }) => {
                     newProfile[dr.uid] = driverDetail
                 })
                 newProfile.tokens = tokens
-
                 // console.log(tokens)
                 // setIsLoading(false)
                 // return
@@ -636,7 +646,25 @@ export const RequestRide = ({ navigation, route }) => {
 
                 <KeyboardAwareScrollView contentContainerStyle={{ paddingHorizontal: myWidth(4) }}>
 
+
                     <Spacer paddingT={myHeight(1.5)} />
+                    {
+                        driver ?
+
+                            <View>
+                                <TouchableOpacity activeOpacity={0.8} style={{}} onPress={() => {
+
+                                    navigation.navigate('DriverDetail', { driver: driver })
+                                }}>
+
+                                    <DriverInfoFull driver={driver} code={104} />
+                                </TouchableOpacity>
+                                <Spacer paddingT={myHeight(1)} />
+
+                            </View>
+                            :
+                            null
+                    }
                     {/* Pickup */}
                     <View style={{}}>
                         <Text

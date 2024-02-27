@@ -16,7 +16,8 @@ import { getDistanceFromRes } from '../functions/functions';
 
 export const RideDetails2 = ({ navigation, route }) => {
     const req = route.params.item
-    const code = route.params.code
+    const code2 = route.params.code
+    const [code, setCode] = useState(code2)
     const [errorMsg, setErrorMsg] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
     const { onlineDrivers } = useSelector(state => state.data)
@@ -44,6 +45,13 @@ export const RideDetails2 = ({ navigation, route }) => {
     useEffect(() => {
         if (item) {
 
+            if (item.status == 2 || item.status == 3) {
+                setCode(1)
+            }
+            else {
+                setCode(3)
+
+            }
             const statusMessages = (code == 1 && (item.status == 2 || (item.status == 3))) ? item.status == 2 ?
                 item.accepted ? `${item.accepted} ${item.accepted == 1 ? 'driver is' : 'drivers are'} waiting for your response` : 'No driver responded yet' :
                 'In Progress' :
@@ -93,7 +101,7 @@ export const RideDetails2 = ({ navigation, route }) => {
             }
             setSendDrivers(driver)
         }
-    }, [item, current, onlineDrivers])
+    }, [item, current, onlineDrivers, code])
     useEffect(() => {
 
         if (errorMsg) {
@@ -343,6 +351,7 @@ export const RideDetails2 = ({ navigation, route }) => {
                             <FlashList
                                 showsVerticalScrollIndicator={false}
                                 scrollEnabled={false}
+
                                 data={sendDrivers}
                                 extraData={item}
                                 // extraData={[ac, wifi, topRated, search]}
@@ -374,12 +383,33 @@ export const RideDetails2 = ({ navigation, route }) => {
 
                                                 <View style={{ alignItems: 'center', flexDirection: 'row' }}>
                                                     <Text numberOfLines={1}
-                                                        style={{
-                                                            flex: 1,
+                                                        style={[styles.textCommon, {
+
 
                                                             fontSize: myFontSize.body2,
                                                             fontFamily: myFonts.heading,
-                                                        }}>{driver.name}</Text>
+                                                        }]}>{driver.name}</Text>
+
+                                                    <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, }}>
+                                                        {/* <Spacer paddingEnd={myWidth(3)} />
+                                                        <Image style={{
+                                                            height: myHeight(1.85),
+                                                            width: myHeight(1.85), marginTop: -myHeight(0.2),
+                                                            tintColor: myColors.star,
+                                                            resizeMode: 'contain',
+                                                        }} source={require('../assets/home_main/home/star.png')} />
+
+                                                        <Spacer paddingEnd={myWidth(1)} />
+                                                        <Text style={{
+
+                                                            fontSize: myFontSize.xxSmall,
+                                                            fontFamily: myFonts.body,
+                                                            color: myColors.text,
+                                                            letterSpacing: myLetSpacing.common,
+                                                            includeFontPadding: false,
+                                                            padding: 0,
+                                                        }}>{driver.rating} <Text style={{ color: myColors.textL4 }}>({driver.noOfRatings})</Text></Text> */}
+                                                    </View>
                                                     {/* Name */}
                                                     <Text numberOfLines={1}
 
@@ -392,8 +422,11 @@ export const RideDetails2 = ({ navigation, route }) => {
                                                             },
                                                         ]}>{driver.vehicleName}</Text>
 
+
+
+
                                                 </View>
-                                                {/* <Spacer paddingT={myHeight(0.4)} /> */}
+                                                <Spacer paddingT={myHeight(0.9)} />
 
 
 
@@ -534,7 +567,7 @@ export const RideDetails2 = ({ navigation, route }) => {
 
                                                                         color: driver.status < 0 ? myColors.red : driver.status == 1 ? myColors.textL4 : myColors.green
                                                                     },
-                                                                ]}>{driver.status < 0 ? 'Rejected' : driver.status == 1 ? 'Sent' : 'Accepted'}</Text>
+                                                                ]}>{driver.status < 0 ? 'Rejected' : driver.status == 1 ? 'Sent' : code == 1 ? 'On the way' : 'Completed'}</Text>
                                                     }
 
 

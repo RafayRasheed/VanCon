@@ -501,7 +501,17 @@ export const HomeScreen = ({ navigation }) => {
                     renderItem={({ item, index }) => {
 
                         return (
-                            <TouchableOpacity activeOpacity={0.8} key={index} style={{ marginEnd: myWidth(4) }} onPress={() => navigation.navigate('DriverDetail', { driver: item })}>
+                            <TouchableOpacity activeOpacity={0.8} key={index} style={{ marginEnd: myWidth(4) }} onPress={() => {
+                                if (code == 104) {
+                                    if (onlineReq) {
+                                        navigation.navigate("OrderDetails2", { item: onlineReq, code: 1 })
+                                        return
+                                    }
+                                    navigation.navigate('RequestRide', { online: true, driver: item })
+                                    return
+                                }
+                                navigation.navigate('DriverDetail', { driver: item })
+                            }}>
 
                                 <DriverInfoFull isSmall={true} driver={item} code={code} />
                             </TouchableOpacity>
