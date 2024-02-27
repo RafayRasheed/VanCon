@@ -187,7 +187,7 @@ export const StartupScreen = ({ navigation }) => {
 
                                     <Spacer paddingT={myHeight(3.5)} />
                                     <Text numberOfLines={2} style={styles.textTitle}>{item.title}</Text>
-                                    <Text numberOfLines={1} style={styles.textDes}>{item.des}</Text>
+                                    <Text numberOfLines={3} style={styles.textDes}>{item.des}</Text>
                                     <Spacer paddingT={myHeight(2.5)} />
 
                                 </View>

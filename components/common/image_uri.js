@@ -31,7 +31,7 @@ export const ImageUri = ({
         }
     }, [isStart]);
     return (
-        <View style={{
+        <View key={uri} style={{
             // backgroundColor: myColors.offColor5,
             width, height, borderRadius, overflow: 'hidden'
         }}>
