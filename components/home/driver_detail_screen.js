@@ -122,17 +122,20 @@ export const DriverDetail = ({ navigation, route }) => {
 
           }
 
+
           const OtherReview = reviews.filter(it => it.id != profile.uid)
           const newReview = [
+            reviewNew,
             ...OtherReview,
-            reviewNew
           ]
+
+          const roundedRating = Math.round(newrating * 10) / 10;
 
           const update = {
             noOfRatings: newnoOfRatings,
             ratingTotal: newRatingTotal,
             reviews: newReview,
-            rating: newrating
+            rating: roundedRating
           }
 
           firestore().collection('drivers').doc(driver.uid).update(update)

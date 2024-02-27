@@ -267,17 +267,28 @@ export function getAllRestuarant(profile) {
             insideUniDrivers.push(driver)
 
           }
-          if (driver.rating >= 4) {
+          if (driver.rating >= 4.5) {
             recomended.push(driver)
           }
 
         })
         console.log('drivers', drivers.length)
 
+        const sortByWeightedRating = (a, b) => {
+          // Calculate weighted rating (rating * numRatings)
+          const weightedRatingA = a.rating * a.noOfRatings;
+          const weightedRatingB = b.rating * b.noOfRatings;
 
-        storeRedux.dispatch(setRecommendedDrivers(recomended.sort(function (a, b) { return b.rating - a.rating })))
-        storeRedux.dispatch(setEventDrivers(eventDrivers))
-        storeRedux.dispatch(setInsideUniDrivers(insideUniDrivers))
+          // Sort by weighted rating
+          return weightedRatingB - weightedRatingA; // Sort by descending weighted rating
+        };
+        const randomSort = () => Math.random() - 0.5;
+
+        // Randomly sort the array
+        // storeRedux.dispatch(setRecommendedDrivers(recomended.sort(function (a, b) { return b.rating - a.rating })))
+        storeRedux.dispatch(setRecommendedDrivers(recomended.sort(sortByWeightedRating)))
+        storeRedux.dispatch(setEventDrivers(eventDrivers.sort(randomSort)))
+        storeRedux.dispatch(setInsideUniDrivers(insideUniDrivers.sort(randomSort)))
 
         storeRedux.dispatch(setAllDriver(drivers))
 
