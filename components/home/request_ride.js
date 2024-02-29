@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
     ScrollView, StyleSheet, TouchableOpacity, Image,
     View, Text, StatusBar, TextInput, Alert,
-    Linking, Platform, ImageBackground, SafeAreaView, FlatList,
+    Linking, Platform, ImageBackground, SafeAreaView, FlatList, BackHandler,
 } from 'react-native';
 import { Loader, MyError, NotiAlertNew, Spacer, StatusbarH, errorTime, ios, myHeight, myWidth } from '../common';
 import { myColors } from '../../ultils/myColors';
@@ -26,6 +26,8 @@ import { offers } from './home_data';
 import { dataFullData, getCurrentLocations, getDistanceFromRes } from '../functions/functions';
 import { DriverInfoFull } from './home.component/driver_info_full';
 import { SwipeableItem } from './home.component/drag_commponent';
+import { useFocusEffect } from '@react-navigation/native';
+import Animated, { BounceIn } from 'react-native-reanimated';
 const allDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 export const RequestRide = ({ navigation, route }) => {
     const disptach = useDispatch()
@@ -95,11 +97,39 @@ export const RequestRide = ({ navigation, route }) => {
     const [seats, setSeats] = useState(preReq ? preReq.seats : 1)
     const [packages, setPackages] = useState(preReq ? preReq.packages : null)
     const [offer, setOffer] = useState(preReq ? preReq.offer : null)
+    const [warning, setWarning] = useState(false)
 
     const [instruction, setInstruction] = useState(preReq ? preReq.instruction : null)
 
     const [alreadySend, setAlreadySend] = useState([])
 
+    const onBackPress = () => {
+
+        if (showLoc) {
+            setShowLoc(false)
+            return true
+        }
+        if (showTimeModal) {
+            setShowTimeModal(false)
+            return true
+        }
+        setWarning(true)
+
+        return true
+    };
+
+    useFocusEffect(
+        React.useCallback(() => {
+
+            BackHandler.addEventListener(
+                'hardwareBackPress', onBackPress
+            );
+            return () =>
+                BackHandler.removeEventListener(
+                    'hardwareBackPress', onBackPress
+                );
+        }, [showLoc, showTimeModal])
+    );
     useEffect(() => {
 
 
@@ -1261,6 +1291,87 @@ export const RequestRide = ({ navigation, route }) => {
                     <Search selected={showLoc == 1 ? pickup : dropoff} setShowLoc={setShowLoc}
                         setSelected={showLoc == 1 ? setPickup : setDropoff} />
                     : null
+            }
+            {
+                warning &&
+
+
+                <View style={{
+                    position: 'absolute', justifyContent: 'center',
+                    backgroundColor: '#00000042', height: '100%', width: myWidth(100),
+                    alignItems: 'center', paddingHorizontal: myWidth(4.5)
+                }}>
+
+                    <Animated.View
+                        // entering={BounceIn.duration(100)}
+                        style={{
+                            width: "100%", backgroundColor: myColors.background,
+                            paddingHorizontal: myWidth(4.6), borderRadius: myHeight(1.5)
+
+                        }}>
+                        <Spacer paddingT={myHeight(2.5)} />
+                        <Text
+                            style={{
+                                textAlign: 'center',
+                                fontSize: myFontSize.body,
+                                fontFamily: myFonts.bodyBold,
+                                color: myColors.text,
+                                letterSpacing: myLetSpacing.common,
+                                includeFontPadding: false,
+                                padding: 0,
+                            }}
+                        >Are you sure you want to back?{'\n'}</Text>
+                        <Spacer paddingT={myHeight(2)} />
+                        <View
+                            style={{
+                                flexDirection: 'row', justifyContent: 'space-between',
+                            }}>
+                            {/* NO */}
+                            <TouchableOpacity activeOpacity={0.6} onPress={() => setWarning(false)}
+                                style={{
+                                    width: '48%', borderWidth: myHeight(0.09),
+                                    borderColor: myColors.primaryT, borderRadius: myHeight(0.8),
+                                    paddingVertical: myHeight(0.8)
+                                }}>
+                                <Text
+                                    style={{
+                                        textAlign: 'center',
+                                        fontSize: myFontSize.xBody,
+                                        fontFamily: myFonts.bodyBold,
+                                        color: myColors.primaryT,
+                                        letterSpacing: myLetSpacing.common,
+                                        includeFontPadding: false,
+                                        padding: 0,
+                                    }}
+                                >No</Text>
+                            </TouchableOpacity>
+                            {/* Yes */}
+                            <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()}
+                                style={{
+                                    width: '48%', borderWidth: myHeight(0.09),
+                                    borderColor: myColors.primaryT, borderRadius: myHeight(0.8),
+                                    paddingVertical: myHeight(0.8), backgroundColor: myColors.primaryT
+                                }}>
+                                <Text
+                                    style={{
+                                        textAlign: 'center',
+                                        fontSize: myFontSize.xBody,
+                                        fontFamily: myFonts.bodyBold,
+                                        color: myColors.background,
+                                        letterSpacing: myLetSpacing.common,
+                                        includeFontPadding: false,
+                                        padding: 0,
+                                    }}
+                                >Yes</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <Spacer paddingT={myHeight(3)} />
+
+
+
+                    </Animated.View>
+
+                </View>
             }
         </>
     )

@@ -115,7 +115,7 @@ export const NotiAlertNew = () => {
         if (error) {
             setTimeout(() => {
                 onClose()
-            }, 4000)
+            }, 5000)
         }
     }, [error])
 

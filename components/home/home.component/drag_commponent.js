@@ -1,15 +1,17 @@
 import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { GestureHandlerRootView, PanGestureHandler } from 'react-native-gesture-handler';
-import Animated, { runOnJS, useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
+import Animated, { runOnJS, useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, withSequence, withSpring, withTiming } from 'react-native-reanimated';
 import { myWidth } from '../../common';
 
 export const SwipeableItem = ({ children, onClose }) => {
     const translateX = useSharedValue(0);
     const wid = myWidth(100);
-    // function onClose() {
-    //     console.log('clooose')
-    // }
+    function onClosssse() {
+        setTimeout(() => {
+            onClose()
+        }, 200)
+    }
     const gestureHandler = useAnimatedGestureHandler({
         onStart: (_, ctx) => {
             ctx.startX = translateX.value;
@@ -22,7 +24,7 @@ export const SwipeableItem = ({ children, onClose }) => {
                 translateX.value = withTiming(wid)
                 // If swiped enough, close the item
 
-                runOnJS(onClose)();
+                runOnJS(onClosssse)();
 
             } else {
                 // Snap back to original position
