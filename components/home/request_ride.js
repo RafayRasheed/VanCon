@@ -25,6 +25,7 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import { offers } from './home_data';
 import { dataFullData, getCurrentLocations, getDistanceFromRes } from '../functions/functions';
 import { DriverInfoFull } from './home.component/driver_info_full';
+import { SwipeableItem } from './home.component/drag_commponent';
 const allDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 export const RequestRide = ({ navigation, route }) => {
     const disptach = useDispatch()
@@ -590,6 +591,7 @@ export const RequestRide = ({ navigation, route }) => {
             </View>
         )
     }
+
 
 
     return (

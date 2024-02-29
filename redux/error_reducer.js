@@ -5,6 +5,7 @@ const errorReducer = createSlice({
     name: "error",
     initialState: {
         error: null,
+        // error: { Title: 'Han', Body: 'jeee', Status: 0 }
 
     },
     reducers: {

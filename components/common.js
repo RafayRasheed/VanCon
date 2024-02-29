@@ -11,6 +11,7 @@ export const stutusH = StatusBar.currentHeight
 import { Chase, Fold, Grid, Swing } from "react-native-animated-spinkit"
 import { useDispatch, useSelector } from 'react-redux';
 import { setErrorAlert } from '../redux/error_reducer';
+import { SwipeableItem } from './home/home.component/drag_commponent';
 
 export function printWithPlat(print) {
     console.log(`${Platform.OS} => ${print} ${height} ${StatusBar.currentHeight}`)
@@ -105,57 +106,66 @@ export const errorTime = 2000
 export const NotiAlertNew = () => {
     const { error } = useSelector(state => state.error)
     const dispatch = useDispatch()
+
+    function onClose() {
+        dispatch(setErrorAlert(null))
+
+    }
     useEffect(() => {
         if (error) {
             setTimeout(() => {
-                dispatch(setErrorAlert(null))
+                onClose()
             }, 4000)
         }
     }, [error])
+
     if (error == null) {
         return null
     }
     const { Title, Body, Status } = error
     return (
         <View style={{ position: 'absolute', zIndex: 10, width: '100%', backgroundColor: 'transparent' }}>
-            <Animated.View entering={SlideInUp.duration(500)} exiting={SlideOutUp}>
+            <SwipeableItem onClose={onClose}>
+                <Animated.View entering={SlideInUp.duration(500)} >
 
-                <StatusbarH />
-                <Spacer paddingT={myHeight(2)} />
-                <TouchableOpacity disabled activeOpacity={0.8} style={{
-                    // height: myHeight(11),
-                    backgroundColor: myColors.background, marginHorizontal: myWidth(5),
-                    borderRadius: myWidth(3), borderWidth: 1, borderColor: myColors.offColor7, elevation: 3,
-                    flexDirection: 'row', overflow: 'hidden',
-                }}>
-                    <View style={{
-                        width: myWidth(2), height: '100%',
-                        backgroundColor: Status == 0 ? myColors.red : Status == 1 ? myColors.offColor : myColors.green
-                    }} />
-                    <View style={{
-                        paddingHorizontal: myWidth(2.4),
-                        paddingVertical: myHeight(1.2)
+
+                    <StatusbarH />
+                    <Spacer paddingT={myHeight(2)} />
+                    <TouchableOpacity disabled activeOpacity={0.8} style={{
+                        // height: myHeight(11),
+                        backgroundColor: myColors.background, marginHorizontal: myWidth(5),
+                        borderRadius: myWidth(3), borderWidth: 1, borderColor: myColors.offColor7, elevation: 3,
+                        flexDirection: 'row', overflow: 'hidden',
                     }}>
-                        {
-                            Title &&
-                            <Text style={[styles.textCommon, {
-                                fontSize: myFontSize.body,
-                                fontFamily: myFonts.bodyBold,
+                        <View style={{
+                            width: myWidth(2), height: '100%',
+                            backgroundColor: Status == 0 ? myColors.red : Status == 1 ? myColors.offColor : myColors.green
+                        }} />
+                        <View style={{
+                            paddingHorizontal: myWidth(2.4),
+                            paddingVertical: myHeight(1.2)
+                        }}>
+                            {
+                                Title &&
+                                <Text style={[styles.textCommon, {
+                                    fontSize: myFontSize.body,
+                                    fontFamily: myFonts.bodyBold,
 
-                            }]}>{Title}</Text>
-                        }
+                                }]}>{Title}</Text>
+                            }
 
-                        {
-                            Body &&
-                            <Text style={[styles.textCommon, {
-                                fontSize: myFontSize.xxSmall,
-                                fontFamily: myFonts.body,
+                            {
+                                Body &&
+                                <Text style={[styles.textCommon, {
+                                    fontSize: myFontSize.xxSmall,
+                                    fontFamily: myFonts.body,
 
-                            }]}>{Body}</Text>
-                        }
-                    </View>
-                </TouchableOpacity>
-            </Animated.View>
+                                }]}>{Body}</Text>
+                            }
+                        </View>
+                    </TouchableOpacity>
+                </Animated.View>
+            </SwipeableItem>
         </View>
     )
 }
