@@ -43,10 +43,7 @@ export const HomeScreen = ({ navigation }) => {
     const { current, history } = useSelector(state => state.location)
 
     const [isLoading, setIsLoading] = useState(true)
-    const [categories, setCategories] = useState([])
-    const [nearbyRestaurant, setNearbyRestaurant] = useState([])
-    const [RecommendRestaurant, setRecommendRestaurant] = useState([])
-    const [startPro, setStartPro] = useState({})
+
     const { pending, progress, onlineReq } = useSelector(state => state.orders)
 
 
@@ -100,7 +97,9 @@ export const HomeScreen = ({ navigation }) => {
             const { distance, string } = getDistanceFromRes(from, current ? current : { "latitude": 0, "longitude": 0 }, true)
             val.distanceInt = distance
             val.distance = string
-            console.log(distance)
+            console.log('distance', isReady, distance)
+
+            driv.push(val)
 
             if (isReady && distance < 3000) {
                 driv.push(val)
@@ -113,7 +112,7 @@ export const HomeScreen = ({ navigation }) => {
 
         });
         dispatch(setOnlineDriver(driv.sort(function (a, b) { return a.distanceInt - b.distanceInt })))
-        console.log('hai bhai hai', driv.length)
+        console.log('hai bhai hai', profile.uid, driv.length)
     }
 
     useEffect(() => {
@@ -207,6 +206,9 @@ export const HomeScreen = ({ navigation }) => {
                         const val = documentSnapshot1.val()
                         all.push(val)
                         if (val.isOnline) {
+                            const item = val
+                            const code = (val.status == 2 || val.status == 3) ? 1 : 3
+
                             if (val.status == 2 || val.status == 3) {
                                 let valUpadate = val
                                 let accepted = 0
@@ -218,13 +220,30 @@ export const HomeScreen = ({ navigation }) => {
 
                                 })
                                 valUpadate.accepted = accepted
+
+                                const onlineStatus = item.status == 2 ?
+                                    accepted ? `${accepted} ${accepted == 1 ? 'driver is' : 'drivers are'} waiting for your response` : 'No driver responded yet' :
+                                    'In Progress'
+                                const onlineStatusColor = (item.status == 2 && !accepted) ? myColors.red : myColors.green
+
+                                valUpadate.onlineStatus = onlineStatus
+                                valUpadate.onlineStatusColor = onlineStatusColor
                                 onlineReq = valUpadate
                                 // InProgress.push(val)
                                 if (val.unread) {
                                     unread.push({ id: val.id, code: 1 })
                                 }
+
+
+
                             }
                             else {
+
+                                const onlineStatus = item.status < 0 ? 'Cancelled' : 'Completed'
+                                const onlineStatusColor = item.status < 0 ? myColors.red : myColors.green
+
+                                val.onlineStatus = onlineStatus
+                                val.onlineStatusColor = onlineStatusColor
                                 History.push(val)
                                 if (val.unread) {
                                     unread.push({ id: val.id, code: 3 })
@@ -319,7 +338,7 @@ export const HomeScreen = ({ navigation }) => {
                         console.log(distance)
 
                         if (isReady) {
-                            drivAll.push(val)
+
                             if (distance < 3000) {
                                 driv.push(val)
 
@@ -333,9 +352,9 @@ export const HomeScreen = ({ navigation }) => {
                     });
                     dispatch(setOnlineDriver(driv.sort(function (a, b) { return a.distanceInt - b.distanceInt })))
                     dispatch(setOnlineDriverAll(drivAll))
-                    console.log('hai bhai hai', driv.length)
+                    console.log('hai bhai hai', profile.uid, driv.length)
                 } else {
-                    console.log('nahi hai')
+                    console.log('nahi hai', profile.uid)
                     dispatch(setOnlineDriver([]))
                     // dispatch()
                 }
@@ -452,7 +471,7 @@ export const HomeScreen = ({ navigation }) => {
 
     const CommonMain = ({ Deriver = [], code = 0, name = '' }) => {
         return (
-            <View>
+            <View key={code = 0}>
 
                 <View style={{ paddingHorizontal: myWidth(4), alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={{
@@ -495,7 +514,7 @@ export const HomeScreen = ({ navigation }) => {
                     }}
 
                     data={Deriver.slice(0, 4)}
-                    keyExtractor={(item, index) => item.uid}
+                    keyExtractor={(item, index) => item.uid + code}
                     estimatedItemSize={myHeight(30)}
 
                     renderItem={({ item, index }) => {
@@ -637,50 +656,315 @@ export const HomeScreen = ({ navigation }) => {
 
                 <Spacer paddingT={myHeight(2)} />
 
+
+                {/* Recommended */}
                 {
                     recommendedDrivers.length ?
                         <>
-                            < CommonMain Deriver={recommendedDrivers} name='Recommended' code={101} />
+                            {/* < CommonMain Deriver={recommendedDrivers} name='Recommended' code={101} /> */}
+                            <View key={code = 101}>
+
+                                <View style={{ paddingHorizontal: myWidth(4), alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' }}>
+                                    <Text style={{
+                                        fontSize: myFontSize.xBody,
+                                        fontFamily: myFonts.heading,
+                                        color: myColors.textL4,
+                                        letterSpacing: myLetSpacing.common,
+                                        includeFontPadding: false,
+                                        padding: 0,
+                                    }}>{'Recommended'}</Text>
+
+                                    <TouchableOpacity style={{
+                                        flexDirection: 'row', alignItems: 'center', paddingVertical: myHeight(0.4),
+                                        paddingStart: myWidth(2)
+                                    }} activeOpacity={0.6} onPress={() => navigation.navigate('Search', { name, code })}>
+
+                                        <Text
+                                            style={[styles.textCommon, {
+                                                fontSize: myFontSize.body2,
+                                                fontFamily: myFonts.bodyBold,
+                                                color: myColors.primaryT
+                                            }]}>See All</Text>
+                                        <Image style={{
+                                            height: myHeight(1.5), width: myHeight(1.5), marginStart: myWidth(1),
+                                            resizeMode: 'contain', tintColor: myColors.primaryT
+                                        }} source={require('../assets/home_main/home/go.png')} />
+                                        <Image style={{
+                                            height: myHeight(1.5), width: myHeight(1.5), marginStart: -myWidth(1),
+                                            resizeMode: 'contain', tintColor: myColors.primaryT
+                                        }} source={require('../assets/home_main/home/go.png')} />
+                                    </TouchableOpacity>
+                                </View>
+                                <FlatList
+                                    horizontal={true}
+                                    showsHorizontalScrollIndicator={false}
+
+                                    contentContainerStyle={{
+                                        // flexGrow: 1,
+                                        paddingHorizontal: myWidth(4)
+                                    }}
+
+                                    data={recommendedDrivers.slice(0, 4)}
+                                    keyExtractor={(item, index) => item.uid + '101'}
+                                    estimatedItemSize={myHeight(30)}
+
+                                    renderItem={({ item, index }) => {
+
+                                        return (
+                                            <TouchableOpacity activeOpacity={0.8} key={index} style={{ marginEnd: myWidth(4) }} onPress={() => {
+
+                                                navigation.navigate('DriverDetail', { driver: item })
+                                            }}>
+
+                                                <DriverInfoFull isSmall={true} driver={item} code={101} />
+                                            </TouchableOpacity>
+                                        )
+
+                                    }
+                                    }
+
+
+                                />
+                            </View>
                             <Spacer paddingT={myHeight(1.5)} />
 
                         </>
                         : null
                 }
+
+                {/* Inside Universities */}
                 {
 
                     insideUniDrivers.length ?
                         <>
-                            < CommonMain Deriver={insideUniDrivers} name='Inside Universities' code={102} />
+                            {/* < CommonMain Deriver={insideUniDrivers} name='Inside Universities' code={102} /> */}
+                            <View key={code = 102}>
+
+                                <View style={{ paddingHorizontal: myWidth(4), alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' }}>
+                                    <Text style={{
+                                        fontSize: myFontSize.xBody,
+                                        fontFamily: myFonts.heading,
+                                        color: myColors.textL4,
+                                        letterSpacing: myLetSpacing.common,
+                                        includeFontPadding: false,
+                                        padding: 0,
+                                    }}>{'Inside Universities'}</Text>
+
+                                    <TouchableOpacity style={{
+                                        flexDirection: 'row', alignItems: 'center', paddingVertical: myHeight(0.4),
+                                        paddingStart: myWidth(2)
+                                    }} activeOpacity={0.6} onPress={() => navigation.navigate('Search', { name, code })}>
+
+                                        <Text
+                                            style={[styles.textCommon, {
+                                                fontSize: myFontSize.body2,
+                                                fontFamily: myFonts.bodyBold,
+                                                color: myColors.primaryT
+                                            }]}>See All</Text>
+                                        <Image style={{
+                                            height: myHeight(1.5), width: myHeight(1.5), marginStart: myWidth(1),
+                                            resizeMode: 'contain', tintColor: myColors.primaryT
+                                        }} source={require('../assets/home_main/home/go.png')} />
+                                        <Image style={{
+                                            height: myHeight(1.5), width: myHeight(1.5), marginStart: -myWidth(1),
+                                            resizeMode: 'contain', tintColor: myColors.primaryT
+                                        }} source={require('../assets/home_main/home/go.png')} />
+                                    </TouchableOpacity>
+                                </View>
+                                <FlatList
+                                    horizontal={true}
+                                    showsHorizontalScrollIndicator={false}
+
+                                    contentContainerStyle={{
+                                        // flexGrow: 1,
+                                        paddingHorizontal: myWidth(4)
+                                    }}
+
+                                    data={insideUniDrivers.slice(0, 4)}
+                                    keyExtractor={(item, index) => item.uid + '102'}
+                                    estimatedItemSize={myHeight(30)}
+
+                                    renderItem={({ item, index }) => {
+
+                                        return (
+                                            <TouchableOpacity activeOpacity={0.8} key={index} style={{ marginEnd: myWidth(4) }} onPress={() => {
+
+                                                navigation.navigate('DriverDetail', { driver: item })
+                                            }}>
+
+                                                <DriverInfoFull isSmall={true} driver={item} code={102} />
+                                            </TouchableOpacity>
+                                        )
+
+                                    }
+                                    }
+
+
+                                />
+                            </View>
                             <Spacer paddingT={myHeight(1.5)} />
 
                         </>
                         : null
                 }
+
+                {/* For Events */}
                 {
                     eventDrivers.length ?
                         <>
-                            < CommonMain Deriver={eventDrivers} name='For Events' code={103} />
+                            {/* < CommonMain Deriver={eventDrivers} name='For Events' code={103} /> */}
+                            <View key={code = 103}>
+
+                                <View style={{ paddingHorizontal: myWidth(4), alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' }}>
+                                    <Text style={{
+                                        fontSize: myFontSize.xBody,
+                                        fontFamily: myFonts.heading,
+                                        color: myColors.textL4,
+                                        letterSpacing: myLetSpacing.common,
+                                        includeFontPadding: false,
+                                        padding: 0,
+                                    }}>{'For Events'}</Text>
+
+                                    <TouchableOpacity style={{
+                                        flexDirection: 'row', alignItems: 'center', paddingVertical: myHeight(0.4),
+                                        paddingStart: myWidth(2)
+                                    }} activeOpacity={0.6} onPress={() => navigation.navigate('Search', { name, code })}>
+
+                                        <Text
+                                            style={[styles.textCommon, {
+                                                fontSize: myFontSize.body2,
+                                                fontFamily: myFonts.bodyBold,
+                                                color: myColors.primaryT
+                                            }]}>See All</Text>
+                                        <Image style={{
+                                            height: myHeight(1.5), width: myHeight(1.5), marginStart: myWidth(1),
+                                            resizeMode: 'contain', tintColor: myColors.primaryT
+                                        }} source={require('../assets/home_main/home/go.png')} />
+                                        <Image style={{
+                                            height: myHeight(1.5), width: myHeight(1.5), marginStart: -myWidth(1),
+                                            resizeMode: 'contain', tintColor: myColors.primaryT
+                                        }} source={require('../assets/home_main/home/go.png')} />
+                                    </TouchableOpacity>
+                                </View>
+                                <FlatList
+                                    horizontal={true}
+                                    showsHorizontalScrollIndicator={false}
+
+                                    contentContainerStyle={{
+                                        // flexGrow: 1,
+                                        paddingHorizontal: myWidth(4)
+                                    }}
+
+                                    data={eventDrivers.slice(0, 4)}
+                                    keyExtractor={(item, index) => item.uid + '103'}
+                                    estimatedItemSize={myHeight(30)}
+
+                                    renderItem={({ item, index }) => {
+
+                                        return (
+                                            <TouchableOpacity activeOpacity={0.8} key={index} style={{ marginEnd: myWidth(4) }} onPress={() => {
+
+                                                navigation.navigate('DriverDetail', { driver: item })
+                                            }}>
+
+                                                <DriverInfoFull isSmall={true} driver={item} code={103} />
+                                            </TouchableOpacity>
+                                        )
+
+                                    }
+                                    }
+
+
+                                />
+                            </View>
                             <Spacer paddingT={myHeight(1.5)} />
 
                         </>
                         : null
                 }
 
-
+                {/* Nearby Drivers */}
                 {
                     onlineDrivers.length ?
                         <>
-                            < CommonMain Deriver={onlineDrivers} name='Nearby Drivers' code={104} />
-                            <Spacer paddingT={myHeight(1.5)} />
+                            {/* < CommonMain Deriver={onlineDrivers} name='Nearby Drivers' code={104} /> */}
 
+                            <Spacer paddingT={myHeight(1.5)} />
+                            <View key={code = 104}>
+
+                                <View style={{ paddingHorizontal: myWidth(4), alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' }}>
+                                    <Text style={{
+                                        fontSize: myFontSize.xBody,
+                                        fontFamily: myFonts.heading,
+                                        color: myColors.textL4,
+                                        letterSpacing: myLetSpacing.common,
+                                        includeFontPadding: false,
+                                        padding: 0,
+                                    }}>{'Nearby Drivers'}</Text>
+
+                                    <TouchableOpacity style={{
+                                        flexDirection: 'row', alignItems: 'center', paddingVertical: myHeight(0.4),
+                                        paddingStart: myWidth(2)
+                                    }} activeOpacity={0.6} onPress={() => navigation.navigate('Search', { name, code })}>
+
+                                        <Text
+                                            style={[styles.textCommon, {
+                                                fontSize: myFontSize.body2,
+                                                fontFamily: myFonts.bodyBold,
+                                                color: myColors.primaryT
+                                            }]}>See All</Text>
+                                        <Image style={{
+                                            height: myHeight(1.5), width: myHeight(1.5), marginStart: myWidth(1),
+                                            resizeMode: 'contain', tintColor: myColors.primaryT
+                                        }} source={require('../assets/home_main/home/go.png')} />
+                                        <Image style={{
+                                            height: myHeight(1.5), width: myHeight(1.5), marginStart: -myWidth(1),
+                                            resizeMode: 'contain', tintColor: myColors.primaryT
+                                        }} source={require('../assets/home_main/home/go.png')} />
+                                    </TouchableOpacity>
+                                </View>
+                                <FlatList
+                                    horizontal={true}
+                                    showsHorizontalScrollIndicator={false}
+
+                                    contentContainerStyle={{
+                                        // flexGrow: 1,
+                                        paddingHorizontal: myWidth(4)
+                                    }}
+
+                                    data={onlineDrivers.slice(0, 4)}
+                                    keyExtractor={(item, index) => item.uid + '104'}
+                                    estimatedItemSize={myHeight(30)}
+
+                                    renderItem={({ item, index }) => {
+
+                                        return (
+                                            <TouchableOpacity activeOpacity={0.8} key={index} style={{ marginEnd: myWidth(4) }} onPress={() => {
+
+                                                if (onlineReq) {
+                                                    navigation.navigate("OrderDetails2", { item: onlineReq, code: 1 })
+                                                    return
+                                                }
+                                                navigation.navigate('RequestRide', { online: true, driver: item })
+                                                return
+
+                                            }}>
+
+                                                <DriverInfoFull isSmall={true} driver={item} code={104} />
+                                            </TouchableOpacity>
+                                        )
+
+                                    }
+                                    }
+
+
+                                />
+                            </View>
                         </>
                         : null
                 }
 
 
-                {
-
-                }
                 {/* <Banners />
 
 

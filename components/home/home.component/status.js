@@ -149,23 +149,40 @@ export const Status = ({ notifications = [], }) => {
             </Text>
           </View>
 
-
-          <View style={{ flexDirection: 'row' }}>
-            <Text
-              style={[
-                styles.textNotiItem,
-                { fontFamily: myFonts.heading },
-              ]}
-            >
-              Driver:{' '}
-            </Text>
-            <Text
-              style={[styles.textNotiItem, { flex: 1 }]}
-              numberOfLines={1}
-            >
-              {item.driverName}
-            </Text>
-          </View>
+          {
+            item.driverName ?
+              <View style={{ flexDirection: 'row' }}>
+                <Text
+                  style={[
+                    styles.textNotiItem,
+                    { fontFamily: myFonts.heading },
+                  ]}
+                >
+                  Driver:{' '}
+                </Text>
+                <Text
+                  style={[styles.textNotiItem, { flex: 1 }]}
+                  numberOfLines={1}
+                >
+                  {item.driverName}
+                </Text>
+              </View>
+              :
+              <View style={{ flexDirection: 'row' }}>
+                <Text
+                  style={[
+                    styles.textNotiItem,
+                    { fontFamily: myFonts.heading },
+                  ]}
+                >
+                  Status:{' '}
+                </Text>
+                <Text
+                  style={[styles.textNotiItem, { flex: 1 }]}
+                  numberOfLines={2}
+                >{item.onlineStatus}</Text>
+              </View>
+          }
 
 
           {

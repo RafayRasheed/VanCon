@@ -99,23 +99,23 @@ export const DriverInfoFull = ({ driver, request = null, onSend, isSmall = false
                                             driver.isOneRide ?
                                                 <View style={{
                                                     backgroundColor: myColors.orange,
-                                                    paddingHorizontal: myWidth(3),
-                                                    paddingVertical: myHeight(0.7),
+                                                    paddingHorizontal: myWidth(2.5),
+                                                    paddingVertical: myHeight(0.5),
                                                     marginStart: -myWidth(2),
 
                                                     borderRadius: myWidth(100), alignSelf: 'flex-start'
                                                 }}>
                                                     <View style={{ flexDirection: 'row', alignItems: 'center', }}>
                                                         <Image style={{
-                                                            height: myHeight(1.85),
-                                                            width: myHeight(1.85), marginTop: -myHeight(0.2),
+                                                            height: myHeight(1.6),
+                                                            width: myHeight(1.6), marginTop: -myHeight(0.2),
                                                             tintColor: myColors.background,
                                                             resizeMode: 'contain',
                                                         }} source={require('../../assets/home_main/home/event.png')} />
 
                                                         <Spacer paddingEnd={myWidth(1.6)} />
                                                         <Text style={{
-                                                            fontSize: myFontSize.small3,
+                                                            fontSize: myFontSize.small,
                                                             fontFamily: myFonts.bodyBold,
                                                             color: myColors.background,
                                                             letterSpacing: myLetSpacing.common,
@@ -302,7 +302,7 @@ export const DriverInfoFull = ({ driver, request = null, onSend, isSmall = false
 
 
             </View>
-        </View>
+        </View >
     )
 }
 

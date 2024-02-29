@@ -73,7 +73,7 @@ export const RequestRide = ({ navigation, route }) => {
     ]
     // const [, set] = useState(true)
     const { profile } = useSelector(state => state.profile)
-    const { current, history } = useSelector(state => state.location)
+    const { current, history, nearest } = useSelector(state => state.location)
 
     const [isLoading, setIsLoading] = useState(false)
     const [errorMsg, setErrorMsg] = useState(null)
@@ -82,7 +82,7 @@ export const RequestRide = ({ navigation, route }) => {
     const [contact, setContact] = useState(preReq ? preReq.contact : null)
 
 
-    const [pickup, setPickup] = useState(preReq ? preReq.pickup : null)
+    const [pickup, setPickup] = useState(online ? nearest : preReq ? preReq.pickup : null)
     const [dropoff, setDropoff] = useState(preReq ? preReq.dropoff : null)
     const [twoWay, setTwoWay] = useState(preReq ? preReq.twoWay : true)
 

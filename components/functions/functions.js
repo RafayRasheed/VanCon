@@ -1,6 +1,6 @@
 import { Base64 } from 'js-base64';
 import storeRedux from '../../redux/store_redux';
-import { setCurrentLocation } from '../../redux/location_reducer';
+import { setCurrentLocation, setNearestLocation } from '../../redux/location_reducer';
 import Geolocation from '@react-native-community/geolocation';
 import { setErrorAlert } from '../../redux/error_reducer';
 import { getDistance } from 'geolib';
@@ -121,6 +121,11 @@ export function updateAndNewLocation(coords) {
     }
   })
   console.log('minDistance: ', minArea)
+  if (minArea && minArea.distance < 3000) {
+
+    storeRedux.dispatch(setNearestLocation(minArea))
+  }
+
   return
   if (profile.city && minArea && minArea.distance > 1300) {
     // if (true) {

@@ -174,7 +174,7 @@ export const RideDetails2 = ({ navigation, route }) => {
     }
 
     function onRideReject(dr) {
-        const more = false
+        let more = false
 
         item.sendDrivers?.map((it, i) => {
             const d = item[it.did]
@@ -597,7 +597,8 @@ export const RideDetails2 = ({ navigation, route }) => {
 
 
                     <CommonItem text={'Status'} text2={'The status of the request.'}
-                        items={[statusMessages]} color={(item.status < 0) ? myColors.red : myColors.green} />
+                        items={[item.onlineStatus]} color={item.onlineStatusColor} />
+                    {/* items={[statusMessages]} color={(item.status < 0) ? myColors.red : myColors.green} /> */}
 
                     <CommonItem text={'Date'} text2={'The date of the request.'}
                         items={[`${item.date}`]} />

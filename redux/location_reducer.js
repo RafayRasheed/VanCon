@@ -5,6 +5,7 @@ const locationReducer = createSlice({
     name: "location",
     initialState: {
         current: null,
+        nearest: null,
         history: null,
 
     },
@@ -20,9 +21,15 @@ const locationReducer = createSlice({
         },
 
 
+        setNearestLocation(state, action) {
+
+            state.nearest = action.payload
+
+
+        },
 
     },
 });
 
-export const { setCurrentLocation } = locationReducer.actions;
+export const { setCurrentLocation, setNearestLocation } = locationReducer.actions;
 export default locationReducer.reducer;
