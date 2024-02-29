@@ -17,13 +17,13 @@ xmlns:tools="http://schemas.android.com/tools"
           <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
         android:resource="@mipmap/ic_launcher" />
 
-      <!-- <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
-        android:resource="@mipmap/ic_launcher_foreground" />
+     <!--  <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
+        android:resource="@mipmap/ic_launcher" />
         <meta-data
          tools:replace="android:resource"
   android:name="com.google.firebase.messaging.default_notification_color"
-  android:resource="@color/app_bg" /> -->
-  
+  android:resource="@color/app_bg" />
+   -->
         <activity
           android:name=".SplashActivity"
           android:theme="@style/SplashTheme"
