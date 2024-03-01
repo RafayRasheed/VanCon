@@ -34,7 +34,7 @@ export const Banners = () => {
                     return prevI;
                 }
             });
-        }, 3 * 1000);
+        }, 5000);
     };
 
     useEffect(() => {

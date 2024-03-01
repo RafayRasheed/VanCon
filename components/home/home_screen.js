@@ -207,7 +207,6 @@ export const HomeScreen = ({ navigation }) => {
                         all.push(val)
                         if (val.isOnline) {
                             const item = val
-                            const code = (val.status == 2 || val.status == 3) ? 1 : 3
 
                             if (val.status == 2 || val.status == 3) {
                                 let valUpadate = val
