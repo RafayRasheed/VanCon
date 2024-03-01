@@ -127,7 +127,7 @@ export const RidesScreen = ({ navigation }) => {
             <View style={styles.containerLine} />
 
             {/* <Spacer paddingT={myHeight(0.86)} /> */}
-            {
+            {/* {
                 ((i == 0 && progressL.length) || (i == 1 && pendingL.length) || (i == 2 && historyL.length)) ?
 
 
@@ -171,59 +171,136 @@ export const RidesScreen = ({ navigation }) => {
                             fontFamily: myFonts.bodyBold,
                             color: myColors.textL4,
                         }]}>No Ride Found</Text>
-                        {/* (i == 0 && progressL.length)  */}
+                    </View>
+            } */}
+
+            {(i == 0 && progressL.length) ?
+
+                <FlashList
+                    showsVerticalScrollIndicator={false}
+                    // scrollEnabled={false}
+                    data={progressL}
+                    extraData={i}
+                    // extraData={[ac, wifi, topRated, search]}
+                    contentContainerStyle={styles.containerContentScroll}
+
+                    estimatedItemSize={myHeight(10)}
+                    renderItem={({ item, index }) => {
+                        if (item.isOnline) {
+                            return (
+                                <TouchableOpacity key={index} activeOpacity={0.95}
+                                    onPress={() => navigation.navigate('OrderDetails2', { item, code: i + 1 })}>
+
+
+
+                                    <RequestInfo2 item={item} navigation={navigation} code={i + 1} />
+                                </TouchableOpacity>
+                            )
+                        }
+                        return (
+                            <TouchableOpacity key={index} activeOpacity={0.95}
+                                onPress={() => navigation.navigate('OrderDetails', { item, code: i + 1 })}>
+
+
+
+                                <RequestInfo item={item} navigation={navigation} code={i + 1} />
+                            </TouchableOpacity>
+                        )
+                    }
+                    }
+                />
+                : null
+            }
+
+            {(i == 1 && pendingL.length) ?
+
+                <FlashList
+                    showsVerticalScrollIndicator={false}
+                    // scrollEnabled={false}
+                    data={pendingL}
+                    extraData={i}
+                    // extraData={[ac, wifi, topRated, search]}
+                    contentContainerStyle={styles.containerContentScroll}
+
+                    estimatedItemSize={myHeight(10)}
+                    renderItem={({ item, index }) => {
+                        if (item.isOnline) {
+                            return (
+                                <TouchableOpacity key={index} activeOpacity={0.95}
+                                    onPress={() => navigation.navigate('OrderDetails2', { item, code: i + 1 })}>
+
+
+
+                                    <RequestInfo2 item={item} navigation={navigation} code={i + 1} />
+                                </TouchableOpacity>
+                            )
+                        }
+                        return (
+                            <TouchableOpacity key={index} activeOpacity={0.95}
+                                onPress={() => navigation.navigate('OrderDetails', { item, code: i + 1 })}>
+
+
+
+                                <RequestInfo item={item} navigation={navigation} code={i + 1} />
+                            </TouchableOpacity>
+                        )
+                    }
+                    }
+                />
+                : null
+            }
+            {(i == 2 && historyL.length) ?
+
+                <FlashList
+                    showsVerticalScrollIndicator={false}
+                    // scrollEnabled={false}
+                    data={historyL}
+                    extraData={i}
+                    // extraData={[ac, wifi, topRated, search]}
+                    contentContainerStyle={styles.containerContentScroll}
+
+                    estimatedItemSize={myHeight(10)}
+                    renderItem={({ item, index }) => {
+                        if (item.isOnline) {
+                            return (
+                                <TouchableOpacity key={index} activeOpacity={0.95}
+                                    onPress={() => navigation.navigate('OrderDetails2', { item, code: i + 1 })}>
+
+
+
+                                    <RequestInfo2 item={item} navigation={navigation} code={i + 1} />
+                                </TouchableOpacity>
+                            )
+                        }
+                        return (
+                            <TouchableOpacity key={index} activeOpacity={0.95}
+                                onPress={() => navigation.navigate('OrderDetails', { item, code: i + 1 })}>
+
+
+
+                                <RequestInfo item={item} navigation={navigation} code={i + 1} />
+                            </TouchableOpacity>
+                        )
+                    }
+                    }
+                />
+                : null
+            }
+            {
+                ((i == 0 && progressL.length) || (i == 1 && pendingL.length) || (i == 2 && historyL.length)) ?
+
+
+                    null
+                    :
+                    <View style={{ flex: 0.7, justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={[styles.textCommon, {
+                            fontSize: myFontSize.medium0,
+                            fontFamily: myFonts.bodyBold,
+                            color: myColors.textL4,
+                        }]}>No Ride Found</Text>
                     </View>
             }
-            {/* <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.containerContentScroll}>
-                {i == 0 &&
-                    progress.map((item, ind) =>
-                        <TouchableOpacity key={ind} activeOpacity={0.95}
-                            onPress={() => navigation.navigate('OrderDetails', { item, code: 1 })}>
 
-                            {ind != 0 &&
-                                <View style={{
-
-                                    height: myHeight(0.16),
-                                    backgroundColor: myColors.divider,
-                                }} />
-                            }
-
-                            <RequestInfo item={item} navigation={navigation} code={1} />
-                        </TouchableOpacity>
-                    )
-                }
-
-                {i == 1 &&
-                    pending.map((item, ind) =>
-                        <TouchableOpacity key={ind} activeOpacity={0.95}
-                            onPress={() => navigation.navigate('OrderDetails', { item, code: 2 })}>
-                            {ind != 0 &&
-                                <View style={{
-                                    height: myHeight(0.16),
-                                    backgroundColor: myColors.divider,
-                                }} />
-                            }
-                            <RequestInfo item={item} navigation={navigation} code={2} />
-                        </TouchableOpacity>
-
-                    )
-                }
-                {i == 2 &&
-                    history.map((item, ind) =>
-                        <TouchableOpacity key={ind} activeOpacity={0.95}
-                            onPress={() => navigation.navigate('OrderDetails', { item, code: 3 })}>
-                            {ind != 0 &&
-                                <View style={{
-                                    height: myHeight(0.16),
-                                    backgroundColor: myColors.divider,
-                                }} />
-                            }
-                            <RequestInfo item={item} navigation={navigation} code={3} />
-                        </TouchableOpacity>
-
-                    )
-                }
-            </ScrollView> */}
         </SafeAreaView>
     )
 }

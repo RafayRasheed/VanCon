@@ -22,7 +22,7 @@ export const HomeSkeleton = ({ navigation }) => {
                 <SkeletonPlaceholder.Item marginStart={myWidth(4)} width={myWidth(50)} height={myHeight(2.2)} borderRadius={0} />
             </SkeletonPlaceholder>
 
-            <Spacer paddingT={myHeight(2.2)} />
+            <Spacer paddingT={myHeight(2.4)} />
 
             {/* Banner */}
             <SkeletonPlaceholder>
@@ -30,6 +30,12 @@ export const HomeSkeleton = ({ navigation }) => {
                 {/* <SkeletonPlaceholder.Item width={myWidth(13)} height={myHeight(1.5)} marginTop={myHeight(1)} borderRadius={myHeight(1)} alignSelf='center' /> */}
             </SkeletonPlaceholder>
 
+            <Spacer paddingT={myHeight(3)} />
+            {/* Reequest */}
+            <SkeletonPlaceholder>
+                <SkeletonPlaceholder.Item width={myWidth(92)} height={myWidth(12)} borderRadius={myHeight(0)} alignSelf='center' />
+                {/* <SkeletonPlaceholder.Item width={myWidth(13)} height={myHeight(1.5)} marginTop={myHeight(1)} borderRadius={myHeight(1)} alignSelf='center' /> */}
+            </SkeletonPlaceholder>
 
 
             <Spacer paddingT={myHeight(3)} />
@@ -44,6 +50,10 @@ export const HomeSkeleton = ({ navigation }) => {
                 <RestaurantInfoSkeleton isFull={false} />
 
             </View>
+
+            <Spacer paddingT={myHeight(3)} />
+            {/* Heading */}
+            <SpaceBetweenSkeleton />
             <Spacer paddingT={myHeight(2)} />
             {/* Restuarant */}
             <View style={{
