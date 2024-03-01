@@ -368,7 +368,7 @@ export const HomeScreen = ({ navigation }) => {
             setTimeout(() => {
 
                 setIsLoading(false)
-            }, 1000)
+            }, 1200)
 
         }
     }, [AllDrivers]);
