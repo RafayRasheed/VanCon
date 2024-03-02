@@ -301,7 +301,7 @@ export const Chat = ({ navigation, route }) => {
                         const captain = data.data()
                         setDriver(captain)
                         updateMor(captain)
-                    })
+                    }).catch((err) => { console.log('error on inside message', err) })
                 }
 
                 // database().ref(`/chats/${chatId}`).child('lastUpdate')
