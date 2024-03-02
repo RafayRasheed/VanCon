@@ -102,6 +102,10 @@ export const Chat = ({ navigation, route }) => {
     const chatId = profile.uid + user2.uid
     const [chatss, setChatss] = useState([])
     const [colorC, setColorC] = useState(myColors.red)
+    const [driver, setDriver] = useState(null)
+
+
+    const { AllDrivers } = useSelector(state => state.data)
 
     const dispatch = useDispatch()
     function scrollToBottom() {
@@ -133,6 +137,11 @@ export const Chat = ({ navigation, route }) => {
             setUnreadCount(0)
         }
     }, [showScrollToLast])
+    useEffect(() => {
+        if (AllDrivers.length) {
+            setDriver(AllDrivers.find(it => it.uid == user2.uid))
+        }
+    }, [AllDrivers])
     useEffect(() => {
         const myChat = chats.filter(it => it.chatId == chatId)
         if (myChat.length) {
@@ -258,31 +267,42 @@ export const Chat = ({ navigation, route }) => {
 
         }
         setMessage(null)
-        Keyboard.dismiss()
+        // Keyboard.dismiss()
         const isNew = chatss.length == 0
+
+        function updateMor(captain) {
+            const token = captain.deviceToken
+            const otherUpdates = {
+                user: {
+                    uid: profile.uid, name: profile.name,
+                },
+                captain: {
+                    uid: captain.uid, name: captain.name,
+                }
+
+            }
+            database()
+                .ref(`/chats/${chatId}`).update(otherUpdates).then(() => { })
+                .catch((er) => { console.log('error on send message333', er) })
+
+            sendPushNotification(profile.name, message, 2, [token])
+        }
         database()
             .ref(`/chats/${chatId}`).child('messages').child(msgId)
             .update(mssss).then(() => {
-                firestore().collection('drivers').doc(user2.uid).get().then((data) => {
+                if (driver) {
+                    updateMor(driver)
+                    console.lo('aja')
+                }
+                else {
 
-                    const captain = data.data()
-                    const token = captain.deviceToken
-                    const otherUpdates = {
-                        user: {
-                            uid: profile.uid, name: profile.name,
-                        },
-                        captain: {
-                            uid: captain.uid, name: captain.name,
-                        }
+                    firestore().collection('drivers').doc(user2.uid).get().then((data) => {
 
-                    }
-                    if (isNew) {
-                        database()
-                            .ref(`/chats/${chatId}`).update(otherUpdates).then(() => { })
-                            .catch((er) => { console.log('error on send message333', er) })
-                    }
-                    sendPushNotification(profile.name, message, 2, [token])
-                })
+                        const captain = data.data()
+                        setDriver(captain)
+                        updateMor(captain)
+                    })
+                }
 
                 // database().ref(`/chats/${chatId}`).child('lastUpdate')
                 //     .update({ dateInt, date, time: timeFor }).then(() => {
@@ -382,13 +402,16 @@ export const Chat = ({ navigation, route }) => {
                     }} />
                 </View>
                 <KeyboardAwareScrollView
-                    keyboardShouldPersistTaps={'handled'} bounces={false}
+                    // keyboardDismissMode="on-drag"
+
+                    keyboardShouldPersistTaps={'always'} bounces={false}
                     showsVerticalScrollIndicator={false} contentContainerStyle={{ flex: 1 }}>
                     {/* Chats */}
                     <ImageBackground style={{ flex: 1 }} source={require('../assets/home_main/home/cb3.jpg')}>
 
                         <FlashList
-
+                            // keyboardDismissMode="on-drag"
+                            keyboardShouldPersistTaps={'always'}
                             ref={scrollRef}
                             onScrollBeginDrag={() => {
                                 setFromTouch(true)
