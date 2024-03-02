@@ -10,7 +10,7 @@ export const ios = Platform.OS == 'ios'
 export const stutusH = StatusBar.currentHeight
 import { Chase, Fold, Grid, Swing } from "react-native-animated-spinkit"
 import { useDispatch, useSelector } from 'react-redux';
-import { setErrorAlert } from '../redux/error_reducer';
+import { removeErrorAlertWithDelay, setErrorAlert } from '../redux/error_reducer';
 import { SwipeableItem } from './home/home.component/drag_commponent';
 
 export function printWithPlat(print) {
@@ -108,7 +108,7 @@ export const NotiAlertNew = () => {
     const dispatch = useDispatch()
 
     function onClose() {
-        dispatch(setErrorAlert(null))
+        dispatch(removeErrorAlertWithDelay(error.id))
 
     }
     useEffect(() => {
@@ -126,7 +126,9 @@ export const NotiAlertNew = () => {
     return (
         <View style={{ position: 'absolute', zIndex: 10, width: '100%', backgroundColor: 'transparent' }}>
             <SwipeableItem onClose={onClose}>
-                <Animated.View entering={SlideInUp.duration(500)} >
+
+
+                <Animated.View entering={SlideInUp.duration(500)}>
 
 
                     <StatusbarH />
@@ -151,20 +153,20 @@ export const NotiAlertNew = () => {
                                     fontSize: myFontSize.body,
                                     fontFamily: myFonts.bodyBold,
 
-                                }]}>{Title}</Text>
+                                }]}>{Body ? Title : 'Alert!'}</Text>
                             }
 
-                            {
-                                Body &&
-                                <Text style={[styles.textCommon, {
-                                    fontSize: myFontSize.xxSmall,
-                                    fontFamily: myFonts.body,
 
-                                }]}>{Body}</Text>
-                            }
+                            <Text style={[styles.textCommon, {
+                                fontSize: myFontSize.xxSmall,
+                                fontFamily: myFonts.body,
+
+                            }]}>{Body ? Body : Title}</Text>
+
                         </View>
                     </TouchableOpacity>
                 </Animated.View>
+
             </SwipeableItem>
         </View>
     )
