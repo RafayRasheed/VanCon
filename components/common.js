@@ -12,6 +12,7 @@ import { Chase, Fold, Grid, Swing } from "react-native-animated-spinkit"
 import { useDispatch, useSelector } from 'react-redux';
 import { removeErrorAlertWithDelay, setErrorAlert } from '../redux/error_reducer';
 import { SwipeableItem } from './home/home.component/drag_commponent';
+import { useNavigation } from '@react-navigation/native';
 
 export function printWithPlat(print) {
     console.log(`${Platform.OS} => ${print} ${height} ${StatusBar.currentHeight}`)
@@ -123,6 +124,9 @@ export const NotiAlertNew = () => {
         return null
     }
     const { Title, Body, Status } = error
+    const Navigate = error.Navigate
+    const navigation = error.navigation
+
     return (
         <View style={{ position: 'absolute', zIndex: 10, width: '100%', backgroundColor: 'transparent' }}>
             <SwipeableItem onClose={onClose}>
@@ -133,11 +137,16 @@ export const NotiAlertNew = () => {
 
                     <StatusbarH />
                     <Spacer paddingT={myHeight(2)} />
-                    <TouchableOpacity disabled activeOpacity={0.8} style={{
+                    <TouchableOpacity disabled={Navigate ? false : true} activeOpacity={0.8} style={{
                         // height: myHeight(11),
                         backgroundColor: myColors.background, marginHorizontal: myWidth(5),
                         borderRadius: myWidth(3), borderWidth: 1, borderColor: myColors.offColor7, elevation: 3,
                         flexDirection: 'row', overflow: 'hidden',
+                    }} onPress={() => {
+                        const Navigat2 = JSON.parse(Navigate)
+                        navigation.navigate(Navigat2.screen, Navigat2.params)
+                        onClose()
+
                     }}>
                         <View style={{
                             width: myWidth(2), height: '100%',

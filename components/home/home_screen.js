@@ -47,6 +47,25 @@ export const HomeScreen = ({ navigation }) => {
     const { pending, progress, onlineReq } = useSelector(state => state.orders)
 
 
+    const handleInitialNotification = async () => {
+        const initialNotification = await messaging().getInitialNotification();
+
+        console.log('------------initialNotification--------------', initialNotification);
+        if (initialNotification) {
+            // Extract data from the notification payload
+            // const { screenToNavigate } = initialNotification.data;
+
+            // // Navigate to the specified screen
+            // if (screenToNavigate === 'DetailsScreen') {
+            //     // Replace 'DetailsScreen' with the name of your screen
+            //     navigation.dispatch(
+            //         NavigationActions.navigate({
+            //             routeName: 'DetailsScreen',
+            //         })
+            //     );
+            // }
+        }
+    };
 
 
     const dispatch = useDispatch()
@@ -376,12 +395,15 @@ export const HomeScreen = ({ navigation }) => {
 
 
     useEffect(() => {
+        handleInitialNotification()
         const unsubscribeOnMessage = messaging().onMessage(async remoteMessage => {
             console.log('Message handled in the foreground:');
             SetErrorAlertToFunction({
                 Title: remoteMessage.notification.title,
                 Body: remoteMessage.notification.body,
-                Status: remoteMessage.data.status
+                Status: remoteMessage.data.status,
+                Navigate: remoteMessage.data.navigate,
+                navigation: navigation,
             })
         });
 
@@ -1056,7 +1078,7 @@ export const HomeScreen = ({ navigation }) => {
             }
             {isLoading && <HomeSkeleton />}
 
-        </SafeAreaView >
+        </SafeAreaView>
     )
 }
 

@@ -25,6 +25,8 @@ import { Chat } from "./home/chat_screen"
 import { RequestRide } from "./home/request_ride"
 import { DriverDetail } from "./home/driver_detail_screen"
 import { RideDetails2 } from "./orders/ride_detail_screen2"
+import { Linking } from "react-native"
+import messaging from '@react-native-firebase/messaging';
 
 const AppTAB = createStackNavigator()
 
@@ -36,6 +38,8 @@ export const AppNavigator = () => {
     //         dispatch(setProfile(profile))
     //     }
     // }, [])
+
+
     return (
         <NavigationContainer ref={(re) => NavigationService.setTopLevelNavigator(re)}>
             <AppTAB.Navigator

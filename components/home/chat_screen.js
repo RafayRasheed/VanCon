@@ -444,7 +444,9 @@ export const Chat = ({ navigation, route }) => {
                 .ref(`/chats/${chatId}`).update(otherUpdates).then(() => { })
                 .catch((er) => { console.log('error on send message333', er) })
 
-            sendPushNotification(profile.name, message, 2, [token])
+            const navigate = { screen: 'Chat', params: { user2: { name: profile.name, uid: profile.uid } } }
+
+            sendPushNotification(profile.name, message, 2, [profile], navigate)
         }
         database()
             .ref(`/chats/${chatId}`).child('messages').child(msgId)

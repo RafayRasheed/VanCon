@@ -11,8 +11,9 @@ import NavigationService from './components/NavigationService';
 
 // Initialize Firebase
 messaging().setBackgroundMessageHandler(async remoteMessage => {
-    console.log('Message handled in the background!');
-  });
+  console.log('Message handled in the background!');
+  // NavigationService.navigate('Chat')
+});
 
 
 AppRegistry.registerComponent(appName, () => App);

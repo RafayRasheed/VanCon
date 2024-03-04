@@ -23,7 +23,7 @@ const errorReducer = createSlice({
 
                 state.error = error
             }
-            console.log('add', state.error, state.errors.length, id)
+            console.log('notification', error)
 
         },
         setErrorDirect(state, action) {
