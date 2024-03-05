@@ -45,26 +45,50 @@ export const HomeScreen = ({ navigation }) => {
     const [isLoading, setIsLoading] = useState(true)
 
     const { pending, progress, onlineReq } = useSelector(state => state.orders)
+    const handleSelected = async initialNotification => {
+        if (initialNotification !== null) {
+            try {
+                const lastInitialNotificationId = await AsyncStorage.getItem('NotiId');
 
+                if (lastInitialNotificationId !== null) {
+                    if (lastInitialNotificationId === initialNotification.messageId) {
+                        return;
+                    } else {
+                        this.notificationToChat(initialNotification);
+                    }
+                } else {
+                    this.notificationToChat(initialNotification);
+                }
+                await AsyncStorage.setItem(
+                    'NotiId',
+                    String(initialNotification.messageId),
+                );
+            } catch (e) {
+                // don't mind, this is a problem only if the current RN instance has been reloaded by a CP mandatory update
+            }
+        }
+    };
 
     const handleInitialNotification = async () => {
-        const initialNotification = await messaging().getInitialNotification();
+        const initialNotification = messaging()
+            .getInitialNotification()
+            .then(remoteNotification => handleSelected(remoteNotification))
+            .catch(err => {
+                console.log(err)
+                setNoInternet('LDashboard', 'messaging')
 
-        console.log('------------initialNotification--------------', initialNotification);
-        if (initialNotification) {
-            // Extract data from the notification payload
-            // const { screenToNavigate } = initialNotification.data;
+            }); const unsubscribe = messaging().onMessage(async remoteMessage => {
 
-            // // Navigate to the specified screen
-            // if (screenToNavigate === 'DetailsScreen') {
-            //     // Replace 'DetailsScreen' with the name of your screen
-            //     navigation.dispatch(
-            //         NavigationActions.navigate({
-            //             routeName: 'DetailsScreen',
-            //         })
-            //     );
-            // }
-        }
+                if (remoteMessage) {
+
+                    const { data } = remoteMessage;
+
+                    const { navigate } = data;
+
+
+                }
+            });
+
     };
 
 
