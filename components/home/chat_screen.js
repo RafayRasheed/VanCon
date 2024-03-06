@@ -115,10 +115,10 @@ export const Chat = ({ navigation, route }) => {
                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
                                 <Image style={{
                                     height: myHeight(1.5),
-                                    tintColor: item.read ? myColors.background : myColors.offColor2,
+                                    tintColor: (item.read || item.inNotSent) ? myColors.background : myColors.offColor2,
                                     width: myHeight(1.5),
                                     resizeMode: "contain",
-                                }} source={require('../assets/home_main/home/checkF.png')} />
+                                }} source={item.inNotSent ? require('../assets/home_main/home/clock.png') : require('../assets/home_main/home/checkF.png')} />
                                 <Spacer paddingEnd={myWidth(0.8)} />
 
                                 <Text style={[styles.textCommon, {
@@ -448,10 +448,9 @@ export const Chat = ({ navigation, route }) => {
 
             const navigate = { screen: 'Chat', params: { user2: { name: profile.name, uid: profile.uid } } }
 
-            setTimeout(() => {
 
-                sendPushNotification(profile.name, message, 2, [token], navigate)
-            }, 2000)
+            sendPushNotification(profile.name, message, 2, [token], navigate)
+
         }
         const pp = { ...pendings }
         const isMyChat = pp[chatId]
@@ -462,7 +461,7 @@ export const Chat = ({ navigation, route }) => {
 
         if (chatss.length == 0) {
             const chat = {
-                latest: forPending, unreadmasseges: 0, chatId: chatId,
+                ...forPending, unreadmasseges: 0, chatId: chatId,
                 user2: user2,
                 statusTime: statusDate(forPending.date, forPending.time),
                 allMessages: [forPending], allUnreadMessagesToRead: {},
@@ -473,7 +472,7 @@ export const Chat = ({ navigation, route }) => {
             // dispatch(setChats(chats.sort(function (a, b) { return b.dateInt - a.dateInt })))
 
         }
-        return
+        // return
         database()
             .ref(`/chats/${chatId}`).child('messages').child(msgId)
             .update(mssss).then(() => {

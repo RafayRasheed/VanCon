@@ -41,6 +41,7 @@ export const HomeScreen = ({ navigation }) => {
     const { profile } = useSelector(state => state.profile)
     const { AllDrivers, insideUniDrivers, onlineDrivers, onlineDriversAll, recommendedDrivers, eventDrivers } = useSelector(state => state.data)
     const { current, history } = useSelector(state => state.location)
+    const { pendings } = useSelector(state => state.chats)
 
     const [isLoading, setIsLoading] = useState(true)
     const [pendingNavigate, setPendingNavigate] = useState(null)
@@ -112,7 +113,55 @@ export const HomeScreen = ({ navigation }) => {
             });
     };
 
+    useEffect(() => {
 
+        const interval = setInterval(() => {
+            const { pendings } = storeRedux.getState().chats
+            Object.keys(pendings).map((chatId) => {
+                const singleChat = pendings[chatId]
+                let user2ID = null
+                const messages = {}
+                singleChat.map((chat) => {
+                    user2ID = chat.recieverId
+                    const message = { ...chat, inNotSent: false }
+                    messages[chat.msgId] = message
+                })
+
+                firestore().collection('drivers').doc(user2ID).get().then((data) => {
+
+                    const captain = data.data()
+                    const token = captain.deviceToken
+
+                    const update = {
+                        messages,
+                        user: {
+                            uid: profile.uid, name: profile.name,
+                        },
+                        captain: {
+                            uid: captain.uid, name: captain.name,
+                        }
+
+                    }
+                    return
+                    database()
+                        .ref(`/chats/${chatId}`).child('messages').child(msgId)
+                        .update(mssss)
+                        .then(() => {
+
+                            const navigate = { screen: 'Chat', params: { user2: { name: profile.name, uid: profile.uid } } }
+                            sendPushNotification(profile.name, singleChat.length == 1 ? singleChat[0].message : `You have a ${singleChat.length} new messages`, 2, [token], navigate)
+                        })
+                        .catch((err) => { console.log('error on inside message', err) })
+
+                }).catch((err) => { console.log('error on inside message', err) })
+            })
+
+
+
+        }, 10000);
+        return () => clearInterval(interval);
+
+    }, [])
     const dispatch = useDispatch()
     function updateOnline() {
 
