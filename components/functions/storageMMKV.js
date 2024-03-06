@@ -5,14 +5,6 @@ const saveFirstTime = 'isFirstTime'
 const saveCart = 'saveCart'
 const lastNoti = 'lastNotificationId'
 
-export function firstTime() {
-    storage.set(saveFirstTime, true)
-}
-
-export function containFirstTime() {
-    return storage.getBoolean(saveFirstTime)
-}
-
 export function setLastNotificationId(id) {
     storage.set(lastNoti, id)
 }
@@ -23,6 +15,14 @@ export function getLastNotificationId() {
         return (storage.getString(lastNoti))
     }
 }
+export function firstTime() {
+    storage.set(saveFirstTime, true)
+}
+
+export function containFirstTime() {
+    return storage.getBoolean(saveFirstTime)
+}
+
 // Login
 export function containLogin() {
     return storage.contains(saveLogin)

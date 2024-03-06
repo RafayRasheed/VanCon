@@ -7,7 +7,7 @@ const ChatReducer = createSlice({
     initialState: {
         chats: getCommonStorage('chats', []),
         totalUnread: getCommonStorage('totalUnread', 0, 'int'),
-        pendings: []
+        pendings: {}
     },
     reducers: {
 
@@ -31,5 +31,5 @@ const ChatReducer = createSlice({
     },
 });
 
-export const { setChats, setTotalUnread } = ChatReducer.actions;
+export const { setChats, setTotalUnread, setPendingChats } = ChatReducer.actions;
 export default ChatReducer.reducer;

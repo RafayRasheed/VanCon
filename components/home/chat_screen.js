@@ -2,7 +2,7 @@ import { ActivityIndicator, Alert, Image, ImageBackground, Keyboard, SafeAreaVie
 import React, { useEffect, useRef, useState } from 'react'
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { myColors } from '../../ultils/myColors'
+import { getAvatarColor, myColors } from '../../ultils/myColors'
 import { MyError, Spacer, StatusbarH, ios, myHeight, myWidth } from '../common'
 import { myFontSize, myFonts, myLetSpacing } from '../../ultils/myFonts'
 import database from '@react-native-firebase/database';
@@ -16,6 +16,7 @@ import { sendPushNotification } from '../functions/firebase'
 import Swipeable from 'react-native-swipeable';
 import Collapsible from 'react-native-collapsible'
 import Clipboard from '@react-native-community/clipboard';
+import { setChats, setPendingChats } from '../../redux/chat_reducer'
 
 export const Chat = ({ navigation, route }) => {
     const [message, setMessage] = useState(null)
@@ -30,7 +31,7 @@ export const Chat = ({ navigation, route }) => {
     const [showScrollToLast, setShowScrollToLast] = useState(false)
     const { user2 } = route.params
     const { profile } = useSelector(state => state.profile)
-    const { chats } = useSelector(state => state.chats)
+    const { chats, pendings } = useSelector(state => state.chats)
     const chatId = profile.uid + user2.uid
     const [chatss, setChatss] = useState([])
     const [colorC, setColorC] = useState(myColors.red)
@@ -301,6 +302,7 @@ export const Chat = ({ navigation, route }) => {
     }, [AllDrivers])
     useEffect(() => {
         const myChat = chats.filter(it => it.chatId == chatId)
+        console.log(myChat)
         if (myChat.length) {
             setColorC(myChat[0].colorC)
 
@@ -377,7 +379,7 @@ export const Chat = ({ navigation, route }) => {
             setLoader(false)
         }
 
-    }, [chats])
+    }, [chats, pendings])
 
 
     function onSendMsg() {
@@ -446,11 +448,36 @@ export const Chat = ({ navigation, route }) => {
 
             const navigate = { screen: 'Chat', params: { user2: { name: profile.name, uid: profile.uid } } }
 
-            sendPushNotification(profile.name, message, 2, [profile], navigate)
+            setTimeout(() => {
+
+                sendPushNotification(profile.name, message, 2, [token], navigate)
+            }, 2000)
         }
+        const pp = { ...pendings }
+        const isMyChat = pp[chatId]
+        const forPending = { ...mssss, inNotSent: true }
+        const update = isMyChat ? [...isMyChat, forPending] : [forPending]
+        pp[chatId] = update
+        dispatch(setPendingChats(pp))
+
+        if (chatss.length == 0) {
+            const chat = {
+                latest: forPending, unreadmasseges: 0, chatId: chatId,
+                user2: user2,
+                statusTime: statusDate(forPending.date, forPending.time),
+                allMessages: [forPending], allUnreadMessagesToRead: {},
+                colorC: getAvatarColor(user2.name)
+            }
+            const newChats = [chat, ...chats]
+            dispatch(setChats(newChats))
+            // dispatch(setChats(chats.sort(function (a, b) { return b.dateInt - a.dateInt })))
+
+        }
+        return
         database()
             .ref(`/chats/${chatId}`).child('messages').child(msgId)
             .update(mssss).then(() => {
+                dispatch(setPendingChats(pp))
                 if (driver) {
                     updateMor(driver)
                     console.lo('aja')

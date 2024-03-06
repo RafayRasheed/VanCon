@@ -8,7 +8,7 @@ import { ResturantH } from './home.component/resturant_hori';
 import { Banners } from './home.component/banner';
 import { RestaurantInfo } from './home.component/restaurant_info';
 import { RestRating } from './rest_rating_screen';
-import { getCartLocal, getLogin, setLogin } from '../functions/storageMMKV';
+import { getCartLocal, getLastNotificationId, getLogin, setLastNotificationId, setLogin } from '../functions/storageMMKV';
 import { setCart } from '../../redux/cart_reducer';
 import { useDispatch, useSelector } from 'react-redux';
 import firestore, { Filter } from '@react-native-firebase/firestore';
@@ -43,52 +43,73 @@ export const HomeScreen = ({ navigation }) => {
     const { current, history } = useSelector(state => state.location)
 
     const [isLoading, setIsLoading] = useState(true)
-
+    const [pendingNavigate, setPendingNavigate] = useState(null)
     const { pending, progress, onlineReq } = useSelector(state => state.orders)
+    function notificationToSceen(Noti) {
+
+        const Navigate = Noti.data.navigate
+
+        if (Navigate) {
+
+            const Navigat2 = JSON.parse(Navigate)
+            console.log('-101', Navigat2)
+            setPendingNavigate(Navigat2)
+        }
+    }
     const handleSelected = async initialNotification => {
+        console.log('------------------initial Noti-------------------', initialNotification?.messageId)
+        // return
         if (initialNotification !== null) {
             try {
-                const lastInitialNotificationId = await AsyncStorage.getItem('NotiId');
+                const lastInitialNotificationId = getLastNotificationId()
 
                 if (lastInitialNotificationId !== null) {
                     if (lastInitialNotificationId === initialNotification.messageId) {
                         return;
                     } else {
-                        this.notificationToChat(initialNotification);
+
+
+                        notificationToSceen(initialNotification);
                     }
                 } else {
-                    this.notificationToChat(initialNotification);
+
+                    notificationToSceen(initialNotification);
                 }
-                await AsyncStorage.setItem(
-                    'NotiId',
-                    String(initialNotification.messageId),
-                );
+
+                setLastNotificationId(initialNotification.messageId);
             } catch (e) {
+                console.log('-4', e)
                 // don't mind, this is a problem only if the current RN instance has been reloaded by a CP mandatory update
             }
         }
     };
+    useEffect(() => {
+        const unsubscribe = messaging().onNotificationOpenedApp(remoteMessage => {
+            // Handle the notification press event
+            console.log('----------Notification opened in the background:----------',);
+            notificationToSceen(remoteMessage)
 
+
+        });
+
+        return unsubscribe;
+    }, [navigation]);
+    useEffect(() => {
+        if (pendingNavigate && !isLoading) {
+            navigation.navigate(pendingNavigate.screen, pendingNavigate.params)
+            setPendingNavigate(null)
+
+        }
+
+    }, [pendingNavigate, isLoading])
     const handleInitialNotification = async () => {
         const initialNotification = messaging()
             .getInitialNotification()
             .then(remoteNotification => handleSelected(remoteNotification))
             .catch(err => {
                 console.log(err)
-                setNoInternet('LDashboard', 'messaging')
 
-            }); const unsubscribe = messaging().onMessage(async remoteMessage => {
-
-                if (remoteMessage) {
-
-                    const { data } = remoteMessage;
-
-                    const { navigate } = data;
-
-
-                }
             });
-
     };
 
 
@@ -408,6 +429,7 @@ export const HomeScreen = ({ navigation }) => {
 
     useEffect(() => {
         if (AllDrivers.length) {
+
             setTimeout(() => {
 
                 setIsLoading(false)
