@@ -7,7 +7,7 @@ const ChatReducer = createSlice({
     initialState: {
         chats: getCommonStorage('chats', []),
         totalUnread: getCommonStorage('totalUnread', 0, 'int'),
-        pendings: {}
+        pendings: getCommonStorage('pendings', {}),
     },
     reducers: {
 
@@ -19,6 +19,8 @@ const ChatReducer = createSlice({
         },
         setPendingChats(state, action) {
             state.pendings = action.payload
+            setCommonStorage('pendings', action.payload)
+
         },
         setTotalUnread(state, action) {
             state.totalUnread = action.payload

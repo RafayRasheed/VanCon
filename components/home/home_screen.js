@@ -27,11 +27,12 @@ import { FirebaseUser, getDeviceToken, sendPushNotification, updateDeviceTokenTo
 import { NotiAlert } from '../common/noti_Alert';
 import Animated, { SlideInUp } from 'react-native-reanimated';
 import { setProfile } from '../../redux/profile_reducer';
-import { setChats, setTotalUnread } from '../../redux/chat_reducer';
+import { setChats, setPendingChats, setTotalUnread } from '../../redux/chat_reducer';
 import { DriverInfoFull } from './home.component/driver_info_full';
 import { Status } from './home.component/status';
 import { FlashList } from '@shopify/flash-list';
 import storeRedux from '../../redux/store_redux';
+import axios from 'axios';
 
 if (!ios && UIManager.setLayoutAnimationEnabledExperimental) {
     UIManager.setLayoutAnimationEnabledExperimental(true)
@@ -112,13 +113,40 @@ export const HomeScreen = ({ navigation }) => {
 
             });
     };
+    useEffect(() => {
+        if (Object.keys(pendings).length == 0) {
+            Alert.alert('isEmpty')
+            console.log('-------------pending chats is empty')
+            return
+        }
+        else {
+            console.log('not empty-------------pending chats ')
 
+        }
+    }, [pendings])
     useEffect(() => {
 
         const interval = setInterval(() => {
             const { pendings } = storeRedux.getState().chats
+            if (Object.keys(pendings).length == 0) {
+                console.log('pending chats is empty')
+                return
+            }
+
             Object.keys(pendings).map((chatId) => {
-                const singleChat = pendings[chatId]
+                const data = pendings[chatId]
+                const time = new Date()
+                const update = new Date(data.ttt)
+                const isReady = ((time - update) / 1000) > 15
+
+                if (!isReady) {
+                    console.log('Time not enough')
+
+                    return
+                }
+                console.log('Time update enough')
+
+                const singleChat = data.update
                 let user2ID = null
                 const messages = {}
                 singleChat.map((chat) => {
@@ -133,7 +161,7 @@ export const HomeScreen = ({ navigation }) => {
                     const token = captain.deviceToken
 
                     const update = {
-                        messages,
+
                         user: {
                             uid: profile.uid, name: profile.name,
                         },
@@ -142,23 +170,34 @@ export const HomeScreen = ({ navigation }) => {
                         }
 
                     }
-                    return
+                    console.log('jeeee', update)
                     database()
-                        .ref(`/chats/${chatId}`).child('messages').child(msgId)
-                        .update(mssss)
-                        .then(() => {
-
+                        .ref(`/chats/${chatId}`).child('messages').update(messages)
+                        .then((data) => {
+                            const pp = { ...pendings }
+                            delete pp[chatId];
+                            dispatch(setPendingChats(pp))
                             const navigate = { screen: 'Chat', params: { user2: { name: profile.name, uid: profile.uid } } }
-                            sendPushNotification(profile.name, singleChat.length == 1 ? singleChat[0].message : `You have a ${singleChat.length} new messages`, 2, [token], navigate)
+                            sendPushNotification(profile.name, singleChat.length == 1 ? singleChat[0].message : `${singleChat.length} new messages`, 2, [token], navigate)
+
+                            database()
+                                .ref(`/chats/${chatId}`)
+                                .update(update)
+                                .catch((err) => { console.log('error on inside message', err) })
                         })
                         .catch((err) => { console.log('error on inside message', err) })
+
 
                 }).catch((err) => { console.log('error on inside message', err) })
             })
 
 
 
-        }, 10000);
+
+
+
+
+        }, 15000);
         return () => clearInterval(interval);
 
     }, [])
@@ -261,7 +300,9 @@ export const HomeScreen = ({ navigation }) => {
                                 let allUnreadMessagesToRead = {}
                                 // messages = Object.keys(messages).sort(function (a, b) { return messages[a].dateInt - messages[b].dateInt })
                                 Object.keys(messages).map((it, i) => {
-                                    const mm = messages[it]
+                                    const mm = { ...messages[it], inNotSent: false }
+                                    // const mm = messages[it]
+
                                     allMessages.push(mm)
                                     if (latest == null || mm.dateInt > latest.dateInt) {
                                         latest = mm

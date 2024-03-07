@@ -94,7 +94,7 @@ export const Profile = ({ navigation }) => {
     function onLogout() {
         const removeKeys = [
             'areas', 'totalUnread', 'chats', 'pending', 'progress', 'history', 'allRequest', 'unread', 'onlineReq',
-            'nearby', 'recommend', 'AllDrivers', 'recommendedDrivers', 'eventDrivers', 'insideUniDrivers'
+            'nearby', 'recommend', 'AllDrivers', 'recommendedDrivers', 'eventDrivers', 'insideUniDrivers', 'pendings',
         ]
 
         SetCancelRideLoader(true)

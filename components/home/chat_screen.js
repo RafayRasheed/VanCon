@@ -17,6 +17,7 @@ import Swipeable from 'react-native-swipeable';
 import Collapsible from 'react-native-collapsible'
 import Clipboard from '@react-native-community/clipboard';
 import { setChats, setPendingChats } from '../../redux/chat_reducer'
+import storeRedux from '../../redux/store_redux'
 
 export const Chat = ({ navigation, route }) => {
     const [message, setMessage] = useState(null)
@@ -32,6 +33,7 @@ export const Chat = ({ navigation, route }) => {
     const { user2 } = route.params
     const { profile } = useSelector(state => state.profile)
     const { chats, pendings } = useSelector(state => state.chats)
+    const [chatsOnly, setChatsOnly] = useState([])
     const chatId = profile.uid + user2.uid
     const [chatss, setChatss] = useState([])
     const [colorC, setColorC] = useState(myColors.red)
@@ -302,7 +304,6 @@ export const Chat = ({ navigation, route }) => {
     }, [AllDrivers])
     useEffect(() => {
         const myChat = chats.filter(it => it.chatId == chatId)
-        console.log(myChat)
         if (myChat.length) {
             setColorC(myChat[0].colorC)
 
@@ -311,6 +312,7 @@ export const Chat = ({ navigation, route }) => {
             const data = []
             let allMsg = [...myChat[0].allMessages]
             allMsg = allMsg.sort(function (a, b) { return a.dateInt - b.dateInt })
+            setChatsOnly(allMsg)
 
             // return
             let alreadyUnread = false
@@ -379,7 +381,7 @@ export const Chat = ({ navigation, route }) => {
             setLoader(false)
         }
 
-    }, [chats, pendings])
+    }, [chats])
 
 
     function onSendMsg() {
@@ -431,6 +433,43 @@ export const Chat = ({ navigation, route }) => {
         // Keyboard.dismiss()
         const isNew = chatss.length == 0
 
+        const pendings = storeRedux.getState().chats.pendings
+
+        const ppOld = { ...pendings }
+        const pp = ppOld
+        const isMyChat = pp[chatId]
+        const forPending = { ...mssss, inNotSent: true }
+        const update = isMyChat ? [...isMyChat.update, forPending] : [forPending]
+        pp[chatId] = { ttt: actualDate.toString(), update }
+
+        const chht = [forPending, ...chatsOnly]
+
+
+        // dispatch(setPendingChats(pp))
+
+        const chat = {
+            ...forPending, unreadmasseges: 0, chatId: chatId,
+            user2: user2,
+            statusTime: statusDate(forPending.date, forPending.time),
+            allMessages: chht, allUnreadMessagesToRead: {},
+            colorC: getAvatarColor(user2.name)
+        }
+        const index = chats.findIndex(it => it.chatId == chatId)
+        let newChats = [...chats]
+        if (index == -1) {
+            newChats = [chat, ...chats]
+        }
+        else {
+            newChats[index] = chat
+        }
+        dispatch(setChats(newChats))
+
+        const messagesWithPending = {}
+        update.map((chat) => {
+            const message = { ...chat, inNotSent: false }
+
+            messagesWithPending[chat.msgId] = message
+        })
         function updateMor(captain) {
             const token = captain.deviceToken
             const otherUpdates = {
@@ -452,30 +491,13 @@ export const Chat = ({ navigation, route }) => {
             sendPushNotification(profile.name, message, 2, [token], navigate)
 
         }
-        const pp = { ...pendings }
-        const isMyChat = pp[chatId]
-        const forPending = { ...mssss, inNotSent: true }
-        const update = isMyChat ? [...isMyChat, forPending] : [forPending]
-        pp[chatId] = update
-        dispatch(setPendingChats(pp))
-
-        if (chatss.length == 0) {
-            const chat = {
-                ...forPending, unreadmasseges: 0, chatId: chatId,
-                user2: user2,
-                statusTime: statusDate(forPending.date, forPending.time),
-                allMessages: [forPending], allUnreadMessagesToRead: {},
-                colorC: getAvatarColor(user2.name)
-            }
-            const newChats = [chat, ...chats]
-            dispatch(setChats(newChats))
-            // dispatch(setChats(chats.sort(function (a, b) { return b.dateInt - a.dateInt })))
-
-        }
         // return
         database()
-            .ref(`/chats/${chatId}`).child('messages').child(msgId)
-            .update(mssss).then(() => {
+            // .ref(`/chats/${chatId}`).child('messages').child(msgId)
+            // .update(mssss)
+            .ref(`/chats/${chatId}`).child('messages').update(messagesWithPending)
+            .then(() => {
+                delete pp[chatId];
                 dispatch(setPendingChats(pp))
                 if (driver) {
                     updateMor(driver)
@@ -614,7 +636,7 @@ export const Chat = ({ navigation, route }) => {
                                 flex: 1, paddingHorizontal: myWidth(0),
                                 justifyContent: 'flex-end', paddingVertical: myHeight(0.5)
                             }}
-                            keyExtractor={(item, index) => index.toString()}
+                            keyExtractor={(item, index) => typeof item == 'string' ? item : item.msgId}
                             estimatedItemSize={200}
 
                             renderItem={({ item }) => {
