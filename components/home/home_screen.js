@@ -115,7 +115,6 @@ export const HomeScreen = ({ navigation }) => {
     };
     useEffect(() => {
         if (Object.keys(pendings).length == 0) {
-            Alert.alert('isEmpty')
             console.log('-------------pending chats is empty')
             return
         }
@@ -127,6 +126,7 @@ export const HomeScreen = ({ navigation }) => {
     useEffect(() => {
 
         const interval = setInterval(() => {
+            return
             const { pendings } = storeRedux.getState().chats
             if (Object.keys(pendings).length == 0) {
                 console.log('pending chats is empty')

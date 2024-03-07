@@ -445,7 +445,7 @@ export const Chat = ({ navigation, route }) => {
         const chht = [forPending, ...chatsOnly]
 
 
-        // dispatch(setPendingChats(pp))
+        dispatch(setPendingChats(pp))
 
         const chat = {
             ...forPending, unreadmasseges: 0, chatId: chatId,
