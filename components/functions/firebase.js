@@ -25,7 +25,7 @@ export const getTokenAndServerKey = async () => {
     console.log('serverKey', serverKey)
     return { deviceToken, serverKey }
 }
-export const sendPushNotification = async (title, body, status, tokens = []) => {
+export const sendPushNotification = async (title, body, status, tokens = [], navigate) => {
     const { serverKey } = await getTokenAndServerKey()
     console.log(title, body, status, tokens)
 
@@ -44,7 +44,7 @@ export const sendPushNotification = async (title, body, status, tokens = []) => 
         },
         data: {
             status,
-            // navigate,
+            navigate,
 
         }
     };
