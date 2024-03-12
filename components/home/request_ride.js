@@ -375,7 +375,9 @@ export const RequestRide = ({ navigation, route }) => {
                     .ref(`/requests/${profile.uid}/${newProfile.id}`)
                     .update(newProfile).then(() => {
                         disptach(setErrorAlert({ Title: `Request Sent Successfully`, Body: `Request sent to ${Drivers.length} ${Drivers.length == 1 ? 'driver' : 'drivers'}`, Status: 10 }))
-                        sendPushNotification('New Vanpool Request', `You have a vanpool request from ${profile.name}`, 10, tokens)
+                        const navigate = { screen: 'RIDES', params: { index: 1 } }
+
+                        sendPushNotification('New Vanpool Request', `You have a vanpool request from ${profile.name}`, 10, tokens, navigate)
                         setIsLoading(false)
 
                         navigation.replace("OrderDetails2", { item: newProfile, code: 1 })

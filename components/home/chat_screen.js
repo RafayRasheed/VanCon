@@ -445,7 +445,7 @@ export const Chat = ({ navigation, route }) => {
         const chht = [forPending, ...chatsOnly]
 
 
-        dispatch(setPendingChats(pp))
+        // dispatch(setPendingChats(pp))
 
         const chat = {
             ...forPending, unreadmasseges: 0, chatId: chatId,
@@ -462,7 +462,7 @@ export const Chat = ({ navigation, route }) => {
         else {
             newChats[index] = chat
         }
-        dispatch(setChats(newChats))
+        // dispatch(setChats(newChats))
 
         const messagesWithPending = {}
         update.map((chat) => {
@@ -498,7 +498,7 @@ export const Chat = ({ navigation, route }) => {
             .ref(`/chats/${chatId}`).child('messages').update(messagesWithPending)
             .then(() => {
                 delete pp[chatId];
-                dispatch(setPendingChats(pp))
+                // dispatch(setPendingChats(pp))
                 if (driver) {
                     updateMor(driver)
                     console.lo('aja')

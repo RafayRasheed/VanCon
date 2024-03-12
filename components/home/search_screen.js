@@ -213,8 +213,9 @@ export const Search = ({ navigation, route }) => {
                     const captain = data.data()
                     const token = captain.deviceToken
                     console.log('Successfully')
+                    const navigate = { screen: 'RIDES', params: { index: 1 } }
 
-                    sendPushNotification('New Request', `You have a ride request from ${request.name}`, 2, [token])
+                    sendPushNotification('New Request', `You have a ride request from ${request.name}`, 2, [token], navigate)
                 }).catch((err) => { console.log(err) })
                 // database()
                 //     .ref(`/requests/${driver.uid}/${request.id}`)

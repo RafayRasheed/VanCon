@@ -13,12 +13,13 @@ import { containString } from '../functions/functions';
 import { RequestInfo2 } from '../home/home.component/request_info2';
 
 
-export const RidesScreen = ({ navigation }) => {
+export const RidesScreen = ({ navigation, route }) => {
+    const newI = route?.params?.index
     const { pending, progress, history } = useSelector(state => state.orders)
     const pendingUnread = pending.filter(it => it.unread == true)
     const progressUnread = progress.filter(it => it.unread == true)
     const historyUnread = history.filter(it => it.unread == true)
-    const [i, setI] = useState(0);
+    const [i, setI] = useState(newI ? newI : 0);
     const [search, setSearch] = useState(null)
     const { profile } = useSelector(state => state.profile)
     const dispatch = useDispatch()

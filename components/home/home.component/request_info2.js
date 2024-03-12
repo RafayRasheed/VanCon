@@ -65,7 +65,10 @@ export const RequestInfo2 = ({ item, navigation, code }) => {
 
                         }
                     })
-                    sendPushNotification('Request Cancelled', `Request is cancelled by ${profile.name}`, 0, tokens)
+                    const navigate = { screen: 'RIDES', params: { index: 2 } }
+
+
+                    sendPushNotification('Request Cancelled', `Request is cancelled by ${profile.name}`, 0, tokens, navigate)
 
                 }
 
@@ -104,7 +107,9 @@ export const RequestInfo2 = ({ item, navigation, code }) => {
                             firestore().collection('drivers').doc(di.did).get().then((data) => {
                                 const captain = data.data()
                                 const token = captain.deviceToken
-                                sendPushNotification('Request Cancelled', `Request ${item.id} is cancelled by ${profile.name}`, 0, [token])
+                                const navigate = { screen: 'RIDES', params: { index: 2 } }
+
+                                sendPushNotification('Request Cancelled', `Request ${item.id} is cancelled by ${profile.name}`, 0, [token], navigate)
                                 console.log('Successfully')
 
                             }).catch((err) => { console.log(err) })

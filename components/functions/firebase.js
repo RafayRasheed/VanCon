@@ -25,8 +25,9 @@ export const getTokenAndServerKey = async () => {
     console.log('serverKey', serverKey)
     return { deviceToken, serverKey }
 }
-export const sendPushNotification = async (title, body, status, tokens = [], navigate) => {
-    const { deviceToken, serverKey } = await getTokenAndServerKey()
+export const sendPushNotification = async (title, body, status, tokens = []) => {
+    const { serverKey } = await getTokenAndServerKey()
+    console.log(title, body, status, tokens)
 
     const fcmEndpoint = 'https://fcm.googleapis.com/fcm/send';
 
@@ -43,7 +44,7 @@ export const sendPushNotification = async (title, body, status, tokens = [], nav
         },
         data: {
             status,
-            navigate,
+            // navigate,
 
         }
     };

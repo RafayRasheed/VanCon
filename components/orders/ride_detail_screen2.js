@@ -160,7 +160,9 @@ export const RideDetails2 = ({ navigation, route }) => {
 
                         }
                     })
-                    sendPushNotification('Request Cancelled', `Request is cancelled by ${profile.name}`, 0, tokens)
+                    const navigate = { screen: 'RIDES', params: { index: 2 } }
+
+                    sendPushNotification('Request Cancelled', `Request is cancelled by ${profile.name}`, 0, tokens, navigate)
 
                 }
 
@@ -231,8 +233,11 @@ export const RideDetails2 = ({ navigation, route }) => {
             .then(() => {
                 console.log('To accept user successfully')
                 dispatch(setErrorAlert({ Title: 'Request Accepted Successfully', Body: null, Status: 2 }))
-                sendPushNotification('Request Accepted', `Ride confirmed by ${profile.name}`, 2, [dr.token])
-                sendPushNotification('Request Rejected', `Request is rejected by ${profile.name}`, 0, rejectTokens)
+                const navigate1 = { screen: 'RIDES', params: { index: 0 } }
+                const navigate2 = { screen: 'RIDES', params: { index: 2 } }
+
+                sendPushNotification('Request Accepted', `Ride confirmed by ${profile.name}`, 2, [dr.token], navigate1)
+                sendPushNotification('Request Rejected', `Request is rejected by ${profile.name}`, 0, rejectTokens, navigate2)
 
 
             })
