@@ -18,6 +18,7 @@ import Collapsible from 'react-native-collapsible'
 import Clipboard from '@react-native-community/clipboard';
 import { setChats, setPendingChats } from '../../redux/chat_reducer'
 import storeRedux from '../../redux/store_redux'
+import { ImageUri } from '../common/image_uri'
 
 export const Chat = ({ navigation, route }) => {
     const [message, setMessage] = useState(null)
@@ -38,6 +39,7 @@ export const Chat = ({ navigation, route }) => {
     const [chatss, setChatss] = useState([])
     const [colorC, setColorC] = useState(myColors.red)
     const [driver, setDriver] = useState(null)
+    const [driverImage, setDriverImage] = useState(user2.image)
 
     const { AllDrivers } = useSelector(state => state.data)
     const [focusId, setFocusId] = useState(null)
@@ -299,7 +301,9 @@ export const Chat = ({ navigation, route }) => {
     }, [showScrollToLast])
     useEffect(() => {
         if (AllDrivers.length) {
-            setDriver(AllDrivers.find(it => it.uid == user2.uid))
+            const dr = AllDrivers.find(it => it.uid == user2.uid)
+            setDriver(dr)
+            setDriverImage(dr.image)
         }
     }, [AllDrivers])
     useEffect(() => {
@@ -474,10 +478,10 @@ export const Chat = ({ navigation, route }) => {
             const token = captain.deviceToken
             const otherUpdates = {
                 user: {
-                    uid: profile.uid, name: profile.name,
+                    uid: profile.uid, name: profile.name, image: profile.image
                 },
                 captain: {
-                    uid: captain.uid, name: captain.name,
+                    uid: captain.uid, name: captain.name, image: driverImage
                 }
 
             }
@@ -577,17 +581,24 @@ export const Chat = ({ navigation, route }) => {
                             height: myHeight(4.2), width: myHeight(4.2),
                             borderColor: myColors.offColor7, borderWidth: 1,
                             backgroundColor: colorC,
+                            overflow: 'hidden',
                             marginTop: myHeight(0.2), justifyContent: 'center', alignItems: 'center'
                         }}>
-                            <Image
-                                style={{
-                                    width: myHeight(2),
-                                    height: myHeight(2),
-                                    resizeMode: 'contain',
-                                    tintColor: myColors.background
-                                }}
-                                source={require('../assets/home_main/home/user.png')}
-                            />
+                            {
+                                driverImage ?
+
+                                    <ImageUri uri={driverImage} height={'100%'} width={'100%'} resizeMode='cover' />
+                                    :
+                                    <Image
+                                        style={{
+                                            width: myHeight(2),
+                                            height: myHeight(2),
+                                            resizeMode: 'contain',
+                                            tintColor: myColors.background
+                                        }}
+                                        source={require('../assets/home_main/home/user.png')}
+                                    />
+                            }
                         </View>
                         <Spacer paddingEnd={myWidth(2.4)} />
                         {/* Name & Last seen */}
@@ -603,6 +614,7 @@ export const Chat = ({ navigation, route }) => {
                         </View>
                     </View>
 
+                    <Spacer paddingT={myHeight(0.5)} />
 
                     {/* Divider */}
                     <View style={{

@@ -2,6 +2,7 @@ import firestore from '@react-native-firebase/firestore';
 import { storage } from "../common";
 import { getLogin } from "./storageMMKV";
 import messaging from '@react-native-firebase/messaging';
+import { getProfileFromFirebase } from './functions';
 
 export const FirebaseUser = firestore().collection('users')
 export const FirebaseLocation = firestore().collection('locations')
@@ -76,6 +77,7 @@ export async function updateDeviceTokenToFireBase(uid) {
         .update({
             deviceToken
         }).then((data) => {
+            getProfileFromFirebase()
             console.log('Token Update To Firebase Succesfully')
         }).catch(err => {
             console.log('Internal error while Updating a Token', err)

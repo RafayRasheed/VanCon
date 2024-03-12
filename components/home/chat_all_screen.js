@@ -12,6 +12,7 @@ import { FlashList } from '@shopify/flash-list'
 import { setErrorAlert } from '../../redux/error_reducer'
 import { RFValue } from 'react-native-responsive-fontsize'
 import { setChats } from '../../redux/chat_reducer'
+import { ImageUri } from '../common/image_uri'
 
 
 export const ChatList = ({ navigation, route }) => {
@@ -212,17 +213,21 @@ export const ChatList = ({ navigation, route }) => {
                                     height: myHeight(7), width: myHeight(7),
                                     borderColor: myColors.offColor7, borderWidth: 1,
                                     backgroundColor: item.colorC,
+                                    overflow: 'hidden',
                                     marginTop: myHeight(0.2), justifyContent: 'center', alignItems: 'center'
                                 }}>
-                                    <Image
-                                        style={{
-                                            width: myHeight(3.6),
-                                            height: myHeight(3.6),
-                                            resizeMode: 'contain',
-                                            tintColor: myColors.background
-                                        }}
-                                        source={require('../assets/home_main/home/user.png')}
-                                    />
+                                    {item.user2.image ?
+                                        <ImageUri uri={item.user2.image} height={'100%'} width={'100%'} resizeMode='cover' />
+                                        :
+                                        <Image
+                                            style={{
+                                                width: myHeight(3.6),
+                                                height: myHeight(3.6),
+                                                resizeMode: 'contain',
+                                                tintColor: myColors.background
+                                            }}
+                                            source={require('../assets/home_main/home/user.png')}
+                                        />}
                                 </View>
                                 <Spacer paddingEnd={myWidth(2.4)} />
 
