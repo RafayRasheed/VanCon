@@ -387,7 +387,47 @@ export const Chat = ({ navigation, route }) => {
 
     }, [chats])
 
+    const updateChatWithTimeout = (chatId, messagesWithPending, user2, updateMor, timeout) => {
+        // Create a promise that resolves when the database update operation succeeds
+        const updatePromise = new Promise((resolve, reject) => {
+            database().ref(`/chats/${chatId}/messages`).update(messagesWithPending)
+                .then(() => {
+                    resolve();
+                })
+                .catch((error) => {
+                    reject(error);
+                });
+        });
 
+        // Create a promise that rejects if the timeout is exceeded
+        const timeoutPromise = new Promise((resolve, reject) => {
+            setTimeout(() => {
+                reject(new Error('Timeout exceeded'));
+            }, timeout);
+        });
+
+        // Use Promise.race to execute both promises concurrently and handle the first one to resolve or reject
+        return Promise.race([updatePromise, timeoutPromise])
+            .then(() => {
+                // Update the driver if available
+                if (driver) {
+                    updateMor(driver);
+                } else {
+                    firestore().collection('drivers').doc(user2.uid).get()
+                        .then((data) => {
+                            const captain = data.data();
+                            setDriver(captain);
+                            updateMor(captain);
+                        })
+                        .catch((error) => {
+                            console.log('Error retrieving driver data:', error);
+                        });
+                }
+            })
+            .catch((error) => {
+                console.log('Error updating chat:', error);
+            });
+    };
     function onSendMsg() {
 
         if (message === null) {
@@ -467,7 +507,7 @@ export const Chat = ({ navigation, route }) => {
             newChats[index] = chat
         }
         // dispatch(setChats(newChats))
-
+        // return
         const messagesWithPending = {}
         update.map((chat) => {
             const message = { ...chat, inNotSent: false }
@@ -494,18 +534,26 @@ export const Chat = ({ navigation, route }) => {
 
             sendPushNotification(profile.name, message, 2, [token], navigate)
 
+
+
+
+
+
         }
+        // return
+        // updateChatWithTimeout(chatId, messagesWithPending, user2, updateMor, 10000);
+
+
         // return
         database()
             // .ref(`/chats/${chatId}`).child('messages').child(msgId)
             // .update(mssss)
             .ref(`/chats/${chatId}`).child('messages').update(messagesWithPending)
             .then(() => {
-                delete pp[chatId];
+                // delete pp[chatId];
                 // dispatch(setPendingChats(pp))
                 if (driver) {
                     updateMor(driver)
-                    console.lo('aja')
                 }
                 else {
 

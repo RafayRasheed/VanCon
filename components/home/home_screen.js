@@ -126,70 +126,84 @@ export const HomeScreen = ({ navigation }) => {
     useEffect(() => {
 
         const interval = setInterval(() => {
-            return
+            // return
             const { pendings } = storeRedux.getState().chats
             if (Object.keys(pendings).length == 0) {
                 console.log('pending chats is empty')
                 return
             }
-
-            Object.keys(pendings).map((chatId) => {
-                const data = pendings[chatId]
-                const time = new Date()
-                const update = new Date(data.ttt)
-                const isReady = ((time - update) / 1000) > 15
-
-                if (!isReady) {
-                    console.log('Time not enough')
-
-                    return
-                }
-                console.log('Time update enough')
-
-                const singleChat = data.update
-                let user2ID = null
-                const messages = {}
-                singleChat.map((chat) => {
-                    user2ID = chat.recieverId
-                    const message = { ...chat, inNotSent: false }
-                    messages[chat.msgId] = message
-                })
-
-                firestore().collection('drivers').doc(user2ID).get().then((data) => {
-
-                    const captain = data.data()
-                    const token = captain.deviceToken
-
-                    const update = {
-
-                        user: {
-                            uid: profile.uid, name: profile.name,
-                        },
-                        captain: {
-                            uid: captain.uid, name: captain.name,
-                        }
-
-                    }
-                    console.log('jeeee', update)
-                    database()
-                        .ref(`/chats/${chatId}`).child('messages').update(messages)
-                        .then((data) => {
-                            const pp = { ...pendings }
-                            delete pp[chatId];
-                            dispatch(setPendingChats(pp))
-                            const navigate = { screen: 'Chat', params: { user2: { name: profile.name, uid: profile.uid } } }
-                            sendPushNotification(profile.name, singleChat.length == 1 ? singleChat[0].message : `${singleChat.length} new messages`, 2, [token], navigate)
-
-                            database()
-                                .ref(`/chats/${chatId}`)
-                                .update(update)
-                                .catch((err) => { console.log('error on inside message', err) })
-                        })
-                        .catch((err) => { console.log('error on inside message', err) })
-
-
-                }).catch((err) => { console.log('error on inside message', err) })
+            axios({
+                method: 'GET',
+                url: 'https://www.google.com/',
+                timeout: 2000,
             })
+                .then(response => {
+                    Object.keys(pendings).map((chatId) => {
+                        const data = pendings[chatId]
+                        const time = new Date()
+                        const update = new Date(data.ttt)
+                        const isReady = ((time - update) / 1000) > 15
+
+                        if (!isReady) {
+                            console.log('Time not enough')
+
+                            return
+                        }
+                        console.log('Time update enough')
+
+                        const singleChat = data.update
+                        let user2ID = null
+                        const messages = {}
+                        singleChat.map((chat) => {
+                            user2ID = chat.recieverId
+                            const message = { ...chat, inNotSent: false }
+                            messages[chat.msgId] = message
+                        })
+
+                        firestore().collection('drivers').doc(user2ID).get().then((data) => {
+
+                            const captain = data.data()
+                            const token = captain.deviceToken
+
+                            const update = {
+
+                                user: {
+                                    uid: profile.uid, name: profile.name,
+                                },
+                                captain: {
+                                    uid: captain.uid, name: captain.name,
+                                }
+
+                            }
+                            console.log('jeeee', update)
+                            database()
+                                .ref(`/chats/${chatId}`).child('messages').update(messages)
+                                .then((data) => {
+                                    const pp = { ...pendings }
+                                    delete pp[chatId];
+                                    dispatch(setPendingChats(pp))
+                                    const navigate = { screen: 'Chat', params: { user2: { name: profile.name, uid: profile.uid } } }
+                                    sendPushNotification(profile.name, singleChat.length == 1 ? singleChat[0].message : `${singleChat.length} new messages`, 2, [token], navigate)
+
+                                    database()
+                                        .ref(`/chats/${chatId}`)
+                                        .update(update)
+                                        .catch((err) => { console.log('error on inside message', err) })
+                                })
+                                .catch((err) => { console.log('error on inside message', err) })
+
+
+                        }).catch((err) => { console.log('error on inside message', err) })
+                    })
+
+                })
+                .catch(error => {
+
+                    console.log('No Internet')
+
+
+                });
+
 
 
 
