@@ -1,9 +1,9 @@
-const local = '127.0.0.1:3000'
+const local = 'http://192.168.1.100:3000'
 const live = '127.0.0.1:3000'
 
 const api = local
 
-export const allUsers = `${api}/users`
+export const allUsersAPI = `${api}/users`
 export const signinAPI = `${api}/users/signin`
 export const saveUserAPI = `${api}/users/saveUser`
 export const sigupAPI = `${api}/users/signup`

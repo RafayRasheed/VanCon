@@ -21,7 +21,7 @@ import { setErrorAlert } from '../../redux/error_reducer';
 
 export const ProfileInfo = ({ navigation }) => {
     const { profile } = useSelector(state => state.profile)
-    const pass = (deccodeInfo(profile.password))
+    const pass = profile.password ? deccodeInfo(profile.password) : null
     const [isLoading, setIsLoading] = useState(false)
 
     const [name, setName] = useState(profile.name)

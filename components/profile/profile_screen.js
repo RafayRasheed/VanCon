@@ -99,26 +99,35 @@ export const Profile = ({ navigation }) => {
 
         SetCancelRideLoader(true)
         // return
-        FirebaseUser.doc(profile.uid)
-            .update({
-                deviceToken: null
-            }).then((data) => {
-                navigation.replace('AccountNavigator')
-                removeKeys.map((key) => {
-                    deleteCommonStorage(key)
-                })
-                setTimeout(() => {
+        navigation.replace('AccountNavigator')
+        removeKeys.map((key) => {
+            deleteCommonStorage(key)
+        })
+        setTimeout(() => {
 
-                    dispatch(deleteProfile())
-                }, 2000)
-                SetCancelRideLoader(false)
+            dispatch(deleteProfile())
+        }, 2000)
+        SetCancelRideLoader(false)
+        // FirebaseUser.doc(profile.uid)
+        //     .update({
+        //         deviceToken: null
+        //     }).then((data) => {
+        //         navigation.replace('AccountNavigator')
+        //         removeKeys.map((key) => {
+        //             deleteCommonStorage(key)
+        //         })
+        //         setTimeout(() => {
 
-                console.log('Token delete To Firebase Succesfully')
-            }).catch(err => {
-                SetCancelRideLoader(false)
+        //             dispatch(deleteProfile())
+        //         }, 2000)
+        //         SetCancelRideLoader(false)
 
-                console.log('Internal error while Updating a Token', err)
-            });
+        //         console.log('Token delete To Firebase Succesfully')
+        //     }).catch(err => {
+        //         SetCancelRideLoader(false)
+
+        //         console.log('Internal error while Updating a Token', err)
+        //     });
     }
     function onCusSupp() {
         Linking.openURL('whatsapp://send?text=&phone=923308246728')

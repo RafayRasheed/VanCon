@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { setProfile } from "../../../redux/profile_reducer";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { FirebaseUser, updateDeviceTokenToFireBase } from "../../functions/firebase";
+import { allUsersAPI, signinAPI } from "../../common/api";
 
 export const Login = ({ navigation, showError, showLoading, email, setEmail, password, setPass, onClose }) => {
 
@@ -35,6 +36,8 @@ export const Login = ({ navigation, showError, showLoading, email, setEmail, pas
     }
     function verifyPass() {
         if (password) {
+            return true
+
             if (password.length > 5) {
                 return true
             }
@@ -47,8 +50,58 @@ export const Login = ({ navigation, showError, showLoading, email, setEmail, pas
 
     function onVerifying() {
         if (verifyEmail() && verifyPass()) {
-            checkUser()
+            // checkUser()
+            goToLoginAPI()
         }
+    }
+    function goToLoginAPI() {
+
+        showLoading(true)
+        const postData = {
+            email,
+            password
+        };
+
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json' // Specify the content type as JSON
+            },
+            body: JSON.stringify(postData) // Convert the data to JSON string
+        };
+        console.log(signinAPI)
+        fetch(signinAPI, options)
+            .then(response => response.json())
+            .then(data => {
+                // Work with the JSON data
+                const { code, body, message } = data
+                showLoading(false)
+
+                if (code == 1) {
+                    const { user, token } = data.body
+                    dispatch(setProfile({ ...user, token }))
+                    updateDeviceTokenToFireBase(user.uid)
+
+                    // setLogin(myUser)
+                    setTimeout(() => {
+                        onClose()
+
+                    }, 1000)
+                    navigation.replace("HomeBottomNavigator")
+                    console.log(user);
+                }
+                else {
+                    showError(message)
+                }
+
+
+            })
+            .catch(error => {
+                // Handle any errors that occurred during the fetch
+                showLoading(false)
+
+                console.error('Fetch error:', error);
+            });
     }
     function goToLogin(myUser) {
         const decodePass = deccodeInfo(myUser.password.toString())
@@ -72,6 +125,7 @@ export const Login = ({ navigation, showError, showLoading, email, setEmail, pas
 
     function checkUser() {
         showLoading(true)
+
         FirebaseUser
             .where('email', '==', email).get()
             .then(result => {
@@ -97,9 +151,10 @@ export const Login = ({ navigation, showError, showLoading, email, setEmail, pas
 
 
 
-    // useEffect(()=>{
-    //     storeData("yes")
-    // },[])
+    useEffect(() => {
+
+
+    }, [])
     return (
 
         <View style={{
