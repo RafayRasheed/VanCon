@@ -99,8 +99,8 @@ export const CreateAcc = ({
     }
   }
 
-  function goToVerification(profile, code) {
-    navigate('Verification', {code, profile, reset: false});
+  function goToVerification(profile, code, token) {
+    navigate('Verification', {code, profile, token, reset: false});
 
     setTimeout(() => {
       onClose();
@@ -153,14 +153,15 @@ export const CreateAcc = ({
         console.log(data);
         // Work with the JSON data
         const {body, code, message} = data;
+        showLoading(false);
 
         if (code == 1) {
-          const {token, code} = body;
-          goToVerification(token, code);
+          const {data, code} = body;
+
+          goToVerification({email}, code, data);
         } else {
           showError(message);
         }
-        showLoading(false);
       })
       .catch(error => {
         // Handle any errors that occurred during the fetch
