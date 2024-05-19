@@ -47,6 +47,7 @@ export const AppNavigator = () => {
     <NavigationContainer ref={re => NavigationService.setTopLevelNavigator(re)}>
       <AppTAB.Navigator
         // initialRouteName="StartupScreen"
+        // initialRouteName="StartupScreen"
         initialRouteName={
           containFirstTime()
             ? containLogin()
