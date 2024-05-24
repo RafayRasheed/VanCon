@@ -1,23 +1,38 @@
-import React, { useEffect } from 'react';
-import { View, Text, SafeAreaView, StatusBar, Platform, TouchableOpacity, StyleSheet, PermissionsAndroid, LogBox } from 'react-native';
+import React, {useEffect} from 'react';
+import {
+  View,
+  Text,
+  SafeAreaView,
+  StatusBar,
+  Platform,
+  TouchableOpacity,
+  StyleSheet,
+  PermissionsAndroid,
+  LogBox,
+} from 'react-native';
 // import { MMKV } from 'react-native-mmkv';
-import { myColors } from './ultils/myColors';
-import { myHeight, NotiAlertNew, printWithPlat } from './components/common';
-import { AppNavigator } from './components/app_navigator';
-import { enableScreens } from 'react-native-screens';
-import { Provider } from 'react-redux';
+import {myColors} from './ultils/myColors';
+import {myHeight, NotiAlertNew, printWithPlat} from './components/common';
+import {AppNavigator} from './components/app_navigator';
+import {enableScreens} from 'react-native-screens';
+import {Provider} from 'react-redux';
 import storeRedux from './redux/store_redux';
-import SplashScreen from 'react-native-splash-screen'
-import { getCartLocal } from './components/functions/storageMMKV';
+import SplashScreen from 'react-native-splash-screen';
+import {getCartLocal} from './components/functions/storageMMKV';
 import messaging from '@react-native-firebase/messaging';
 
-import { dataFullData, verificationCode } from './components/functions/functions';
-import { notificationListeners, requestUserPermission } from './components/RootNavigation';
+import {dataFullData, verificationCode} from './components/functions/functions';
+import {
+  notificationListeners,
+  requestUserPermission,
+} from './components/RootNavigation';
 
 export default function App() {
   useEffect(() => {
-    const api = 'https://fcm.googleapis.com/v1/projects/foodapp-edd7e/messages:send'
-    const myToken = 'dph9AvipQKa-rwb7sJG_K7:APA91bEo3djpvpDx9GFN_UEjJ2lMQBfzSe1fEsA5GQccV49_FOTYf_bdyWgl9-dFc3FXCtM3PSbAnmx4a9zLcTUwiHmLxZGFV5xqJVywztCOWyc0KlKN3n_0t60JejK8y1rRBGqUFKV9'
+    const api =
+      'https://fcm.googleapis.com/v1/projects/foodapp-edd7e/messages:send';
+    const myToken =
+      'dph9AvipQKa-rwb7sJG_K7:APA91bEo3djpvpDx9GFN_UEjJ2lMQBfzSe1fEsA5GQccV49_FOTYf_bdyWgl9-dFc3FXCtM3PSbAnmx4a9zLcTUwiHmLxZGFV5xqJVywztCOWyc0KlKN3n_0t60JejK8y1rRBGqUFKV9';
     // fetch(api, {
     //   method: 'POST',
     //   headers: {
@@ -64,34 +79,35 @@ export default function App() {
     // } else {
 
     // }
-
-  }, [])
+  }, []);
 
   useEffect(() => {
-    printWithPlat('Started Successfully')
-    SplashScreen.hide()
+    printWithPlat('Started Successfully');
+    SplashScreen.hide();
     LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
     LogBox.ignoreAllLogs();
     // const dispatch = useDispatch()
     // dispatch(setCart(getCartLocal()))
     // console.log(typeof getCartLocal())
     // printWithPlat("Is MMKV store successful? " + storage.contains('mberr'))
-  }, [])
-  const isAndroid = Platform.OS == 'android'
+  }, []);
+  const isAndroid = Platform.OS == 'android';
   // const OsVer = Platform.constants['Release']; Android Version like 9,10, 11
-  const OsVer = Platform.Version; //API level like 27, 28, 22 
+  const OsVer = Platform.Version; //API level like 27, 28, 22
 
   return (
     <>
-      {OsVer >= 23 &&
-        <StatusBar barStyle="dark-content" backgroundColor={'transparent'} translucent={true} />
-      }
+      {OsVer >= 23 && (
+        <StatusBar
+          barStyle="dark-content"
+          backgroundColor={'transparent'}
+          translucent={true}
+        />
+      )}
       <Provider store={storeRedux}>
         <AppNavigator />
         <NotiAlertNew />
       </Provider>
-
     </>
   );
 }
-
