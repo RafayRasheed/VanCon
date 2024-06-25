@@ -28,7 +28,7 @@ import {verificationCode} from '../functions/functions';
 import {useDispatch} from 'react-redux';
 import {setProfile} from '../../redux/profile_reducer';
 import {FirebaseUser, updateDeviceTokenToFireBase} from '../functions/firebase';
-import {sendEmailAPI} from '../common/api';
+import {saveUserAPI, sendEmailAPI} from '../common/api';
 
 export const Verification = ({navigation, route}) => {
   const {code, profile, reset} = route.params;
@@ -148,19 +148,52 @@ export const Verification = ({navigation, route}) => {
 
   function goToNewPass() {
     setIsLoading(false);
-    navigation.replace('NewPass', {profile});
+    navigation.replace('NewPass', {
+      profile: {...profile, token: route.params.token},
+    });
   }
 
   function createAccount() {
-    FirebaseUser.doc(profile.uid)
-      .set(profile)
-      .then(success => {
-        goToLogin();
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json', // Specify the content type as JSON
+      },
+      body: JSON.stringify({data: route.params.token}), // Convert the data to JSON string
+    };
+
+    fetch(saveUserAPI, options)
+      .then(response => response.json())
+      .then(data => {
+        // Work with the JSON data
+        const {code, body, message} = data;
+        setIsLoading(false);
+        console.log(data);
+        if (code == 1) {
+          const {user, token} = body;
+          console.log({...user, token});
+          dispatch(setProfile({...user, token}));
+
+          navigation.replace('HomeBottomNavigator');
+        } else {
+          showError(message);
+        }
       })
-      .catch(err => {
-        showError('Something wrong');
-        console.log('Internal error while register user', err);
+      .catch(error => {
+        // Handle any errors that occurred during the fetch
+        setIsLoading(false);
+
+        console.error('Fetch error:', error);
       });
+    // FirebaseUser.doc(profile.uid)
+    //   .set(profile)
+    //   .then(success => {
+    //     goToLogin();
+    //   })
+    //   .catch(err => {
+    //     showError('Something wrong');
+    //     console.log('Internal error while register user', err);
+    //   });
   }
 
   function goFurther() {

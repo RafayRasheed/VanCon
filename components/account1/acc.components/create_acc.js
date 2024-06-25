@@ -22,7 +22,7 @@ import {
 import firestore from '@react-native-firebase/firestore';
 import {sendVerficationEmail} from '../../functions/email';
 import {SelectCity} from '../select_city';
-import {FirebaseUser} from '../../functions/firebase';
+import {FirebaseUser, getDeviceToken} from '../../functions/firebase';
 import {sigupAPI} from '../../common/api';
 
 export const CreateAcc = ({
@@ -131,15 +131,16 @@ export const CreateAcc = ({
         console.log('Internal error while sending an Email');
       });
   }
-  function goRegisterAPI() {
+  async function goRegisterAPI() {
     showLoading(true);
     const postData = {
       name,
       email,
       password,
       city,
+      deviceToken: await getDeviceToken(),
     };
-
+    console.log(postData);
     const options = {
       method: 'POST',
       headers: {

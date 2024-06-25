@@ -18,6 +18,7 @@ import {setProfile} from '../../../redux/profile_reducer';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {
   FirebaseUser,
+  getDeviceToken,
   updateDeviceTokenToFireBase,
 } from '../../functions/firebase';
 import {allUsersAPI, signinAPI} from '../../common/api';
@@ -69,11 +70,12 @@ export const Login = ({
       goToLoginAPI();
     }
   }
-  function goToLoginAPI() {
+  async function goToLoginAPI() {
     showLoading(true);
     const postData = {
       email,
       password,
+      deviceToken: await getDeviceToken(),
     };
 
     const options = {
@@ -93,8 +95,9 @@ export const Login = ({
 
         if (code == 1) {
           const {user, token} = data.body;
+          console.log({...user, token});
           dispatch(setProfile({...user, token}));
-          updateDeviceTokenToFireBase(user.uid);
+          // updateDeviceTokenToFireBase(user.uid);
 
           // setLogin(myUser)
           setTimeout(() => {

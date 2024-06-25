@@ -20,7 +20,7 @@ import storage from '@react-native-firebase/storage';
 import { setAllDriver, setOnlineDriver, setOnlineDriverAll, } from '../../redux/data_reducer';
 import { setAllRequest, setAllUnread, setHistoryOrderse, setOnlineReq, setPendingOrderse, setProgressOrderse } from '../../redux/order_reducer';
 import database from '@react-native-firebase/database';
-import { SetErrorAlertToFunction, dataFullData, deccodeInfo, getAllRestuarant, getAreasLocations, getCurrentLocations, getDistanceFromRes, getProfileFromFirebase, statusDate } from '../functions/functions';
+import { SetErrorAlertToFunction, dataFullData, deccodeInfo, getAllRestuarant, getAreasLocations, getCurrentLocations, getDistanceFromRes, getProfileFromAPI, getProfileFromFirebase, statusDate } from '../functions/functions';
 import messaging from '@react-native-firebase/messaging';
 import notifee from '@notifee/react-native';
 import { FirebaseUser, getDeviceToken, sendPushNotification, updateDeviceTokenToFireBase } from '../functions/firebase';
@@ -601,7 +601,8 @@ export const HomeScreen = ({ navigation }) => {
     //     });
     // }
     useEffect(() => {
-        getProfileFromFirebase()
+        // getProfileFromFirebase()
+        getProfileFromAPI()
 
     }, [])
     useEffect(() => {
