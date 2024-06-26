@@ -315,6 +315,14 @@ export const ProfileInfo = ({navigation}) => {
       //   });
     }
   }
+  function goToNewPass() {
+    navigation.navigate('AccountNavigator', {
+      screen: 'NewPass',
+      params: {
+        profile,
+      },
+    });
+  }
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: myColors.background}}>
       {/* Top */}
@@ -548,6 +556,21 @@ export const ProfileInfo = ({navigation}) => {
             />
           </TouchableOpacity>
         </View>
+
+        <Spacer paddingT={myHeight(1.98)} />
+
+        {/* Change Password */}
+        <TouchableOpacity activeOpacity={0.7} onPress={goToNewPass}>
+          <Text
+            style={{
+              paddingVertical: myHeight(1.5),
+              fontFamily: myFonts.heading,
+              fontSize: myFontSize.body2,
+              color: myColors.primaryT,
+            }}>
+            Change Password
+          </Text>
+        </TouchableOpacity>
       </View>
 
       <TouchableOpacity

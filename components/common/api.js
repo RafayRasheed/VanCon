@@ -11,3 +11,4 @@ export const sigupAPI = `${api}/users/signup`;
 export const sendEmailAPI = `${api}/users/sendEmail`;
 export const updateProfileAPI = `${api}/users/updateUser`;
 export const updateProfileImageAPI = `${api}/users/updateImage`;
+export const logoutAPI = `${api}/users/logout`;

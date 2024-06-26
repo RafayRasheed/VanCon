@@ -24,6 +24,8 @@ import firestore from '@react-native-firebase/firestore';
 import {FirebaseUser} from '../functions/firebase';
 import {setProfile} from '../../redux/profile_reducer';
 import {updateProfileAPI} from '../common/api';
+import {useDispatch} from 'react-redux';
+import {setErrorAlert} from '../../redux/error_reducer';
 
 export const NewPass = ({navigation, route}) => {
   const [newPass, setNewPass] = useState();
@@ -33,7 +35,7 @@ export const NewPass = ({navigation, route}) => {
   const [hidePass, setHidePass] = useState(true);
   const [hideConPass, setHideConPass] = useState(true);
   const {profile} = route.params;
-
+  const disptach = useDispatch();
   function showError(message) {
     setIsLoading(false);
     setErrorMessage(message);
@@ -52,7 +54,6 @@ export const NewPass = ({navigation, route}) => {
   }
 
   function changePassword() {
-    return;
     setIsLoading(true);
     const postData = {
       user: {
@@ -79,11 +80,11 @@ export const NewPass = ({navigation, route}) => {
 
         if (code == 1) {
           const {user} = body;
-          navigation.goBack();
           disptach(
             setErrorAlert({Title: 'Password Changed Successfully', Status: 2}),
           );
-          disptach(setProfile({...profile, ...user}));
+          navigation.goBack();
+          // disptach(setProfile({...profile, ...user}));
         } else {
           showError(message);
         }
@@ -224,14 +225,36 @@ export const NewPass = ({navigation, route}) => {
             </View>
           </View>
         </View>
-        <View style={{alignItems: 'center'}}>
-          {/* Button Submit */}
-          <TouchableOpacity
-            onPress={onReset}
-            activeOpacity={0.8}
-            style={styles.button}>
-            <Text style={styles.textReg}>Reset Password</Text>
-          </TouchableOpacity>
+        <View>
+          <View style={{alignItems: 'center'}}>
+            {/* Button Submit */}
+            <TouchableOpacity
+              onPress={onReset}
+              activeOpacity={0.8}
+              style={styles.button}>
+              <Text style={styles.textReg}>Reset Password</Text>
+            </TouchableOpacity>
+          </View>
+          <Spacer paddingT={myHeight(1.5)} />
+
+          <View style={{alignItems: 'center'}}>
+            {/* Button Submit */}
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              activeOpacity={0.8}
+              style={[
+                styles.button,
+                {
+                  backgroundColor: myColors.background,
+                  borderWidth: myHeight(0.1),
+                  borderColor: myColors.primaryT,
+                },
+              ]}>
+              <Text style={[styles.textReg, {color: myColors.primaryT}]}>
+                Go Back
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </KeyboardAwareScrollView>
       {isLoading && <Loader />}

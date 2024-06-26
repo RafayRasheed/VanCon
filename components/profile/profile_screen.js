@@ -15,17 +15,26 @@ import {
   ActivityIndicator,
   BackHandler,
 } from 'react-native';
-import {MyError, Spacer, StatusbarH, ios, myHeight, myWidth} from '../common';
+import {
+  MyError,
+  Spacer,
+  StatusbarH,
+  errorTime,
+  ios,
+  myHeight,
+  myWidth,
+} from '../common';
 import {myColors} from '../../ultils/myColors';
 import {myFontSize, myFonts, myLetSpacing} from '../../ultils/myFonts';
 import {useDispatch, useSelector} from 'react-redux';
 import {deleteCommonStorage, deleteLogin} from '../functions/storageMMKV';
 import {deleteProfile} from '../../redux/profile_reducer';
-import {FirebaseUser} from '../functions/firebase';
+import {FirebaseUser, getDeviceToken} from '../functions/firebase';
 import Animated, {SlideInDown, SlideOutDown} from 'react-native-reanimated';
 import {ImageUri} from '../common/image_uri';
 import {setErrorAlert} from '../../redux/error_reducer';
 import {useFocusEffect} from '@react-navigation/native';
+import {logoutAPI} from '../common/api';
 
 export const Profile = ({navigation}) => {
   const {profile} = useSelector(state => state.profile);
@@ -33,7 +42,16 @@ export const Profile = ({navigation}) => {
   const [shareModal, setShareModal] = useState(false);
   const [cancelRide, setCancelRide] = useState(false);
   const [cancelRideLoader, SetCancelRideLoader] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState(null);
+  useEffect(() => {
+    if (errorMsg) {
+      setTimeout(() => {
+        setIsLoading(false);
+        setErrorMsg(null);
+      }, errorTime);
+    }
+  }, [errorMsg]);
   const onBackPress = () => {
     if (cancelRide) {
       setCancelRide(false);
@@ -118,36 +136,67 @@ export const Profile = ({navigation}) => {
     </View>
   );
 
-  function onLogout() {
-    const removeKeys = [
-      'areas',
-      'totalUnread',
-      'chats',
-      'pending',
-      'progress',
-      'history',
-      'allRequest',
-      'unread',
-      'onlineReq',
-      'nearby',
-      'recommend',
-      'AllDrivers',
-      'recommendedDrivers',
-      'eventDrivers',
-      'insideUniDrivers',
-      'pendings',
-    ];
+  async function onLogout() {
+    setIsLoading(true);
 
-    SetCancelRideLoader(true);
-    // return
-    navigation.replace('AccountNavigator');
-    removeKeys.map(key => {
-      deleteCommonStorage(key);
-    });
-    setTimeout(() => {
-      dispatch(deleteProfile());
-    }, 2000);
-    SetCancelRideLoader(false);
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json', // Specify the content type as JSON
+      },
+      body: JSON.stringify({
+        token: profile.token,
+        deviceToken: await getDeviceToken(),
+      }), // Convert the data to JSON string
+    };
+
+    fetch(logoutAPI, options)
+      .then(response => response.json())
+      .then(data => {
+        setIsLoading(true);
+        const {code, body, message} = data;
+
+        if (code == 1) {
+          const removeKeys = [
+            'areas',
+            'totalUnread',
+            'chats',
+            'pending',
+            'progress',
+            'history',
+            'allRequest',
+            'unread',
+            'onlineReq',
+            'nearby',
+            'recommend',
+            'AllDrivers',
+            'recommendedDrivers',
+            'eventDrivers',
+            'insideUniDrivers',
+            'pendings',
+          ];
+
+          SetCancelRideLoader(true);
+          // return
+          navigation.replace('AccountNavigator');
+          removeKeys.map(key => {
+            deleteCommonStorage(key);
+          });
+          setTimeout(() => {
+            dispatch(deleteProfile());
+          }, 2000);
+          SetCancelRideLoader(false);
+        } else {
+          setErrorMsg(message);
+        }
+      })
+      .catch(error => {
+        // Handle any errors that occurred during the fetch
+        setIsLoading(false);
+
+        console.error('Fetch error:', error);
+      });
+
     // FirebaseUser.doc(profile.uid)
     //     .update({
     //         deviceToken: null
@@ -416,6 +465,8 @@ export const Profile = ({navigation}) => {
           </Text>
         </TouchableOpacity>
         <Spacer paddingT={myHeight(4)} />
+
+        {errorMsg && <MyError message={errorMsg} />}
       </SafeAreaView>
       {cancelRide && (
         <View
@@ -426,6 +477,7 @@ export const Profile = ({navigation}) => {
             backgroundColor: '#00000030',
           }}>
           <TouchableOpacity
+            disabled={isLoading}
             onPress={() => {
               if (!cancelRideLoader) {
                 setCancelRide(false);
@@ -475,6 +527,7 @@ export const Profile = ({navigation}) => {
                   onPress={() => {
                     onLogout();
                   }}
+                  disabled={isLoading}
                   activeOpacity={0.8}
                   style={{
                     backgroundColor: myColors.primaryT,
@@ -494,13 +547,14 @@ export const Profile = ({navigation}) => {
                         color: myColors.background,
                       },
                     ]}>
-                    Yes, Logout
+                    {isLoading ? 'Loading...' : 'Yes, Logout'}
                   </Text>
                 </TouchableOpacity>
 
                 <Spacer paddingT={myHeight(2)} />
                 {/* No Keep Ride Button */}
                 <TouchableOpacity
+                  disabled={isLoading}
                   onPress={() => setCancelRide(false)}
                   activeOpacity={0.8}
                   style={{
