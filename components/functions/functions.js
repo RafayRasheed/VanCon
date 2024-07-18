@@ -18,7 +18,8 @@ import {
   setRecommendedDrivers,
 } from '../../redux/data_reducer';
 import {setProfile} from '../../redux/profile_reducer';
-import {allUsersAPI} from '../common/api';
+import {allUsersAPI, getDashboard} from '../common/api';
+import {Alert} from 'react-native';
 export function verificationCode() {
   return Math.floor(Math.random() * 899999 + 100000);
 }
@@ -201,6 +202,36 @@ export const SetErrorAlertToFunction = ({
     setErrorAlert({Title, Body, Status, Navigate, navigation}),
   );
 };
+export function getDashboardData(setIsLoading) {
+  const {profile} = storeRedux.getState().profile;
+  function changeLoad(ss) {
+    if (setIsLoading) {
+      setIsLoading(ss);
+    }
+  }
+  changeLoad(true);
+  fetch(getDashboard + '/' + profile.uid + `?city=${profile.city}`)
+    .then(response => response.json())
+    .then(data => {
+      // Work with the JSON data
+      const {code, body, message} = data;
+      changeLoad(false);
+
+      if (code == 1) {
+        const {vehicles, locations = []} = body;
+        storeRedux.dispatch(setAllDriver(vehicles));
+        // storeRedux.dispatch(setAreasLocation(locations));
+      } else {
+        storeRedux.dispatch(setErrorAlert({Title: message, Status: 0}));
+      }
+    })
+    .catch(error => {
+      // Handle any errors that occurred during the fetch
+      changeLoad(false);
+
+      console.error('Fetch error:', error);
+    });
+}
 export const getAreasLocations = () => {
   const {profile} = storeRedux.getState().profile;
 
@@ -287,6 +318,7 @@ export function updateProfileToFirebase(object) {
 }
 
 export function getAllRestuarant(profile) {
+  return;
   firestore()
     .collection('drivers')
     .where('ready', '==', true)

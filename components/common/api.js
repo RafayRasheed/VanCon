@@ -12,3 +12,7 @@ export const sendEmailAPI = `${api}/users/sendEmail`;
 export const updateProfileAPI = `${api}/users/updateUser`;
 export const updateProfileImageAPI = `${api}/users/updateImage`;
 export const logoutAPI = `${api}/users/logout`;
+export const getDashboard = `${api}/users/getDashboard`;
+export const getVehicles = `${api}/users/getVehicles`;
+export const getLocationsAPI = `${api}/users/getLocations`;
+export const rateDriver = `${api}/users/rateDriver`;
