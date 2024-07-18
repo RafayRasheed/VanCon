@@ -218,8 +218,8 @@ export function getDashboardData(setIsLoading) {
       changeLoad(false);
 
       if (code == 1) {
-        const {vehicles, locations = []} = body;
-        storeRedux.dispatch(setAllDriver(vehicles));
+        const {categories, locations = []} = body;
+        storeRedux.dispatch(setAllDriver(categories));
         // storeRedux.dispatch(setAreasLocation(locations));
       } else {
         storeRedux.dispatch(setErrorAlert({Title: message, Status: 0}));

@@ -181,6 +181,7 @@ export const HomeScreen = ({navigation}) => {
   }, [pendings]);
 
   useEffect(() => {
+    return;
     const interval = setInterval(() => {
       // return
       const {pendings} = storeRedux.getState().chats;
@@ -586,7 +587,7 @@ export const HomeScreen = ({navigation}) => {
   }, []);
 
   useEffect(() => {
-    if (AllDrivers.length) {
+    if (AllDrivers?.length) {
       setTimeout(() => {
         // setIsLoading(false);
       }, 1200);
@@ -936,30 +937,112 @@ export const HomeScreen = ({navigation}) => {
         {/* <View style={{ width: '100%', height: myHeight(0.2), backgroundColor: myColors.primaryT }} /> */}
 
         <Spacer paddingT={myHeight(2)} />
-        <FlatList
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{
-            // flexGrow: 1,
-            paddingHorizontal: myWidth(4),
-          }}
-          data={AllDrivers}
-          keyExtractor={(item, index) => item.uid + '101'}
-          estimatedItemSize={myHeight(30)}
-          renderItem={({item, index}) => {
-            return (
-              <TouchableOpacity
-                activeOpacity={0.8}
-                key={index}
-                style={{marginEnd: myWidth(4)}}
-                onPress={() => {
-                  navigation.navigate('DriverDetail', {driver: item});
-                }}>
-                <DriverInfoFull isSmall={true} driver={item} code={101} />
-              </TouchableOpacity>
-            );
-          }}
-        />
+        {AllDrivers.map((item, i) => {
+          const {vehicles, categoryName, categoryId} = item;
+          return (
+            <View key={categoryId}>
+              <View>
+                <View
+                  style={{
+                    paddingHorizontal: myWidth(4),
+                    alignItems: 'center',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: myFontSize.xBody,
+                      fontFamily: myFonts.heading,
+                      color: myColors.textL4,
+                      letterSpacing: myLetSpacing.common,
+                      includeFontPadding: false,
+                      padding: 0,
+                    }}>
+                    {categoryName}
+                  </Text>
+
+                  <TouchableOpacity
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      paddingVertical: myHeight(0.4),
+                      paddingStart: myWidth(2),
+                    }}
+                    activeOpacity={0.6}
+                    onPress={() =>
+                      navigation.navigate('Search', {
+                        name: categoryName,
+                        code: categoryId,
+                        vehicles,
+                      })
+                    }>
+                    <Text
+                      style={[
+                        styles.textCommon,
+                        {
+                          fontSize: myFontSize.body2,
+                          fontFamily: myFonts.bodyBold,
+                          color: myColors.primaryT,
+                        },
+                      ]}>
+                      See All
+                    </Text>
+                    <Image
+                      style={{
+                        height: myHeight(1.5),
+                        width: myHeight(1.5),
+                        marginStart: myWidth(1),
+                        resizeMode: 'contain',
+                        tintColor: myColors.primaryT,
+                      }}
+                      source={require('../assets/home_main/home/go.png')}
+                    />
+                    <Image
+                      style={{
+                        height: myHeight(1.5),
+                        width: myHeight(1.5),
+                        marginStart: -myWidth(1),
+                        resizeMode: 'contain',
+                        tintColor: myColors.primaryT,
+                      }}
+                      source={require('../assets/home_main/home/go.png')}
+                    />
+                  </TouchableOpacity>
+                </View>
+                <FlatList
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{
+                    // flexGrow: 1,
+                    paddingHorizontal: myWidth(4),
+                  }}
+                  data={vehicles}
+                  keyExtractor={(item, index) => item.id}
+                  estimatedItemSize={myHeight(30)}
+                  renderItem={({item, index}) => {
+                    return (
+                      <TouchableOpacity
+                        activeOpacity={0.8}
+                        key={index}
+                        style={{marginEnd: myWidth(4)}}
+                        onPress={() => {
+                          navigation.navigate('DriverDetail', {driver: item});
+                        }}>
+                        <DriverInfoFull
+                          isSmall={true}
+                          driver={item}
+                          code={101}
+                        />
+                      </TouchableOpacity>
+                    );
+                  }}
+                />
+              </View>
+              <Spacer paddingT={myHeight(1.5)} />
+            </View>
+          );
+        })}
+
         {/* Recommended */}
         {recommendedDrivers.length ? (
           <>
