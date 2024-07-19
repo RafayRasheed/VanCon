@@ -31,6 +31,7 @@ import {containString} from '../functions/functions';
 import firestore from '@react-native-firebase/firestore';
 import {ActivityIndicator} from 'react-native';
 import {searchVehicles} from '../common/api';
+import {RestaurantInfoSkeleton} from '../common/skeletons';
 
 const CommonFaci = ({name, fac, setFAc}) => {
   return (
@@ -138,19 +139,21 @@ export const Search = ({navigation, route}) => {
   const [loading, setLoading] = useState(false);
   const [listLoading, setListLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [isFirst, setIsFirst] = useState(true);
 
   const dispatch = useDispatch();
   const requestId = route.params.requestId;
   const name = route.params.name;
   const code = route.params.code;
   const searchTimer = useRef(null);
+  const scrollRef = useRef(null);
 
-  const fetchMoreVehicles = useCallback(async () => {
-    if (loading || !hasMore) return;
-    console.log('aayya');
+  async function fetchMoreVehicles() {
+    console.log('aayya', isFirst);
+    if (loading || !hasMore || isFirst) return;
 
     setLoading(true);
-    const newVehicles = await fetchVehicles(page);
+    const newVehicles = await fetchVehicles(page, false);
 
     if (newVehicles.length > 0) {
       setFilterItems([...filterItems, ...newVehicles]);
@@ -158,101 +161,100 @@ export const Search = ({navigation, route}) => {
     } else {
       setHasMore(false);
     }
-  }, [loading, hasMore, page]);
+  }
+  function scrollToTop() {
+    scrollRef?.current?.scrollToOffset({animated: false, offset: 0});
+  }
+  function scrollToEnd() {
+    scrollRef?.current?.scrollToEnd({animated: false});
+  }
   const Loader = () => (
     <View style={{flex: 1, justifyContent: 'center'}}>
-      <View
-        style={{
-          marginTop: -myHeight(15),
-          alignItems: 'center',
-        }}>
-        <Lottie
-          autoPlay={true}
-          loop={true}
-          source={require('../assets/lottie/spoonL.json')}
-          style={{
-            height: myHeight(38),
-            width: myHeight(38),
-          }}
-        />
-
-        <Text
-          style={[
-            styles.textCommon,
-            {
-              fontSize: myFontSize.body3,
-              color: myColors.textL4,
-              fontFamily: myFonts.bodyBold,
-              marginTop: -myHeight(11),
-            },
-          ]}>
-          Loading....
-        </Text>
-      </View>
+      <>
+        <RestaurantInfoSkeleton isFull={true} />
+        <RestaurantInfoSkeleton isFull={true} />
+        <RestaurantInfoSkeleton isFull={true} />
+      </>
     </View>
   );
+  const handleSearch = () => {
+    if (!isFirst) {
+      clearTimeout(searchTimer.current);
+      searchTimer.current = setTimeout(() => {
+        fetchNow();
+      }, 500);
+    }
+  };
+
   useEffect(() => {
+    if (!isFirst) {
+      handleSearch();
+    }
+  }, [search]);
+  useEffect(() => {
+    if (!isFirst) {
+      fetchNow();
+    }
+  }, [topRated, wifi, ac]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsFirst(false);
+    }, 1000);
+    fetchNow();
     return () => {
       if (searchTimer.current) {
         clearTimeout(searchTimer.current);
       }
     };
   }, []);
-  useEffect(() => {
-    handleSearch();
-  }, [search]);
-  const handleSearch = () => {
-    clearTimeout(searchTimer.current);
-    searchTimer.current = setTimeout(() => {
-      fetchNow();
-    }, 500);
-  };
-  useEffect(() => {
-    if (allRequest.length && requestId) {
-      setRequest(allRequest.find(it => it.id == requestId));
-    }
-  }, [allRequest]);
+  //   useEffect(() => {
+  //     console.log('66666');
 
-  useEffect(() => {
-    return;
-    if (request) {
-      const simple = [];
-      const jugaar = [];
+  //     if (allRequest.length && requestId) {
+  //       setRequest(allRequest.find(it => it.id == requestId));
+  //     }
+  //   }, [allRequest]);
 
-      AllDrivers.map((driver, i) => {
-        let includeDays = true;
-        let includePackage = true;
-        const alreadySend = request.sendDrivers
-          ? request.sendDrivers.findIndex(it => it.did == driver.uid) != -1
-          : false;
-        request.selectedDays.map(it2 => {
-          if (
-            includeDays &&
-            driver.dailyDays.findIndex(it => it == it2) == -1
-          ) {
-            includeDays = false;
-          }
-        });
-        includePackage =
-          driver.packages.findIndex(it => it == request.packages) != -1;
-        console.log('sage', !alreadySend, includeDays, includePackage);
+  //   useEffect(() => {
+  //     if (request) {
+  //       const simple = [];
+  //       const jugaar = [];
 
-        if (!alreadySend && includeDays && includePackage) {
-          if (
-            driver.allRoutes.findIndex(it => it.id == request.pickup.id) !=
-              -1 &&
-            driver.allRoutes.findIndex(it => it.id == request.dropoff.id) != -1
-          ) {
-            simple.push(driver);
-          } else {
-            jugaar.push(driver);
-          }
-        }
+  //       AllDrivers.map((driver, i) => {
+  //         let includeDays = true;
+  //         let includePackage = true;
+  //         const alreadySend = request.sendDrivers
+  //           ? request.sendDrivers.findIndex(it => it.did == driver.uid) != -1
+  //           : false;
+  //         request.selectedDays.map(it2 => {
+  //           if (
+  //             includeDays &&
+  //             driver.dailyDays.findIndex(it => it == it2) == -1
+  //           ) {
+  //             includeDays = false;
+  //           }
+  //         });
+  //         includePackage =
+  //           driver.packages.findIndex(it => it == request.packages) != -1;
+  //         console.log('sage', !alreadySend, includeDays, includePackage);
 
-        setAllItems([...simple, ...jugaar]);
-      });
-    }
-  }, [request]);
+  //         if (!alreadySend && includeDays && includePackage) {
+  //           if (
+  //             driver.allRoutes.findIndex(it => it.id == request.pickup.id) !=
+  //               -1 &&
+  //             driver.allRoutes.findIndex(it => it.id == request.dropoff.id) != -1
+  //           ) {
+  //             simple.push(driver);
+  //           } else {
+  //             jugaar.push(driver);
+  //           }
+  //         }
+
+  //         setAllItems([...simple, ...jugaar]);
+  //       });
+  //     }
+  //   }, [request]);
 
   const onSend = driver => {
     // return
@@ -323,13 +325,15 @@ export const Search = ({navigation, route}) => {
 
   async function fetchNow() {
     setPage(1);
-    setListLoading(true);
-    const newVehicles = await fetchVehicles(1);
+    scrollToTop();
+    setHasMore(true);
+    // setListLoading(true);
+    const newVehicles = await fetchVehicles(1, true);
 
     setFilterItems(newVehicles);
   }
+
   useEffect(() => {
-    fetchNow();
     return;
     if (allItems.length) {
       const newR = allItems?.filter(
@@ -353,20 +357,24 @@ export const Search = ({navigation, route}) => {
     }
   }, [topRated, wifi, ac]);
 
-  const fetchVehicles = async page => {
+  const fetchVehicles = async (page, isList) => {
     const url = `${searchVehicles}?page=${page}&categoryId=${code}&isWifi=${
       wifi ? wifi : null
     }&topRated=${topRated ? topRated : null}&ac=${ac ? ac : null}&search=${
       search && search != '' ? search : null
     }`;
-    if (url == lastFetch) {
-      setLoading(false);
-      setListLoading(false);
-      console.log('saveeeee');
-      return filterItems;
-    }
+    // if (url == lastFetch) {
+    //   console.log('saveeeee');
+    //   return filterItems;
+    // }
+    // console.log(lastFetch, url);
+    // if (isList) {
+    //   setListLoading(true);
+    // } else {
+    //   setLoading(true);
+    // }
 
-    setLastFetch(url);
+    // setLastFetch(url);
     return new Promise(function (resolve, reject) {
       fetch(url)
         .then(response => response.json())
@@ -550,6 +558,7 @@ export const Search = ({navigation, route}) => {
               {console.log(filterItems.length)}
               {filterItems.length ? (
                 <FlashList
+                  ref={scrollRef}
                   showsVerticalScrollIndicator={false}
                   scrollEnabled={true}
                   data={filterItems}
@@ -562,10 +571,11 @@ export const Search = ({navigation, route}) => {
                   keyExtractor={(item, index) => item.id + index}
                   estimatedItemSize={myHeight(10)}
                   onEndReached={fetchMoreVehicles}
-                  onEndReachedThreshold={0.5}
+                  onEndReachedThreshold={0.1}
                   ListFooterComponent={
                     loading && <ActivityIndicator size="large" />
                   }
+                  //   renderFooter={renderFooter}
                   renderItem={({item, index}) => {
                     return (
                       <TouchableOpacity
@@ -602,7 +612,7 @@ export const Search = ({navigation, route}) => {
                         fontSize: myFontSize.body4,
                       },
                     ]}>
-                    No Drivers Available
+                    No Vehicles Available
                   </Text>
                 </View>
               )}
