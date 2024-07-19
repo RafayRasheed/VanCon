@@ -30,6 +30,7 @@ import storeRedux from '../../redux/store_redux';
 import {containString} from '../functions/functions';
 import firestore from '@react-native-firebase/firestore';
 import {ActivityIndicator} from 'react-native';
+import {searchVehicles} from '../common/api';
 
 const CommonFaci = ({name, fac, setFAc}) => {
   return (
@@ -112,18 +113,19 @@ const CommonFaci = ({name, fac, setFAc}) => {
 };
 
 export const Search = ({navigation, route}) => {
-  const {
-    AllDrivers,
-    insideUniDrivers,
-    onlineDrivers,
-    recommendedDrivers,
-    eventDrivers,
-  } = useSelector(state => state.data);
+  //   const {
+  //     AllDrivers,
+  //     insideUniDrivers,
+  //     onlineDrivers,
+  //     recommendedDrivers,
+  //     eventDrivers,
+  //   } = useSelector(state => state.data);
   const {allRequest} = useSelector(State => State.orders);
 
   const [request, setRequest] = useState(null);
 
   const [search, setSearch] = useState(null);
+  const [lastFetch, setLastFetch] = useState(null);
   const [filterModal, setFilterModal] = useState(null);
   const [topRated, setTopRated] = useState(false);
   const [ac, setAc] = useState(false);
@@ -134,26 +136,28 @@ export const Search = ({navigation, route}) => {
 
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [listLoading, setListLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
   const dispatch = useDispatch();
   const requestId = route.params.requestId;
   const name = route.params.name;
   const code = route.params.code;
+  const searchTimer = useRef(null);
 
   const fetchMoreVehicles = useCallback(async () => {
     if (loading || !hasMore) return;
+    console.log('aayya');
 
     setLoading(true);
     const newVehicles = await fetchVehicles(page);
 
     if (newVehicles.length > 0) {
-      setFilterItems(newVehicles);
+      setFilterItems([...filterItems, ...newVehicles]);
       setPage(prevPage => prevPage + 1);
     } else {
       setHasMore(false);
     }
-    setLoading(false);
   }, [loading, hasMore, page]);
   const Loader = () => (
     <View style={{flex: 1, justifyContent: 'center'}}>
@@ -188,31 +192,29 @@ export const Search = ({navigation, route}) => {
     </View>
   );
   useEffect(() => {
+    return () => {
+      if (searchTimer.current) {
+        clearTimeout(searchTimer.current);
+      }
+    };
+  }, []);
+  useEffect(() => {
+    handleSearch();
+  }, [search]);
+  const handleSearch = () => {
+    clearTimeout(searchTimer.current);
+    searchTimer.current = setTimeout(() => {
+      fetchNow();
+    }, 500);
+  };
+  useEffect(() => {
     if (allRequest.length && requestId) {
       setRequest(allRequest.find(it => it.id == requestId));
     }
   }, [allRequest]);
 
   useEffect(() => {
-    if (!requestId && AllDrivers.length) {
-      // if (code == 101) {
-      //     setAllItems(recommendedDrivers)
-      // }
-      // else if (code == 102) {
-      //     setAllItems(insideUniDrivers)
-      // }
-      // else if (code == 103) {
-      //     setAllItems(eventDrivers)
-      // }
-      // else if (code == 104) {
-      //     setAllItems(onlineDrivers)
-      // }
-      // else {
-      //     setAllItems(AllDrivers)
-      // }
-    }
-  }, [AllDrivers, onlineDrivers]);
-  useEffect(() => {
+    return;
     if (request) {
       const simple = [];
       const jugaar = [];
@@ -318,8 +320,16 @@ export const Search = ({navigation, route}) => {
     // console.log(restaurant)
     // navigation.navigate('ItemDetails', { item, restaurant })
   }
+
+  async function fetchNow() {
+    setPage(1);
+    setListLoading(true);
+    const newVehicles = await fetchVehicles(1);
+
+    setFilterItems(newVehicles);
+  }
   useEffect(() => {
-    setFilterItems(route.params.vehicles);
+    fetchNow();
     return;
     if (allItems.length) {
       const newR = allItems?.filter(
@@ -341,14 +351,49 @@ export const Search = ({navigation, route}) => {
     } else {
       setFilterItems([]);
     }
-  }, [allItems, search, topRated, wifi, ac]);
+  }, [topRated, wifi, ac]);
 
-  const fetchVehicles = async (page, limit) => {
-    const response = await fetch(
-      `https://your-api.com/vehicles?page=${page}&limit=${limit}`,
-    );
-    const data = await response.json();
-    return data;
+  const fetchVehicles = async page => {
+    const url = `${searchVehicles}?page=${page}&categoryId=${code}&isWifi=${
+      wifi ? wifi : null
+    }&topRated=${topRated ? topRated : null}&ac=${ac ? ac : null}&search=${
+      search && search != '' ? search : null
+    }`;
+    if (url == lastFetch) {
+      setLoading(false);
+      setListLoading(false);
+      console.log('saveeeee');
+      return filterItems;
+    }
+
+    setLastFetch(url);
+    return new Promise(function (resolve, reject) {
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          // Work with the JSON data
+          const {code, body, message} = data;
+          setLoading(false);
+          setListLoading(false);
+          if (code == 1) {
+            const {vehicles} = body;
+            resolve(vehicles);
+            // storeRedux.dispatch(setAreasLocation(locations));
+          } else {
+            resolve([]);
+
+            dispatch(setErrorAlert({Title: message, Status: 0}));
+          }
+        })
+        .catch(error => {
+          // Handle any errors that occurred during the fetch
+          resolve([]);
+          setLoading(false);
+          setListLoading(false);
+
+          console.error('Fetch error:', error);
+        });
+    });
   };
   return (
     <>
@@ -496,66 +541,72 @@ export const Search = ({navigation, route}) => {
             backgroundColor: myColors.divider,
           }}
         />
-
+        {/* <Loader/> */}
         <View style={{flex: 4000}}>
-          {filterItems.length ? (
-            <FlashList
-              showsVerticalScrollIndicator={false}
-              scrollEnabled={true}
-              data={filterItems}
-              extraData={[request]}
-              // extraData={[ac, wifi, topRated, search]}
-              // contentContainerStyle={{ flexGrow: 1 }}
-              // ItemSeparatorComponent={() =>
-              //     <View style={{ borderTopWidth: myHeight(0.08), borderColor: myColors.offColor, width: "100%" }} />
-              // }
-              keyExtractor={(item, index) => item.id}
-              estimatedItemSize={myHeight(10)}
-              onEndReached={fetchMoreVehicles}
-              onEndReachedThreshold={0.5}
-              ListFooterComponent={
-                loading && <ActivityIndicator size="large" />
-              }
-              renderItem={({item, index}) => {
-                console.log(item.uid);
-                return (
-                  <TouchableOpacity
-                    key={index}
-                    activeOpacity={0.85}
-                    onPress={() =>
-                      navigation.navigate('DriverDetail', {
-                        driver: item,
-                        request,
-                      })
-                    }>
-                    <DriverInfoFull
-                      onSend={onSend}
-                      driver={item}
-                      request={request}
-                      code={code}
-                    />
-                  </TouchableOpacity>
-                );
-              }}
-            />
+          {listLoading ? (
+            <Loader />
           ) : (
-            <View
-              style={{
-                flex: 0.8,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Text
-                style={[
-                  styles.textCommon,
-                  {
-                    fontFamily: myFonts.bodyBold,
-                    fontSize: myFontSize.body4,
-                  },
-                ]}>
-                No Drivers Available
-              </Text>
-            </View>
+            <>
+              {console.log(filterItems.length)}
+              {filterItems.length ? (
+                <FlashList
+                  showsVerticalScrollIndicator={false}
+                  scrollEnabled={true}
+                  data={filterItems}
+                  extraData={[request]}
+                  // extraData={[ac, wifi, topRated, search]}
+                  // contentContainerStyle={{ flexGrow: 1 }}
+                  // ItemSeparatorComponent={() =>
+                  //     <View style={{ borderTopWidth: myHeight(0.08), borderColor: myColors.offColor, width: "100%" }} />
+                  // }
+                  keyExtractor={(item, index) => item.id + index}
+                  estimatedItemSize={myHeight(10)}
+                  onEndReached={fetchMoreVehicles}
+                  onEndReachedThreshold={0.5}
+                  ListFooterComponent={
+                    loading && <ActivityIndicator size="large" />
+                  }
+                  renderItem={({item, index}) => {
+                    return (
+                      <TouchableOpacity
+                        key={index}
+                        activeOpacity={0.85}
+                        onPress={() =>
+                          navigation.navigate('DriverDetail', {
+                            driver: item,
+                            request,
+                          })
+                        }>
+                        <DriverInfoFull
+                          onSend={onSend}
+                          driver={item}
+                          request={request}
+                          code={code}
+                        />
+                      </TouchableOpacity>
+                    );
+                  }}
+                />
+              ) : (
+                <View
+                  style={{
+                    flex: 0.8,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={[
+                      styles.textCommon,
+                      {
+                        fontFamily: myFonts.bodyBold,
+                        fontSize: myFontSize.body4,
+                      },
+                    ]}>
+                    No Drivers Available
+                  </Text>
+                </View>
+              )}
+            </>
           )}
         </View>
       </SafeAreaView>
