@@ -17,7 +17,7 @@ import {
   myWidth,
   Spacer,
 } from '../common';
-import {myFontSize, myFonts} from '../../ultils/myFonts';
+import {myFontSize, myFonts, myLetSpacing} from '../../ultils/myFonts';
 import {myColors} from '../../ultils/myColors';
 import {deccodeInfo, encodeInfo} from '../functions/functions';
 import firestore from '@react-native-firebase/firestore';
@@ -298,28 +298,43 @@ const styles = StyleSheet.create({
     fontFamily: myFonts.bodyBold,
   },
   textForget: {
+    letterSpacing: myLetSpacing.common,
+    includeFontPadding: false,
+    padding: 0,
     fontFamily: myFonts.heading,
     fontSize: myFontSize.large,
     color: myColors.text,
     paddingVertical: myHeight(0),
   },
   textLight: {
+    letterSpacing: myLetSpacing.common,
+    includeFontPadding: false,
+    padding: 0,
     fontFamily: myFonts.bodyBold,
     color: myColors.textL4,
     fontSize: myFontSize.medium,
   },
   textLight2: {
+    letterSpacing: myLetSpacing.common,
+    includeFontPadding: false,
+    padding: 0,
     fontFamily: myFonts.bodyBold,
     color: myColors.textL4,
     fontSize: myFontSize.body,
     paddingStart: myWidth(3.3),
   },
   textSign: {
+    letterSpacing: myLetSpacing.common,
+    includeFontPadding: false,
+    padding: 0,
     fontFamily: myFonts.heading,
     color: myColors.textL,
     fontSize: myFontSize.body,
   },
   textReg: {
+    letterSpacing: myLetSpacing.common,
+    includeFontPadding: false,
+    padding: 0,
     color: myColors.background,
     fontFamily: myFonts.headingBold,
     fontSize: myFontSize.body,

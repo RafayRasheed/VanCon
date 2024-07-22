@@ -274,7 +274,7 @@ export const DriverInfoFull = ({
                     includeFontPadding: false,
                     padding: 0,
                   }}>
-                  Air Conditioned
+                  AC
                 </Text>
                 {/* <Spacer paddingEnd={myWidth(3)} /> */}
               </View>

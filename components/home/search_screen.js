@@ -137,7 +137,7 @@ export const Search = ({navigation, route}) => {
 
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [listLoading, setListLoading] = useState(false);
+  const [listLoading, setListLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [isFirst, setIsFirst] = useState(true);
 
@@ -573,7 +573,9 @@ export const Search = ({navigation, route}) => {
                   onEndReached={fetchMoreVehicles}
                   onEndReachedThreshold={0.1}
                   ListFooterComponent={
-                    loading && <ActivityIndicator size="large" />
+                    <View style={{height: myHeight(6.5)}}>
+                      {loading && <ActivityIndicator size="large" />}
+                    </View>
                   }
                   //   renderFooter={renderFooter}
                   renderItem={({item, index}) => {

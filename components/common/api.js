@@ -17,3 +17,4 @@ export const getVehicles = `${api}/users/getVehicles`;
 export const getLocationsAPI = `${api}/users/getLocations`;
 export const rateDriver = `${api}/users/rateDriver`;
 export const searchVehicles = `${api}/users/searchVehicles`;
+export const getVehicleDetails = `${api}/users/getVehicleDetails`;

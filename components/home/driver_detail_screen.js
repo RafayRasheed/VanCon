@@ -46,23 +46,26 @@ import {Stars} from './home.component/star';
 import firestore from '@react-native-firebase/firestore';
 import {all} from 'axios';
 import {setErrorAlert} from '../../redux/error_reducer';
-import {rateDriver} from '../common/api';
+import {getVehicleDetails, rateDriver} from '../common/api';
+import {DetailSkeleton} from './home.component/home_skeleton';
 
 export const DriverDetail = ({navigation, route}) => {
   const backScreen = route.params.backScreen;
-
-  const [driver, setDriver] = useState(route.params.driver);
+  const driverId = route.params.driver.id;
+  const [driver, setDriver] = useState(null);
   const [inside, setInside] = useState(false);
   const [RatingModal, setRatinModal] = useState(false);
   const [starI, setStarI] = useState(undefined);
   const [review, setReview] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [reviews, setReviews] = useState(driver.reviews ? driver.reviews : []);
+  // const [startLoader, setStartLoader] = useState(true);
+  const [reviews, setReviews] = useState();
   const [myReview, setMyRewiew] = useState();
 
   const dispatch = useDispatch();
   //Back Functions
+
   const {profile} = useSelector(state => state.profile);
   useEffect(() => {
     if (errorMsg) {
@@ -72,24 +75,56 @@ export const DriverDetail = ({navigation, route}) => {
       }, errorTime);
     }
   }, [errorMsg]);
+  function getDetails() {
+    fetch(getVehicleDetails + `?vid=${driverId}`)
+      .then(response => response.json())
+      .then(data => {
+        // Work with the JSON data
+        const {code, body, message} = data;
+
+        if (code == 1) {
+          const {vehicle = null} = body;
+          if (vehicle) {
+            setDriver(vehicle);
+          } else {
+            storeRedux.dispatch(
+              setErrorAlert({Title: 'Something Wrong', Status: 0}),
+            );
+            navigation.goBack();
+          }
+          // storeRedux.dispatch(setAreasLocation(locations));
+        } else {
+          storeRedux.dispatch(setErrorAlert({Title: message, Status: 0}));
+        }
+      })
+      .catch(error => {
+        // Handle any errors that occurred during the fetch
+
+        console.error('Fetch error:', error);
+      });
+  }
   useEffect(() => {
-    let myRew = null;
-    let allReviews = [];
-    console.log('dfgdry', driver.reviews);
-    driver.reviews?.map(it => {
-      if (it.uid == profile.uid) {
-        myRew = it;
+    if (driver) {
+      let myRew = null;
+      let allReviews = [];
+      console.log('dfgdry', driver.reviews);
+      driver.reviews?.map(it => {
+        if (it.uid == profile.uid) {
+          myRew = it;
+        } else {
+          allReviews.push(it);
+        }
+      });
+      if (myRew) {
+        setMyRewiew(myRew);
+        setReview(myRew.review);
+        setStarI(myRew.rating - 1);
+        setReviews([myRew, ...allReviews]);
       } else {
-        allReviews.push(it);
+        setReviews(allReviews);
       }
-    });
-    if (myRew) {
-      setMyRewiew(myRew);
-      setReview(myRew.review);
-      setStarI(myRew.rating - 1);
-      setReviews([myRew, ...allReviews]);
     } else {
-      setReviews(allReviews);
+      getDetails();
     }
   }, [driver]);
 
@@ -112,7 +147,7 @@ export const DriverDetail = ({navigation, route}) => {
         vehicleId: driver.id,
         rating: starI + 1,
       };
-      console.log('rateDriver', rateDriver);
+      console.log('rateDriver', JSON.stringify(postData));
       const options = {
         method: 'POST',
         headers: {
@@ -129,6 +164,7 @@ export const DriverDetail = ({navigation, route}) => {
 
           if (code == 1) {
             const {vehicle} = body;
+            console.log('result', vehicle);
             hideModal();
             dispatch(
               setErrorAlert({
@@ -320,6 +356,9 @@ export const DriverDetail = ({navigation, route}) => {
       </View>
     );
   };
+  if (!driver) {
+    return <DetailSkeleton />;
+  }
 
   return (
     <View style={{flex: 1, backgroundColor: myColors.background}}>
@@ -721,7 +760,7 @@ export const DriverDetail = ({navigation, route}) => {
                 flexDirection: 'row',
                 alignItems: 'center',
               }}>
-              {driver.packages.map((it, i) => (
+              {driver.packages?.map((it, i) => (
                 <>
                   <View
                     key={i}
