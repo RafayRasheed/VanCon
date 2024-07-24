@@ -132,6 +132,7 @@ export const DriverInfoFull = ({
                   {driver.isOneRide ? (
                     <View
                       style={{
+                        marginTop: myHeight(1),
                         backgroundColor: myColors.orange,
                         paddingHorizontal: myWidth(2.5),
                         paddingVertical: myHeight(0.5),
@@ -173,11 +174,10 @@ export const DriverInfoFull = ({
             </View>
 
             {/* Heart */}
-            <TouchableOpacity
+            {/* <TouchableOpacity
               activeOpacity={0.85}
               onPress={changeFav}
               style={styles.containerHeart}>
-              {/* <Text style={styles.textRating}>Dill</Text> */}
               <Image
                 style={styles.imageHeart}
                 source={
@@ -186,7 +186,7 @@ export const DriverInfoFull = ({
                     : require('../../assets/home_main/home/heart_o.png')
                 }
               />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
         <Spacer paddingT={myHeight(0.5)} />
