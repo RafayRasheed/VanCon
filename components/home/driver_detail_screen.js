@@ -31,6 +31,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {
   addFavoriteRest,
   removeFavoriteRest,
+  setFavoriteDrivers,
 } from '../../redux/favorite_reducer';
 import {useFocusEffect} from '@react-navigation/native';
 import {ImageUri} from '../common/image_uri';
@@ -46,7 +47,12 @@ import {Stars} from './home.component/star';
 import firestore from '@react-native-firebase/firestore';
 import {all} from 'axios';
 import {setErrorAlert} from '../../redux/error_reducer';
-import {getVehicleDetails, rateDriver} from '../common/api';
+import {
+  addUpdateFavorites,
+  getFavorites,
+  getVehicleDetails,
+  rateDriver,
+} from '../common/api';
 import {DetailSkeleton} from './home.component/home_skeleton';
 
 export const DriverDetail = ({navigation, route}) => {
@@ -63,6 +69,9 @@ export const DriverDetail = ({navigation, route}) => {
   const [reviews, setReviews] = useState();
   const [myReview, setMyRewiew] = useState();
 
+  const {favoriteDrivers} = useSelector(state => state.favorite);
+
+  const [isFav, setIsFav] = useState(false);
   const dispatch = useDispatch();
   //Back Functions
 
@@ -105,6 +114,12 @@ export const DriverDetail = ({navigation, route}) => {
   }
   useEffect(() => {
     if (driver) {
+      const checkFav = favoriteDrivers.find(redID => redID == driver.id);
+      setIsFav(checkFav);
+    }
+  }, [driver, favoriteDrivers]);
+  useEffect(() => {
+    if (driver) {
       let myRew = null;
       let allReviews = [];
       console.log('dfgdry', driver.reviews);
@@ -128,9 +143,9 @@ export const DriverDetail = ({navigation, route}) => {
     }
   }, [driver]);
 
-  useEffect(() => {
-    setIsFav(checkFav != null);
-  }, [checkFav]);
+  // useEffect(() => {
+  //   setIsFav(checkFav != null);
+  // }, [checkFav]);
   function hideModal() {
     setRatinModal(false);
   }
@@ -294,25 +309,49 @@ export const DriverDetail = ({navigation, route}) => {
     navigation.goBack();
   }
 
-  const {favoriteDrivers} = useSelector(state => state.favorite);
-
-  const checkFav = favoriteDrivers.find(redID => redID == driver.uid);
-  const [isFav, setIsFav] = useState(checkFav != null);
-
   function changeFav() {
-    if (!isFav) {
-      dispatch(addFavoriteRest({resId: driver.uid}));
-    } else {
-      dispatch(removeFavoriteRest({resId: driver.uid}));
-    }
+    const {uid, token} = profile;
+
+    const postData = {
+      uid,
+      token,
+      vid: driver.id,
+    };
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json', // Specify the content type as JSON
+      },
+      body: JSON.stringify(postData), // Convert the data to JSON string
+    };
+    fetch(addUpdateFavorites, options)
+      .then(response => response.json())
+      .then(data => {
+        // Work with the JSON data
+        const {code, body, message} = data;
+
+        if (code == 1) {
+          const {favorites = []} = body;
+          console.log(favorites);
+          dispatch(setFavoriteDrivers(favorites));
+        } else {
+          dispatch(setErrorAlert({Title: message, Status: 0}));
+        }
+      })
+      .catch(error => {
+        // Handle any errors that occurred during the fetch
+
+        console.error('Fetch error:', error);
+      });
     setIsFav(!isFav);
   }
 
   const allDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
-  const DaysShow = ({list = []}) => {
+  0;
+  const DaysShow = ({list = [], keya = 0}) => {
     return (
       <View
+        key={keya}
         style={{
           width: '100%',
           flexWrap: 'wrap',
@@ -325,7 +364,7 @@ export const DriverDetail = ({navigation, route}) => {
           return (
             <>
               <View
-                key={i}
+                key={`${i.toString()}${keya.toString()}`}
                 style={[
                   styles.backItem,
                   {
@@ -797,7 +836,7 @@ export const DriverDetail = ({navigation, route}) => {
             <Text style={styles.heading}>Availability</Text>
 
             <Spacer paddingT={myHeight(1)} />
-            <DaysShow list={driver.dailyDays} />
+            <DaysShow list={driver.dailyDays} keya={1} />
           </View>
 
           <Spacer paddingT={myHeight(3.5)} />
@@ -808,7 +847,7 @@ export const DriverDetail = ({navigation, route}) => {
                 <Text style={styles.heading}>Availability for Events</Text>
 
                 <Spacer paddingT={myHeight(1)} />
-                <DaysShow list={driver.oneRideDays} />
+                <DaysShow list={driver.oneRideDays} keya={2} />
                 <Spacer paddingT={myHeight(2.5)} />
               </>
             ) : null}
@@ -922,6 +961,7 @@ export const DriverDetail = ({navigation, route}) => {
                 showsVerticalScrollIndicator={false}
                 scrollEnabled={false}
                 data={reviews}
+                keyExtractor={(item, index) => index.toString()}
                 contentContainerStyle={{flexGrow: 1}}
                 ItemSeparatorComponent={() => (
                   <View
@@ -952,8 +992,6 @@ export const DriverDetail = ({navigation, route}) => {
 
                       <View
                         style={{flexDirection: 'row', alignItems: 'center'}}>
-                        {/* <Spacer paddingEnd={myWidth(2)} /> */}
-
                         <View
                           style={{
                             flexDirection: 'row',

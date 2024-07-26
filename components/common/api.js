@@ -4,7 +4,7 @@ const live = '127.0.0.1:3000';
 
 const api = localOffice;
 
-export const allUsersAPI = `${api}/users`;
+export const allUsersAPI = `${api}/users/profile`;
 export const signinAPI = `${api}/users/signin`;
 export const saveUserAPI = `${api}/users/saveUser`;
 export const sigupAPI = `${api}/users/signup`;
@@ -18,3 +18,5 @@ export const getLocationsAPI = `${api}/users/getLocations`;
 export const rateDriver = `${api}/users/rateDriver`;
 export const searchVehicles = `${api}/users/searchVehicles`;
 export const getVehicleDetails = `${api}/users/getVehicleDetails`;
+export const getFavorites = `${api}/users/getFavorites`;
+export const addUpdateFavorites = `${api}/users/addUpdateFavorites`;

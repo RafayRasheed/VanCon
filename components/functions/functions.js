@@ -20,6 +20,7 @@ import {
 import {setProfile} from '../../redux/profile_reducer';
 import {allUsersAPI, getDashboard} from '../common/api';
 import {Alert} from 'react-native';
+import {setFavoriteDrivers} from '../../redux/favorite_reducer';
 export function verificationCode() {
   return Math.floor(Math.random() * 899999 + 100000);
 }
@@ -283,14 +284,16 @@ export function getProfileFromAPI() {
     .then(data => {
       // Work with the JSON data
       const {code, body, message} = data;
-
       if (code == 1) {
-        const {user} = data.body;
+        const {user, favorites = []} = body;
+        storeRedux.dispatch(setFavoriteDrivers(favorites));
+
         storeRedux.dispatch(setProfile({...profile, ...user}));
       }
     })
     .catch(error => {
       // Handle any errors that occurred during the fetch
+      console.log('sdswdfsfdsf');
 
       console.error('Fetch error:', error);
     });

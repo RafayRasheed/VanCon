@@ -147,6 +147,7 @@ export const Search = ({navigation, route}) => {
   const code = route.params.code;
   const searchTimer = useRef(null);
   const scrollRef = useRef(null);
+  const {profile} = useSelector(state => state.profile);
 
   async function fetchMoreVehicles() {
     console.log('aayya', isFirst);
@@ -362,7 +363,7 @@ export const Search = ({navigation, route}) => {
       wifi ? wifi : null
     }&topRated=${topRated ? topRated : null}&ac=${ac ? ac : null}&search=${
       search && search != '' ? search : null
-    }`;
+    }&city=${profile.city}`;
     // if (url == lastFetch) {
     //   console.log('saveeeee');
     //   return filterItems;
