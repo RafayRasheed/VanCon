@@ -92,6 +92,8 @@ import {Status} from './home.component/status';
 import {FlashList} from '@shopify/flash-list';
 import storeRedux from '../../redux/store_redux';
 import axios from 'axios';
+import {socket, socketURL} from '../common/api';
+import {io} from 'socket.io-client';
 
 if (!ios && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -107,6 +109,24 @@ export const HomeScreen = ({navigation}) => {
     recommendedDrivers,
     eventDrivers,
   } = useSelector(state => state.data);
+  useEffect(() => {
+    const socket = io(socketURL);
+    socket.connect();
+    // Listen for incoming messages
+    socket.on('connect', msg => {
+      console.log('connect connect connect');
+    });
+
+    // socket.emit('connection', {ss: 's'});
+
+    socket.on('disconnect', () => {
+      console.log('user disconnected');
+    });
+    // Clean up on component unmount
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
   const {current, history} = useSelector(state => state.location);
   const {pendings} = useSelector(state => state.chats);
   const [isLoading, setIsLoading] = useState(true);

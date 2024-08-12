@@ -1,8 +1,12 @@
+import io from 'socket.io-client';
 const local = 'http://192.168.1.100:3000';
 const localOffice = 'http://172.16.1.232:3000';
 const live = '127.0.0.1:3000';
 
 const api = localOffice;
+export const socketURL = api;
+
+export const socket = io(socketURL);
 
 export const allUsersAPI = `${api}/users/profile`;
 export const signinAPI = `${api}/users/signin`;
