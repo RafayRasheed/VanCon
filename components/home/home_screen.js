@@ -110,15 +110,17 @@ export const HomeScreen = ({navigation}) => {
     eventDrivers,
   } = useSelector(state => state.data);
   useEffect(() => {
-    const socket = io(socketURL);
+    // const socket = io(socketURL);
     socket.connect();
     // Listen for incoming messages
     socket.on('connect', msg => {
-      console.log('connect connect connect');
+      console.log('connect connect connect', msg);
     });
 
-    // socket.emit('connection', {ss: 's'});
-
+    socket.emit('amit', {ss: 's'});
+    socket.on('amitResponse', data => {
+      console.log(`Received your message: ${JSON.stringify(data)}`);
+    });
     socket.on('disconnect', () => {
       console.log('user disconnected');
     });
