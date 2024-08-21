@@ -109,25 +109,32 @@ export const HomeScreen = ({navigation}) => {
     recommendedDrivers,
     eventDrivers,
   } = useSelector(state => state.data);
+
+  function updateUserIdToSocket() {
+    socket.emit('updateUserData', {
+      type: 1,
+      name: profile.name,
+      userId: profile.uid,
+    });
+  }
   useEffect(() => {
     // const socket = io(socketURL);
-    socket.connect();
-    // Listen for incoming messages
-    socket.on('connect', msg => {
-      console.log('connect connect connect', msg);
-    });
+    if (profile) {
+      socket.removeAllListeners();
 
-    socket.emit('amit', {ss: 's'});
-    socket.on('amitResponse', data => {
-      console.log(`Received your message: ${JSON.stringify(data)}`);
-    });
-    socket.on('disconnect', () => {
-      console.log('user disconnected');
-    });
-    // Clean up on component unmount
-    return () => {
-      socket.disconnect();
-    };
+      socket.connect();
+      // Listen for incoming messages
+      socket.on('connect', msg => {
+        console.log('connect connect connect', msg);
+        updateUserIdToSocket();
+      });
+
+      // Clean up on component unmount
+      return () => {
+        socket.disconnect();
+        console.log('disconnected disconnected disconnected');
+      };
+    }
   }, []);
   const {current, history} = useSelector(state => state.location);
   const {pendings} = useSelector(state => state.chats);
