@@ -129,6 +129,14 @@ export const HomeScreen = ({navigation}) => {
         updateUserIdToSocket();
       });
 
+      socket.emit('getAllChats', {
+        userId: profile.uid,
+        type: 1,
+      });
+      socket.on('allChatsListener', data => {
+        console.log('allChatsListener', data.allChats);
+      });
+
       // Clean up on component unmount
       return () => {
         socket.disconnect();

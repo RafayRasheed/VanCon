@@ -55,11 +55,12 @@ export const Chat = ({navigation, route}) => {
   const {profile} = useSelector(state => state.profile);
   const {chats, pendings} = useSelector(state => state.chats);
   const [chatsOnly, setChatsOnly] = useState([]);
-  const chatId = profile.uid + user2.uid;
+  //   const chatId = profile.uid + user2.uid;
   const [chatss, setChatss] = useState([]);
   const [colorC, setColorC] = useState(myColors.red);
   const [driver, setDriver] = useState(null);
   const [lastSeen, setLastSeen] = useState(null);
+  const [chatId, setCahtId] = useState(null);
   const [driverImage, setDriverImage] = useState(user2.vehicleImage);
 
   const {AllDrivers} = useSelector(state => state.data);
@@ -98,7 +99,7 @@ export const Chat = ({navigation, route}) => {
           marginVertical: myHeight(0.7),
           paddingHorizontal: myWidth(2),
           backgroundColor:
-            item.msgId == focusId ? myColors.primaryL3 : 'transparent',
+            item.id == focusId ? myColors.primaryL3 : 'transparent',
           alignSelf: 'flex-end',
         }}>
         <Swipeable
@@ -201,7 +202,7 @@ export const Chat = ({navigation, route}) => {
           width: myWidth(100),
           paddingHorizontal: myWidth(2),
           backgroundColor:
-            item.msgId == focusId ? myColors.primaryL3 : 'transparent',
+            item.id == focusId ? myColors.primaryL3 : 'transparent',
           marginVertical: myHeight(0.7),
         }}>
         <Swipeable
@@ -279,9 +280,9 @@ export const Chat = ({navigation, route}) => {
       <TouchableOpacity
         activeOpacity={0.8}
         onPress={() => {
-          const inde = chatss.findIndex(it => it.msgId == reply.msgId);
+          const inde = chatss.findIndex(it => it.id == reply.id);
           scrollToIndex(inde != 0 ? inde - 1 : inde);
-          setFocusId(reply.msgId);
+          setFocusId(reply.id);
         }}
         style={{
           width: type ? myWidth(78) : '100%',
@@ -370,15 +371,21 @@ export const Chat = ({navigation, route}) => {
 
   useEffect(() => {
     socket.removeListener('chatsCustomer');
-    socket.emit('getChatsCustomer', {
+    socket.removeListener('userStatusUpdate');
+    socket.emit('getChats', {
       userId: profile.uid,
       driverId: user2.uid,
       vehicleId: user2.id,
     });
-
+    socket.on('userStatusUpdate', data => {
+      console.log('userStatusUpdate', data);
+      if (data.id == user2.uid) {
+        setLastSeen(data);
+      }
+    });
     socket.on('chatsCustomer', data => {
-      console.log('chatsCustomer', data);
-      setLastSeen(data.lastSeen);
+      setChatss(data.chats);
+      console.log('chatsCustomer', data.chats);
     });
   }, []);
   useEffect(() => {
@@ -530,10 +537,37 @@ export const Chat = ({navigation, route}) => {
       });
   };
   function onSendMsg() {
+    console.log(user2);
     if (message === null) {
       dispatch(setErrorAlert({Title: 'Text field is empty', Status: 0}));
       return;
     }
+    const addtional = chatId
+      ? {}
+      : {
+          vehicleName: user2.vehicleName,
+          vehicleImage: user2.vehicleImage,
+          driverName: user2.name,
+          driverImage: user2.image,
+          driverNumber: user2.contact,
+          userName: profile.name,
+          userImage: profile.image,
+        };
+    const msss = {
+      reply,
+      type: 1,
+      senderId: profile.uid,
+      recieverId: user2.uid,
+      vehicleId: user2.id,
+      message: message,
+      chatId,
+      ...addtional,
+    };
+
+    socket.emit('sendMessage', msss);
+    setReply(null);
+    setMessage(null);
+    return;
     const {actualDate, dateInt, date} = dataFullData();
     const msgId =
       dateInt.toString() + verificationCode().toString().slice(0, 3);
@@ -850,7 +884,7 @@ export const Chat = ({navigation, route}) => {
                 paddingVertical: myHeight(0.5),
               }}
               keyExtractor={(item, index) =>
-                typeof item == 'string' ? item : item.msgId
+                typeof item == 'string' ? item : item.id
               }
               estimatedItemSize={200}
               renderItem={({item}) => {
