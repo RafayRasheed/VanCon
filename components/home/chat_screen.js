@@ -376,7 +376,16 @@ export const Chat = ({navigation, route}) => {
       userId: profile.uid,
       driverId: user2.uid,
       vehicleId: user2.id,
+      type: 1,
     });
+    if (chatId) {
+      socket.emit('readAllMessages', {
+        chatId,
+        userId: profile.uid,
+        driverId: user2.uid,
+        type: 2,
+      });
+    }
     socket.on('userStatusUpdate', data => {
       console.log('userStatusUpdate', data);
       if (data.id == user2.uid) {
