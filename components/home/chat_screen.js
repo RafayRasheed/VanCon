@@ -19,7 +19,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {getAvatarColor, myColors} from '../../ultils/myColors';
 import {MyError, Spacer, StatusbarH, ios, myHeight, myWidth} from '../common';
-import {myFontSize, myFonts, myLetSpacing} from '../../ultils/myFonts';
+import {alert, myFontSize, myFonts, myLetSpacing} from '../../ultils/myFonts';
 import database from '@react-native-firebase/database';
 import {
   dataFullData,
@@ -48,7 +48,7 @@ export const Chat = ({navigation, route}) => {
   const [fromTouch, setFromTouch] = useState(false);
   const [firstTime, setFirstTime] = useState(true);
   const [showUnread, setShowUnread] = useState(0);
-  const [loader, setLoader] = useState(true);
+  const [loader, setLoader] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [showScrollToLast, setShowScrollToLast] = useState(false);
   const {user2} = route.params;
@@ -60,21 +60,62 @@ export const Chat = ({navigation, route}) => {
   const [colorC, setColorC] = useState(myColors.red);
   const [driver, setDriver] = useState(null);
   const [lastSeen, setLastSeen] = useState(null);
-  const [chatId, setCahtId] = useState(null);
+  const [chatId, setChatId] = useState(user2.lastMessage ? user2.id : null);
   const [driverImage, setDriverImage] = useState(user2.vehicleImage);
 
   const {AllDrivers} = useSelector(state => state.data);
   const [focusId, setFocusId] = useState(null);
-
+  const vehicleId = user2.lastMessage ? user2.vid : user2.id;
+  const driverId = user2.lastMessage ? user2.did : user2.uid;
   const textInputRef = useRef(null);
 
   const [reply, setReply] = useState(null);
   const handleSwipeRelease = item => {
     textInputRef?.current.focus();
-
     setReply(item);
   };
   const dispatch = useDispatch();
+  function removeListeners() {
+    socket.removeListener('chatsCustomer');
+    socket.removeListener('userStatusUpdate');
+    socket.removeListener('onNewMessage');
+  }
+  useEffect(() => {
+    removeListeners();
+
+    socket.emit('getChats', {
+      userId: profile.uid,
+      driverId,
+      vehicleId,
+      type: 1,
+    });
+
+    if (user2.totalUnread) {
+      socketToAllUnread();
+    }
+    socket.on('userStatusUpdate', data => {
+      console.log('userStatusUpdate', data);
+      if (data.id == driverId) {
+        setLastSeen(data);
+      }
+    });
+    socket.on('chatsCustomer', data => {
+      console.log('chatsCustomer', data);
+
+      if (data.chatId && (!chatId || chatId == data.chatId)) {
+        setChatId(data.chatId);
+        setChatss(data.chats);
+      }
+    });
+    socket.on('onNewMessage', data => {
+      console.log('onNewMessage', data);
+      socketToAllUnread();
+    });
+
+    return () => {
+      removeListeners();
+    };
+  }, []);
   useEffect(() => {
     if (focusId) {
       setTimeout(() => {
@@ -368,35 +409,17 @@ export const Chat = ({navigation, route}) => {
       setShowScrollToLast(posY >= 10);
     }
   }
-
-  useEffect(() => {
-    socket.removeListener('chatsCustomer');
-    socket.removeListener('userStatusUpdate');
-    socket.emit('getChats', {
-      userId: profile.uid,
-      driverId: user2.uid,
-      vehicleId: user2.id,
-      type: 1,
-    });
+  function socketToAllUnread() {
     if (chatId) {
       socket.emit('readAllMessages', {
         chatId,
         userId: profile.uid,
-        driverId: user2.uid,
-        type: 2,
+        driverId,
+        type: 1,
       });
     }
-    socket.on('userStatusUpdate', data => {
-      console.log('userStatusUpdate', data);
-      if (data.id == user2.uid) {
-        setLastSeen(data);
-      }
-    });
-    socket.on('chatsCustomer', data => {
-      setChatss(data.chats);
-      console.log('chatsCustomer', data.chats);
-    });
-  }, []);
+  }
+
   useEffect(() => {
     if (!showScrollToLast) {
       setUnreadCount(0);
@@ -410,6 +433,7 @@ export const Chat = ({navigation, route}) => {
     // }
   }, [AllDrivers]);
   useEffect(() => {
+    return;
     const myChat = chats.filter(it => it.chatId == chatId);
     if (myChat.length) {
       setColorC(myChat[0].colorC);
@@ -566,8 +590,8 @@ export const Chat = ({navigation, route}) => {
       reply,
       type: 1,
       senderId: profile.uid,
-      recieverId: user2.uid,
-      vehicleId: user2.id,
+      recieverId: driverId,
+      vehicleId,
       message: message,
       chatId,
       ...addtional,
@@ -818,7 +842,12 @@ export const Chat = ({navigation, route}) => {
             </View>
             <Spacer paddingEnd={myWidth(2.4)} />
             {/* Name & Last seen */}
-            <View>
+            <View
+              style={{
+                height: myHeight(5.5),
+                alignSelf: 'center',
+                // justifyContent: 'center',
+              }}>
               <Text
                 numberOfLines={1}
                 style={[
@@ -828,8 +857,10 @@ export const Chat = ({navigation, route}) => {
                     fontFamily: myFonts.heading,
                   },
                 ]}>
-                {user2.name
-                  ? `${user2.vehicleName} (${user2.name})`
+                {user2.vehicleName
+                  ? `${user2.vehicleName} (${
+                      user2.lastMessage ? user2.driverName : user2.name
+                    })`
                   : 'Someone'}
               </Text>
 

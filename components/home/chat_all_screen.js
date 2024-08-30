@@ -117,22 +117,7 @@ export const ChatList = ({navigation, route}) => {
               ]}>
               {'Messages'}
             </Text>
-            {totalUnread ? (
-              <Text
-                style={[
-                  styles.textCommon,
-                  {
-                    fontSize: myFontSize.body,
-                    fontFamily: myFonts.body,
-                    color: myColors.textL4,
-                  },
-                ]}>
-                {' '}
-                {`You have ${totalUnread} new messages`}
-              </Text>
-            ) : null}
           </View>
-
           <Spacer paddingT={myHeight(1)} />
 
           {/* Divider */}
@@ -237,9 +222,7 @@ export const ChatList = ({navigation, route}) => {
                   flexDirection: 'row',
                   alignItems: 'center',
                 }}
-                onPress={() =>
-                  navigation.navigate('Chat', {user2: item.user2})
-                }>
+                onPress={() => navigation.navigate('Chat', {user2: item})}>
                 <View
                   style={{
                     borderRadius: myHeight(100),
@@ -253,9 +236,9 @@ export const ChatList = ({navigation, route}) => {
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}>
-                  {item.user2.image ? (
+                  {item.vehicleImage ? (
                     <ImageUri
-                      uri={item.user2.image}
+                      uri={item.vehicleImage}
                       height={'100%'}
                       width={'100%'}
                       resizeMode="cover"
@@ -291,7 +274,7 @@ export const ChatList = ({navigation, route}) => {
                           fontFamily: myFonts.bodyBold,
                         },
                       ]}>
-                      {item.user2.name}
+                      {`${item.vehicleName} (${item.driverName})`}
                     </Text>
                     <Text
                       numberOfLines={1}
@@ -303,7 +286,7 @@ export const ChatList = ({navigation, route}) => {
                           color: myColors.textL4,
                         },
                       ]}>
-                      {item.statusTime}
+                      {item.lastMessage.statusTime}
                     </Text>
                   </View>
                   <Spacer paddingT={myHeight(0.4)} />
@@ -321,39 +304,45 @@ export const ChatList = ({navigation, route}) => {
                           flex: 1,
                           fontSize: myFontSize.xxSmall,
                           color:
-                            item.senderId != profile.uid && item.unreadmasseges
+                            item.lastMessage.senderId != profile.uid &&
+                            item.totalUnread
                               ? myColors.text
                               : myColors.textL4,
                           fontFamily:
-                            item.senderId != profile.uid && item.unreadmasseges
+                            item.lastMessagesenderId != profile.uid &&
+                            item.totalUnread
                               ? myFonts.bodyBold
                               : myFonts.body,
                         },
                       ]}>
-                      {item.senderId == profile.uid ? 'You: ' : ''}
-                      {item.message}
+                      {item.lastMessage.senderId == profile.uid ? 'You: ' : ''}
+                      {item.lastMessage.message}
                     </Text>
-                    {item.unreadmasseges ? (
-                      <Text
-                        numberOfLines={1}
-                        style={[
-                          styles.textCommon,
-                          {
-                            fontSize: myFontSize.small3,
-                            fontFamily: myFonts.body,
-                            color: myColors.background,
-                            // padding: myHeight(0.5),
-                            minWidth: RFValue(22),
-                            minHeight: RFValue(22),
-                            textAlign: 'center',
-                            textAlignVertical: 'center',
-                            borderRadius: 5000,
-                            backgroundColor: myColors.primaryT,
-                          },
-                        ]}>
-                        {item.unreadmasseges > 9 ? '9+' : item.unreadmasseges}
-                      </Text>
-                    ) : null}
+                    <Text
+                      numberOfLines={1}
+                      style={[
+                        styles.textCommon,
+                        {
+                          fontSize: myFontSize.small3,
+                          fontFamily: myFonts.body,
+                          color: myColors.background,
+                          // padding: myHeight(0.5),
+                          minWidth: RFValue(22),
+                          minHeight: RFValue(22),
+                          textAlign: 'center',
+                          textAlignVertical: 'center',
+                          borderRadius: 5000,
+                          backgroundColor: item.totalUnread
+                            ? myColors.primaryT
+                            : myColors.background,
+                        },
+                      ]}>
+                      {item.totalUnread
+                        ? item.totalUnread > 9
+                          ? '9+'
+                          : item.totalUnread
+                        : 0}
+                    </Text>
                   </View>
                 </View>
               </TouchableOpacity>

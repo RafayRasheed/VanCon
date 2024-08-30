@@ -118,6 +118,28 @@ export const HomeScreen = ({navigation}) => {
     });
   }
   useEffect(() => {
+    // Set up Firebase Cloud Messaging to handle incoming notifications
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      // Handle the incoming notification
+      handleNotification(remoteMessage);
+    });
+
+    return unsubscribe;
+  }, []);
+
+  const handleNotification = notification => {
+    console.log('notification', notification);
+    // Extract data from notification
+
+    // const { screenName } = notification.data;
+
+    // // Navigate to the appropriate screen
+    // if (screenName) {
+    //   navigation.navigate(screenName);
+    // }
+  };
+
+  useEffect(() => {
     // const socket = io(socketURL);
     if (profile) {
       socket.removeAllListeners();
@@ -134,7 +156,9 @@ export const HomeScreen = ({navigation}) => {
         type: 1,
       });
       socket.on('allChatsListener', data => {
-        console.log('allChatsListener', data.allChats);
+        console.log('allChatsListener', data);
+        dispatch(setTotalUnread(data.totalUnreadChats));
+        dispatch(setChats(data.allChats));
       });
 
       // Clean up on component unmount
@@ -392,6 +416,7 @@ export const HomeScreen = ({navigation}) => {
 
   // Realtime
   useEffect(() => {
+    return;
     const onValueChange = database()
       .ref(`/chats`)
       .on('value', snapshot => {
@@ -459,6 +484,7 @@ export const HomeScreen = ({navigation}) => {
 
   // Realtime
   useEffect(() => {
+    return;
     const onValueChange = database()
       .ref(`/requests/${profile.uid}`)
       .orderByChild('dateInt')
@@ -569,6 +595,7 @@ export const HomeScreen = ({navigation}) => {
   }, []);
   // Realtime
   useEffect(() => {
+    return;
     const reff = `/online/${profile.city}/drivers`;
     const onValueChange = database()
       .ref(reff)

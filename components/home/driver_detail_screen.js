@@ -122,7 +122,6 @@ export const DriverDetail = ({navigation, route}) => {
     if (driver) {
       let myRew = null;
       let allReviews = [];
-      console.log('dfgdry', driver.reviews);
       driver.reviews?.map(it => {
         if (it.uid == profile.uid) {
           myRew = it;
