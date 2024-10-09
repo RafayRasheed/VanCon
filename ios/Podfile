@@ -9,8 +9,8 @@ use_modular_headers!
 
 prepare_react_native_project!
 
-# flipper_config = ENV['NO_FLIPPER'] == "1" ? FlipperConfiguration.disabled : FlipperConfiguration.enabled
-flipper_config = FlipperConfiguration.disabled
+flipper_config = ENV['NO_FLIPPER'] == "1" ? FlipperConfiguration.disabled : FlipperConfiguration.enabled
+# flipper_config = FlipperConfiguration.disabled
 
 target 'MyProject' do
   config = use_native_modules!
@@ -27,11 +27,11 @@ target 'MyProject' do
   )
 
   # Uncomment Firebase pods if required
-  # pod 'Firebase/Core', :modular_headers => true
-  # pod 'Firebase/Messaging', :modular_headers => true
-  # pod 'Firebase/Storage', :modular_headers => true
-  # pod 'Firebase/Auth', :modular_headers => true
-  # pod 'Firebase/Firestore', :modular_headers => true
+  pod 'Firebase/Core', :modular_headers => true
+  pod 'Firebase/Messaging', :modular_headers => true
+  pod 'Firebase/Storage', :modular_headers => true
+  pod 'Firebase/Auth', :modular_headers => true
+  pod 'Firebase/Firestore', :modular_headers => true
 
   # Uncomment gRPC and BoringSSL-GRPC pods if required
   # pod 'gRPC-Core', :modular_headers => true
