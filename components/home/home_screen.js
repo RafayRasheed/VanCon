@@ -854,6 +854,7 @@ export const HomeScreen = ({navigation}) => {
       </View>
     );
   };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusbarH />

@@ -327,11 +327,11 @@ export const RequestRide = ({navigation, route}) => {
       setIsLoading(true);
 
       let {date, time, dateInt, actualDate, smallCode} = dataFullData();
-      const id = preReq ? preReq.id : smallCode;
-      dateInt = preReq ? preReq.dateInt : dateInt;
-      actualDate = preReq ? preReq.actualDate : actualDate;
-      date = preReq ? preReq.date : date;
-      time = preReq ? preReq.time : time;
+      const id = preReq ? preReq.id : null;
+      // dateInt = preReq ? preReq.dateInt : dateInt;
+      // actualDate = preReq ? preReq.actualDate : actualDate;
+      // date = preReq ? preReq.date : date;
+      // time = preReq ? preReq.time : time;
 
       const {distance, string} = getDistanceFromRes(
         {latitude: pickup.latitude, longitude: pickup.longitude},
@@ -340,38 +340,46 @@ export const RequestRide = ({navigation, route}) => {
       );
       const newProfile = {
         id,
-        // dateInt,
-        // actualDate,
-        // date,
-        // time,
-        // isOnline: online,
-        // distance: string,
-        // actualDistance: distance,
+        distance: string,
+        actualDistance: distance,
         pickup,
-        pickupTime,
         dropoff,
+        pickupTime,
         dropoffTime,
         seats,
         selectedDays,
         packages,
         offer,
         instruction,
-        // status: preReq ? preReq.status : online ? 2 : 1,
         name: profile.name,
         uid: profile.uid,
+        twoWay,
+        isUpdate: preReq ? preReq.id : false,
+        contact,
+        token: profile.token,
+
+        // pickup: pickupTime ? {...pickup, pickupTime} : pickup,
+        // dropoff: dropoffTime ? {...dropoff, ...dropoffTime} : null,
+        // status: preReq ? preReq.status : online ? 2 : 1,
+        // dateInt,
+        // actualDate,
+        // date,
+        // time,
+        // isOnline: online,
+        // pickupTime,
+        // unread: true,
+        // dropoffTime,
         // sendDrivers: preReq && preReq.sendDrivers ? preReq.sendDrivers : [],
         // did: null,
         // driverName: null,
         // driverContact: null,
-        twoWay,
-        isUpdate: preReq ? preReq.id : false,
-        // unread: true,
-        contact,
-        token: profile.token,
-        location: current ? current : {latitude: 0, longitude: 0},
+        // location: current ? current : {latitude: 0, longitude: 0},
       };
-      console.log('New Profile', newProfile);
+      setIsLoading(false);
+      console.log('newProfile', newProfile);
+      return;
 
+      return;
       if (online) {
         const checkDriver = it => {
           if (!it) {
@@ -459,30 +467,6 @@ export const RequestRide = ({navigation, route}) => {
             console.log('error on send request', err);
           });
       } else {
-        setIsLoading(false);
-        console.log('newProfile', newProfile);
-        return;
-        database()
-          .ref(`/requests/${profile.uid}/${id}`)
-          .update(newProfile)
-          .then(() => {
-            setIsLoading(false);
-            // navigation.goBack()
-            setTimeout(() => {
-              console.log(id);
-              navigation.replace('Search', {
-                requestId: id,
-                code: 2,
-                name: 'Ride Request',
-              });
-            }, 200);
-          })
-          .catch(er => {
-            setIsLoading(false);
-
-            console.log('error on save newProfile', er);
-            setErrorMsg('Something Wrong');
-          });
       }
       // setAddress(JSON.stringify(newProfile))
     }
