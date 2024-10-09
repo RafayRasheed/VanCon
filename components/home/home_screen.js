@@ -42,7 +42,6 @@ import {setFavoriteDrivers} from '../../redux/favorite_reducer';
 import {RestaurantInfoSkeleton} from '../common/skeletons';
 import {HomeSkeleton} from './home.component/home_skeleton';
 import {ImageUri} from '../common/image_uri';
-import storage from '@react-native-firebase/storage';
 import {
   setAllDriver,
   setOnlineDriver,

@@ -30,7 +30,6 @@ import {myColors} from '../../ultils/myColors';
 import {myFontSize, myFonts, myLetSpacing} from '../../ultils/myFonts';
 import {useDispatch, useSelector} from 'react-redux';
 
-import storage from '@react-native-firebase/storage';
 import {ImageUri} from '../common/image_uri';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Collapsible from 'react-native-collapsible';
@@ -472,52 +471,52 @@ export const RequestRide = ({navigation}) => {
 
   const uploadImage = async (uri, name, i) => {
     const path = `images/drivers/${profile.uid}/${name}`;
-    storage()
-      .ref(path)
-      .putFile(uri)
-      .then(s => {
-        storage()
-          .ref(path)
-          .getDownloadURL()
-          .then(uri => {
-            if (name == 'vehicle') {
-              setVehicleImage(uri);
-              setImageLoading(null);
-              console.log('uri recieved background', uri);
-            } else {
-              // MenuImagesURI.push(uri)
-              // setMenuImagesURI(MenuImagesURI)
-              // console.log('uri recieved' + name)
-              if (i != null) {
-                let copy = [...MenuImages];
-                copy[i] = uri;
-                setMenuImages(copy);
+    // storage()
+    //   .ref(path)
+    //   .putFile(uri)
+    //   .then(s => {
+    //     storage()
+    //       .ref(path)
+    //       .getDownloadURL()
+    //       .then(uri => {
+    //         if (name == 'vehicle') {
+    //           setVehicleImage(uri);
+    //           setImageLoading(null);
+    //           console.log('uri recieved background', uri);
+    //         } else {
+    //           // MenuImagesURI.push(uri)
+    //           // setMenuImagesURI(MenuImagesURI)
+    //           // console.log('uri recieved' + name)
+    //           if (i != null) {
+    //             let copy = [...MenuImages];
+    //             copy[i] = uri;
+    //             setMenuImages(copy);
 
-                console.log('uri recieved ', name, typeof i);
+    //             console.log('uri recieved ', name, typeof i);
 
-                setChange(!change);
-              } else {
-                let copy = [...MenuImages];
-                copy.push(uri);
-                setMenuImages(copy);
-                console.log('uri recieved ', name);
-              }
-              setImageLoading(null);
-            }
-          })
-          .catch(e => {
-            setImageLoading(null);
-            setErrorMsg('Something Wrong');
+    //             setChange(!change);
+    //           } else {
+    //             let copy = [...MenuImages];
+    //             copy.push(uri);
+    //             setMenuImages(copy);
+    //             console.log('uri recieved ', name);
+    //           }
+    //           setImageLoading(null);
+    //         }
+    //       })
+    //       .catch(e => {
+    //         setImageLoading(null);
+    //         setErrorMsg('Something Wrong');
 
-            console.log('er', e);
-          });
-      })
-      .catch(e => {
-        setImageLoading(null);
-        setErrorMsg('Something Wrong');
+    //         console.log('er', e);
+    //       });
+    //   })
+    //   .catch(e => {
+    //     setImageLoading(null);
+    //     setErrorMsg('Something Wrong');
 
-        console.log('er', e);
-      });
+    //     console.log('er', e);
+    //   });
 
     // try {
     //     await task;

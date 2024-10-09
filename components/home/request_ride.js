@@ -32,7 +32,6 @@ import {myFontSize, myFonts, myLetSpacing} from '../../ultils/myFonts';
 import {useDispatch, useSelector} from 'react-redux';
 import database from '@react-native-firebase/database';
 
-import storage from '@react-native-firebase/storage';
 import {ImageUri} from '../common/image_uri';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Collapsible from 'react-native-collapsible';

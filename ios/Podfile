@@ -9,7 +9,8 @@ use_modular_headers!
 
 prepare_react_native_project!
 
-flipper_config = ENV['NO_FLIPPER'] == "1" ? FlipperConfiguration.disabled : FlipperConfiguration.enabled
+# flipper_config = ENV['NO_FLIPPER'] == "1" ? FlipperConfiguration.disabled : FlipperConfiguration.enabled
+flipper_config = FlipperConfiguration.disabled
 
 target 'MyProject' do
   config = use_native_modules!
@@ -36,7 +37,6 @@ target 'MyProject' do
   # pod 'gRPC-Core', :modular_headers => true
   # pod 'BoringSSL-GRPC', :modular_headers => true
 
-  use_flipper!
 
   target 'MyProjectTests' do
     inherit! :complete
@@ -50,5 +50,23 @@ target 'MyProject' do
     )
     
     __apply_Xcode_12_5_M1_post_install_workaround(installer)
+
+
+    # Start add for xcode 15
+    installer.pods_project.targets.each do |target|
+      if target.name == 'Flipper'
+        file_path = 'Pods/Flipper/xplat/Flipper/FlipperTransportTypes.h'
+        contents = File.read(file_path)
+        unless contents.include?('#include <functional>')
+          File.chmod(0755, file_path)
+          File.open(file_path, 'w') do |file|
+            file.puts('#include <functional>')
+            file.puts(contents)
+          end
+        end
+      end
+    end
+    # End for xcode 15
+
   end
 end

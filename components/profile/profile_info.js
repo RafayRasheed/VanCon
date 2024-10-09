@@ -36,7 +36,6 @@ import {setProfile} from '../../redux/profile_reducer';
 import {SelectCity} from '../account1/select_city';
 import {FirebaseUser} from '../functions/firebase';
 import {launchImageLibrary} from 'react-native-image-picker';
-import storage from '@react-native-firebase/storage';
 import {ImageUri} from '../common/image_uri';
 import {setErrorAlert} from '../../redux/error_reducer';
 import {updateProfileAPI, updateProfileImageAPI} from '../common/api';
@@ -179,38 +178,38 @@ export const ProfileInfo = ({navigation}) => {
 
   const uploadImage = async (uri, name, i) => {
     const path = `images/restaurants/${profile.uid}/${name}`;
-    storage()
-      .ref(path)
-      .putFile(uri)
-      .then(s => {
-        storage()
-          .ref(path)
-          .getDownloadURL()
-          .then(uri => {
-            setImage(uri);
-            updateProfileToFirebase({image: uri});
-            disptach(
-              setErrorAlert({
-                Title: 'Profile Updated Successfully',
-                Status: 10,
-              }),
-            );
-            setImageLoading(null);
-            console.log('uri recieved icon');
-          })
-          .catch(e => {
-            setImageLoading(null);
-            setErrorMsg('Something Wrong');
+    // storage()
+    //   .ref(path)
+    //   .putFile(uri)
+    //   .then(s => {
+    //     storage()
+    //       .ref(path)
+    //       .getDownloadURL()
+    //       .then(uri => {
+    //         setImage(uri);
+    //         updateProfileToFirebase({image: uri});
+    //         disptach(
+    //           setErrorAlert({
+    //             Title: 'Profile Updated Successfully',
+    //             Status: 10,
+    //           }),
+    //         );
+    //         setImageLoading(null);
+    //         console.log('uri recieved icon');
+    //       })
+    //       .catch(e => {
+    //         setImageLoading(null);
+    //         setErrorMsg('Something Wrong');
 
-            console.log('er', e);
-          });
-      })
-      .catch(e => {
-        setImageLoading(null);
-        setErrorMsg('Something Wrong');
+    //         console.log('er', e);
+    //       });
+    //   })
+    //   .catch(e => {
+    //     setImageLoading(null);
+    //     setErrorMsg('Something Wrong');
 
-        console.log('er', e);
-      });
+    //     console.log('er', e);
+    //   });
 
     // try {
     //     await task;
