@@ -377,7 +377,6 @@ export const RequestRide = ({navigation, route}) => {
       };
       setIsLoading(false);
       console.log('newProfile', newProfile);
-      return;
 
       return;
       if (online) {
