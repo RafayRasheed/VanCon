@@ -32,7 +32,6 @@ import {
   encodeInfo,
   updateProfileToFirebase,
 } from '../functions/functions';
-import firestore from '@react-native-firebase/firestore';
 import {setProfile} from '../../redux/profile_reducer';
 import {SelectCity} from '../account1/select_city';
 import {FirebaseUser} from '../functions/firebase';

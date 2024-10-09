@@ -20,7 +20,6 @@ import {
 import {myFontSize, myFonts, myLetSpacing} from '../../ultils/myFonts';
 import {myColors} from '../../ultils/myColors';
 import {deccodeInfo, encodeInfo} from '../functions/functions';
-import firestore from '@react-native-firebase/firestore';
 import {FirebaseUser} from '../functions/firebase';
 import {setProfile} from '../../redux/profile_reducer';
 import {updateProfileAPI} from '../common/api';

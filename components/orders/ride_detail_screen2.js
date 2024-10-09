@@ -3,7 +3,6 @@ import { StyleSheet, Alert, TextInput, TouchableOpacity, View, SafeAreaView, Ima
 import { Loader, MyError, Spacer, StatusbarH, errorTime, ios, myHeight, myWidth } from '../common';
 import { myColors } from '../../ultils/myColors';
 import { myFonts, myLetSpacing, myFontSize } from '../../ultils/myFonts';
-import firestore, { Filter } from '@react-native-firebase/firestore';
 import database from '@react-native-firebase/database';
 import { ImageUri } from '../common/image_uri';
 import { FlashList } from '@shopify/flash-list';

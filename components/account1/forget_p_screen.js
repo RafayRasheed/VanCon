@@ -19,7 +19,6 @@ import {
 } from '../common';
 import {myFontSize, myFonts} from '../../ultils/myFonts';
 import {myColors} from '../../ultils/myColors';
-import firestore from '@react-native-firebase/firestore';
 import {sendVerficationEmail} from '../functions/email';
 import {verificationCode} from '../functions/functions';
 import {FirebaseUser} from '../functions/firebase';

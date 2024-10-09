@@ -28,7 +28,6 @@ import {sendPushNotification} from '../functions/firebase';
 import {setErrorAlert} from '../../redux/error_reducer';
 import storeRedux from '../../redux/store_redux';
 import {containString} from '../functions/functions';
-import firestore from '@react-native-firebase/firestore';
 import {ActivityIndicator} from 'react-native';
 import {searchVehicles} from '../common/api';
 import {RestaurantInfoSkeleton} from '../common/skeletons';
@@ -284,27 +283,27 @@ export const Search = ({navigation, route}) => {
             Status: 2,
           }),
         );
-        firestore()
-          .collection('drivers')
-          .doc(driver.uid)
-          .get()
-          .then(data => {
-            const captain = data.data();
-            const token = captain.deviceToken;
-            console.log('Successfully');
-            const navigate = {screen: 'RIDES', params: {index: 1}};
+        // firestore()
+        //   .collection('drivers')
+        //   .doc(driver.uid)
+        //   .get()
+        //   .then(data => {
+        //     const captain = data.data();
+        //     const token = captain.deviceToken;
+        //     console.log('Successfully');
+        //     const navigate = {screen: 'RIDES', params: {index: 1}};
 
-            sendPushNotification(
-              'New Request',
-              `You have a ride request from ${request.name}`,
-              2,
-              [token],
-              navigate,
-            );
-          })
-          .catch(err => {
-            console.log(err);
-          });
+        //     sendPushNotification(
+        //       'New Request',
+        //       `You have a ride request from ${request.name}`,
+        //       2,
+        //       [token],
+        //       navigate,
+        //     );
+        //   })
+        //   .catch(err => {
+        //     console.log(err);
+        //   });
         // database()
         //     .ref(`/requests/${driver.uid}/${request.id}`)
         //     .update({ ...request, ...newUpdate, unread: true }).then(() => {

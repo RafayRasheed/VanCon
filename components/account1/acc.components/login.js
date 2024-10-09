@@ -10,7 +10,6 @@ import {
 import {ios, Loader, myHeight, myWidth, Spacer} from '../../common';
 import {myFontSize, myFonts} from '../../../ultils/myFonts';
 import {myColors} from '../../../ultils/myColors';
-import firestore from '@react-native-firebase/firestore';
 import {deccodeInfo} from '../../functions/functions';
 import {setLogin} from '../../functions/storageMMKV';
 import {useDispatch} from 'react-redux';

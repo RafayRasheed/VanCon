@@ -44,7 +44,6 @@ import Collapsible from 'react-native-collapsible';
 import Animated, {ZoomIn, ZoomOut} from 'react-native-reanimated';
 import {FlashList} from '@shopify/flash-list';
 import {Stars} from './home.component/star';
-import firestore from '@react-native-firebase/firestore';
 import {all} from 'axios';
 import {setErrorAlert} from '../../redux/error_reducer';
 import {

@@ -5,16 +5,11 @@ platform :ios, '13.0'
 
 # Enable modular headers globally
 use_modular_headers!
+# use_frameworks! :linkage => :static
 
 prepare_react_native_project!
 
 flipper_config = ENV['NO_FLIPPER'] == "1" ? FlipperConfiguration.disabled : FlipperConfiguration.enabled
-
-linkage = ENV['USE_FRAMEWORKS']
-if linkage != nil
-  Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
-  use_frameworks! :linkage => linkage.to_sym
-end
 
 target 'MyProject' do
   config = use_native_modules!
@@ -30,11 +25,18 @@ target 'MyProject' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  # Add Firebase pods
-  pod 'Firebase/Core', :modular_headers => true
-  pod 'Firebase/Messaging', :modular_headers => true
-  pod 'Firebase/Storage', :modular_headers => true
-  pod 'Firebase/Auth', :modular_headers => true
+  # Uncomment Firebase pods if required
+  # pod 'Firebase/Core', :modular_headers => true
+  # pod 'Firebase/Messaging', :modular_headers => true
+  # pod 'Firebase/Storage', :modular_headers => true
+  # pod 'Firebase/Auth', :modular_headers => true
+  # pod 'Firebase/Firestore', :modular_headers => true
+
+  # Uncomment gRPC and BoringSSL-GRPC pods if required
+  # pod 'gRPC-Core', :modular_headers => true
+  # pod 'BoringSSL-GRPC', :modular_headers => true
+
+  use_flipper!
 
   target 'MyProjectTests' do
     inherit! :complete
@@ -46,6 +48,7 @@ target 'MyProject' do
       installer,
       :mac_catalyst_enabled => false
     )
+    
     __apply_Xcode_12_5_M1_post_install_workaround(installer)
   end
 end

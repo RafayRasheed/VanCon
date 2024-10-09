@@ -36,7 +36,6 @@ import storage from '@react-native-firebase/storage';
 import {ImageUri} from '../common/image_uri';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Collapsible from 'react-native-collapsible';
-import firestore from '@react-native-firebase/firestore';
 import {setProfile} from '../../redux/profile_reducer';
 import {FirebaseUser, sendPushNotification} from '../functions/firebase';
 import {setErrorAlert} from '../../redux/error_reducer';

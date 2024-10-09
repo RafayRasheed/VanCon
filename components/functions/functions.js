@@ -8,7 +8,6 @@ import Geolocation from '@react-native-community/geolocation';
 import {setErrorAlert} from '../../redux/error_reducer';
 import {getDistance} from 'geolib';
 import {FirebaseLocation, FirebaseUser} from './firebase';
-import firestore from '@react-native-firebase/firestore';
 
 import {setAreasLocation} from '../../redux/areas_reducer';
 import {
@@ -157,17 +156,17 @@ export function updateAndNewLocation(coords) {
         detail[id] = {id, name, latitude, longitude};
 
         storeRedux.dispatch(setAreasLocation({id, name, latitude, longitude}));
-        firestore()
-          .collection('locations')
-          .doc(profile.city)
-          .update(detail)
-          .then(() => {
-            getAreasLocations();
-            console.log('New Location Update', detail);
-          })
-          .catch(err => {
-            console.log('update location error', err);
-          });
+        // firestore()
+        //   .collection('locations')
+        //   .doc(profile.city)
+        //   .update(detail)
+        //   .then(() => {
+        //     getAreasLocations();
+        //     console.log('New Location Update', detail);
+        //   })
+        //   .catch(err => {
+        //     console.log('update location error', err);
+        //   });
       })
       .catch(error => {
         console.error('Error:', error);
@@ -236,31 +235,31 @@ export function getDashboardData(setIsLoading) {
 export const getAreasLocations = () => {
   const {profile} = storeRedux.getState().profile;
 
-  firestore()
-    .collection('locations')
-    .doc(profile.city)
-    .get()
-    .then(result => {
-      if (result.exists) {
-        const areas = result.data();
-        let AllAreas = [];
-        for (const [key, value] of Object.entries(areas)) {
-          AllAreas.push(value);
-        }
+  // firestore()
+  //   .collection('locations')
+  //   .doc(profile.city)
+  //   .get()
+  //   .then(result => {
+  //     if (result.exists) {
+  //       const areas = result.data();
+  //       let AllAreas = [];
+  //       for (const [key, value] of Object.entries(areas)) {
+  //         AllAreas.push(value);
+  //       }
 
-        storeRedux.dispatch(
-          setAreasLocation(
-            AllAreas.sort(function (a, b) {
-              return a.name.localeCompare(b.name);
-            }),
-          ),
-        );
-        getCurrentLocations();
-      }
-    })
-    .catch(ERR => {
-      console.log('ERROR ON getAreasLocations', ERR);
-    });
+  //       storeRedux.dispatch(
+  //         setAreasLocation(
+  //           AllAreas.sort(function (a, b) {
+  //             return a.name.localeCompare(b.name);
+  //           }),
+  //         ),
+  //       );
+  //       getCurrentLocations();
+  //     }
+  //   })
+  //   .catch(ERR => {
+  //     console.log('ERROR ON getAreasLocations', ERR);
+  // });
 };
 
 export function getProfileFromFirebase() {
@@ -322,64 +321,64 @@ export function updateProfileToFirebase(object) {
 
 export function getAllRestuarant(profile) {
   return;
-  firestore()
-    .collection('drivers')
-    .where('ready', '==', true)
-    .where('city', '==', profile.city)
-    .get()
-    .then(result => {
-      if (!result.empty) {
-        let drivers = [];
-        let eventDrivers = [];
-        let insideUniDrivers = [];
-        let recomended = [];
+  // firestore()
+  //   .collection('drivers')
+  //   .where('ready', '==', true)
+  //   .where('city', '==', profile.city)
+  //   .get()
+  //   .then(result => {
+  //     if (!result.empty) {
+  //       let drivers = [];
+  //       let eventDrivers = [];
+  //       let insideUniDrivers = [];
+  //       let recomended = [];
 
-        result.forEach((res, i) => {
-          const driver = res.data();
-          drivers.push(driver);
+  //       result.forEach((res, i) => {
+  //         const driver = res.data();
+  //         drivers.push(driver);
 
-          if (driver.isOneRide) {
-            eventDrivers.push(driver);
-          }
-          if (driver.isInsideUni) {
-            insideUniDrivers.push(driver);
-          }
-          if (driver.rating >= 4.5) {
-            recomended.push(driver);
-          }
-        });
-        console.log('drivers', drivers.length);
+  //         if (driver.isOneRide) {
+  //           eventDrivers.push(driver);
+  //         }
+  //         if (driver.isInsideUni) {
+  //           insideUniDrivers.push(driver);
+  //         }
+  //         if (driver.rating >= 4.5) {
+  //           recomended.push(driver);
+  //         }
+  //       });
+  //       console.log('drivers', drivers.length);
 
-        const sortByWeightedRating = (a, b) => {
-          // Calculate weighted rating (rating * numRatings)
-          const weightedRatingA = a.rating * a.noOfRatings;
-          const weightedRatingB = b.rating * b.noOfRatings;
+  //       const sortByWeightedRating = (a, b) => {
+  //         // Calculate weighted rating (rating * numRatings)
+  //         const weightedRatingA = a.rating * a.noOfRatings;
+  //         const weightedRatingB = b.rating * b.noOfRatings;
 
-          // Sort by weighted rating
-          return weightedRatingB - weightedRatingA; // Sort by descending weighted rating
-        };
-        const randomSort = () => Math.random() - 0.5;
+  //         // Sort by weighted rating
+  //         return weightedRatingB - weightedRatingA; // Sort by descending weighted rating
+  //       };
+  //       const randomSort = () => Math.random() - 0.5;
 
-        // Randomly sort the array
-        // storeRedux.dispatch(setRecommendedDrivers(recomended.sort(function (a, b) { return b.rating - a.rating })))
-        storeRedux.dispatch(
-          setRecommendedDrivers(recomended.sort(sortByWeightedRating)),
-        );
-        storeRedux.dispatch(setEventDrivers(eventDrivers.sort(randomSort)));
-        storeRedux.dispatch(
-          setInsideUniDrivers(insideUniDrivers.sort(randomSort)),
-        );
+  //       // Randomly sort the array
+  //       // storeRedux.dispatch(setRecommendedDrivers(recomended.sort(function (a, b) { return b.rating - a.rating })))
+  //       storeRedux.dispatch(
+  //         setRecommendedDrivers(recomended.sort(sortByWeightedRating)),
+  //       );
+  //       storeRedux.dispatch(setEventDrivers(eventDrivers.sort(randomSort)));
+  //       storeRedux.dispatch(
+  //         setInsideUniDrivers(insideUniDrivers.sort(randomSort)),
+  //       );
 
-        storeRedux.dispatch(setAllDriver(drivers));
-      } else {
-        console.log('empty');
+  //       storeRedux.dispatch(setAllDriver(drivers));
+  //     } else {
+  //       console.log('empty');
 
-        // setCategories(catArray)
-      }
-    })
-    .catch(er => {
-      // Alert.alert(er.toString())
+  //       // setCategories(catArray)
+  //     }
+  //   })
+  //   .catch(er => {
+  //     // Alert.alert(er.toString())
 
-      console.log('Error on Get all Restaurant', er);
-    });
+  //     console.log('Error on Get all Restaurant', er);
+  //   });
 }

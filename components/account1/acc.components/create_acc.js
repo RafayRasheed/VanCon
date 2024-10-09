@@ -19,7 +19,6 @@ import {
   encodeInfo,
   verificationCode,
 } from '../../functions/functions';
-import firestore from '@react-native-firebase/firestore';
 import {sendVerficationEmail} from '../../functions/email';
 import {SelectCity} from '../select_city';
 import {FirebaseUser, getDeviceToken} from '../../functions/firebase';

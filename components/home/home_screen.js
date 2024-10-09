@@ -38,7 +38,6 @@ import {
 } from '../functions/storageMMKV';
 import {setCart} from '../../redux/cart_reducer';
 import {useDispatch, useSelector} from 'react-redux';
-import firestore, {Filter} from '@react-native-firebase/firestore';
 import {setFavoriteDrivers} from '../../redux/favorite_reducer';
 import {RestaurantInfoSkeleton} from '../common/skeletons';
 import {HomeSkeleton} from './home.component/home_skeleton';
@@ -278,61 +277,61 @@ export const HomeScreen = ({navigation}) => {
               messages[chat.msgId] = message;
             });
 
-            firestore()
-              .collection('drivers')
-              .doc(user2ID)
-              .get()
-              .then(data => {
-                const captain = data.data();
-                const token = captain.deviceToken;
+            // firestore()
+            //   .collection('drivers')
+            //   .doc(user2ID)
+            //   .get()
+            //   .then(data => {
+            //     const captain = data.data();
+            //     const token = captain.deviceToken;
 
-                const update = {
-                  user: {
-                    uid: profile.uid,
-                    name: profile.name,
-                  },
-                  captain: {
-                    uid: captain.uid,
-                    name: captain.name,
-                  },
-                };
-                console.log('jeeee', update);
-                database()
-                  .ref(`/chats/${chatId}`)
-                  .child('messages')
-                  .update(messages)
-                  .then(data => {
-                    const pp = {...pendings};
-                    delete pp[chatId];
-                    dispatch(setPendingChats(pp));
-                    const navigate = {
-                      screen: 'Chat',
-                      params: {user2: {name: profile.name, uid: profile.uid}},
-                    };
-                    sendPushNotification(
-                      profile.name,
-                      singleChat.length == 1
-                        ? singleChat[0].message
-                        : `${singleChat.length} new messages`,
-                      2,
-                      [token],
-                      navigate,
-                    );
+            //     const update = {
+            //       user: {
+            //         uid: profile.uid,
+            //         name: profile.name,
+            //       },
+            //       captain: {
+            //         uid: captain.uid,
+            //         name: captain.name,
+            //       },
+            //     };
+            //     console.log('jeeee', update);
+            //     database()
+            //       .ref(`/chats/${chatId}`)
+            //       .child('messages')
+            //       .update(messages)
+            //       .then(data => {
+            //         const pp = {...pendings};
+            //         delete pp[chatId];
+            //         dispatch(setPendingChats(pp));
+            //         const navigate = {
+            //           screen: 'Chat',
+            //           params: {user2: {name: profile.name, uid: profile.uid}},
+            //         };
+            //         sendPushNotification(
+            //           profile.name,
+            //           singleChat.length == 1
+            //             ? singleChat[0].message
+            //             : `${singleChat.length} new messages`,
+            //           2,
+            //           [token],
+            //           navigate,
+            //         );
 
-                    database()
-                      .ref(`/chats/${chatId}`)
-                      .update(update)
-                      .catch(err => {
-                        console.log('error on inside message', err);
-                      });
-                  })
-                  .catch(err => {
-                    console.log('error on inside message', err);
-                  });
-              })
-              .catch(err => {
-                console.log('error on inside message', err);
-              });
+            //         database()
+            //           .ref(`/chats/${chatId}`)
+            //           .update(update)
+            //           .catch(err => {
+            //             console.log('error on inside message', err);
+            //           });
+            //       })
+            //       .catch(err => {
+            //         console.log('error on inside message', err);
+            //       });
+            //   })
+            //   .catch(err => {
+            //     console.log('error on inside message', err);
+            //   });
           });
         })
         .catch(error => {

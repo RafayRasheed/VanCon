@@ -21,7 +21,6 @@ import {
   myWidth,
   storage,
 } from '../common';
-import firestore from '@react-native-firebase/firestore';
 import {setLogin} from '../functions/storageMMKV';
 import {sendVerficationEmail} from '../functions/email';
 import {verificationCode} from '../functions/functions';

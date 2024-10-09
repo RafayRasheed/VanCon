@@ -30,7 +30,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {FlashList} from '@shopify/flash-list';
 import {setErrorAlert} from '../../redux/error_reducer';
 import {RFValue} from 'react-native-responsive-fontsize';
-import firestore from '@react-native-firebase/firestore';
 import {sendPushNotification} from '../functions/firebase';
 import Swipeable from 'react-native-swipeable';
 import Collapsible from 'react-native-collapsible';
@@ -551,18 +550,18 @@ export const Chat = ({navigation, route}) => {
         if (driver) {
           updateMor(driver);
         } else {
-          firestore()
-            .collection('drivers')
-            .doc(user2.uid)
-            .get()
-            .then(data => {
-              const captain = data.data();
-              setDriver(captain);
-              updateMor(captain);
-            })
-            .catch(error => {
-              console.log('Error retrieving driver data:', error);
-            });
+          // firestore()
+          // .collection('drivers')
+          // .doc(user2.uid)
+          // .get()
+          // .then(data => {
+          //   const captain = data.data();
+          //   setDriver(captain);
+          //   updateMor(captain);
+          // })
+          // .catch(error => {
+          //   console.log('Error retrieving driver data:', error);
+          // });
         }
       })
       .catch(error => {
@@ -724,18 +723,18 @@ export const Chat = ({navigation, route}) => {
         if (driver) {
           updateMor(driver);
         } else {
-          firestore()
-            .collection('drivers')
-            .doc(user2.uid)
-            .get()
-            .then(data => {
-              const captain = data.data();
-              setDriver(captain);
-              updateMor(captain);
-            })
-            .catch(err => {
-              console.log('error on inside message', err);
-            });
+          // firestore()
+          //   .collection('drivers')
+          //   .doc(user2.uid)
+          //   .get()
+          //   .then(data => {
+          //     const captain = data.data();
+          //     setDriver(captain);
+          //     updateMor(captain);
+          //   })
+          //   .catch(err => {
+          //     console.log('error on inside message', err);
+          //   });
         }
 
         // database().ref(`/chats/${chatId}`).child('lastUpdate')
