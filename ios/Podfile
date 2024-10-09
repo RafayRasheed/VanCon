@@ -29,13 +29,14 @@ target 'MyProject' do
   # Uncomment Firebase pods if required
   pod 'Firebase/Core', :modular_headers => true
   pod 'Firebase/Messaging', :modular_headers => true
-  pod 'Firebase/Storage', :modular_headers => true
   pod 'Firebase/Auth', :modular_headers => true
-  pod 'Firebase/Firestore', :modular_headers => true
+  # pod 'Firebase/Storage', :modular_headers => true
+  # pod 'Firebase/Firestore', :modular_headers => true
+  
 
   # Uncomment gRPC and BoringSSL-GRPC pods if required
-  # pod 'gRPC-Core', :modular_headers => true
-  # pod 'BoringSSL-GRPC', :modular_headers => true
+  pod 'gRPC-Core', :modular_headers => true
+  pod 'BoringSSL-GRPC', :modular_headers => true
 
 
   target 'MyProjectTests' do
