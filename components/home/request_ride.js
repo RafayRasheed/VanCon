@@ -51,6 +51,7 @@ import {DriverInfoFull} from './home.component/driver_info_full';
 import {SwipeableItem} from './home.component/drag_commponent';
 import {useFocusEffect} from '@react-navigation/native';
 import Animated, {BounceIn} from 'react-native-reanimated';
+import {createRide} from '../common/api';
 const allDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 export const RequestRide = ({navigation, route}) => {
   const disptach = useDispatch();
@@ -373,6 +374,33 @@ export const RequestRide = ({navigation, route}) => {
         // driverContact: null,
         // location: current ? current : {latitude: 0, longitude: 0},
       };
+
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json', // Specify the content type as JSON
+        },
+        body: JSON.stringify(newProfile), // Convert the data to JSON string
+      };
+      fetch(createRide, options)
+        .then(response => response.json())
+        .then(data => {
+          // Work with the JSON data
+          const {code, body, message} = data;
+
+          if (code == 1) {
+            const {favorites = []} = body;
+            console.log(favorites);
+            dispatch(setFavoriteDrivers(favorites));
+          } else {
+            dispatch(setErrorAlert({Title: message, Status: 0}));
+          }
+        })
+        .catch(error => {
+          // Handle any errors that occurred during the fetch
+
+          console.error('Fetch error:', error);
+        });
       setIsLoading(false);
       console.log('newProfile', newProfile);
 

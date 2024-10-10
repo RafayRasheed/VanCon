@@ -24,3 +24,4 @@ export const searchVehicles = `${api}/users/searchVehicles`;
 export const getVehicleDetails = `${api}/users/getVehicleDetails`;
 export const getFavorites = `${api}/users/getFavorites`;
 export const addUpdateFavorites = `${api}/users/addUpdateFavorites`;
+export const createRide = `${api}/users/createRide`;
