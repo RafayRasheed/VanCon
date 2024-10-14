@@ -1,59 +1,76 @@
-import { Image, Button, TouchableOpacity, SafeAreaView, StyleSheet, Text, View } from 'react-native'
-import React, { useState } from 'react'
-import { Spacer, ios, myHeight, myWidth } from "../../common"
-import { myFontSize, myFonts, myLetSpacing } from "../../../ultils/myFonts"
-import { myColors } from "../../../ultils/myColors"
+import {
+  Image,
+  Button,
+  TouchableOpacity,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import React, {useState} from 'react';
+import {Spacer, ios, myHeight, myWidth} from '../../common';
+import {myFontSize, myFonts, myLetSpacing} from '../../../ultils/myFonts';
+import {myColors} from '../../../ultils/myColors';
 // import { Calendar, LocaleConfig } from 'react-native-calendars';
-import DateTimePickerModal from "react-native-modal-datetime-picker";
-export const CalenderDate = ({ showVal, show, value, content = null, time = true, currDate = null, }) => {
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+export const CalenderDate = ({
+  showVal,
+  show,
+  value,
+  content = null,
+  time = true,
+  currDate = null,
+}) => {
+  function formatAMPM(date) {
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    var strTime = hours + ':' + minutes + ' ' + ampm;
+    return strTime;
+  }
+  const hideDatePicker = () => {
+    show(false);
+  };
 
-    function formatAMPM(date) {
-        var hours = date.getHours();
-        var minutes = date.getMinutes();
-        var ampm = hours >= 12 ? 'PM' : 'AM';
-        hours = hours % 12;
-        hours = hours ? hours : 12; // the hour '0' should be '12'
-        minutes = minutes < 10 ? '0' + minutes : minutes;
-        var strTime = hours + ':' + minutes + ' ' + ampm;
-        return strTime;
-    }
-    const hideDatePicker = () => {
-        show(false);
-    };
+  const handleConfirm = date => {
+    // console.log(new Date().getHours())
+    hideDatePicker();
+    value(formatAMPM(date), date, content, showVal);
+  };
 
-    const handleConfirm = (date) => {
-        // console.log(new Date().getHours())
-        hideDatePicker();
-        value(formatAMPM(date), date, content, showVal)
-    };
-
-
-
-    return (
-        <TouchableOpacity onPress={() => show(false)} style={styles.container}>
-
-
-            <DateTimePickerModal
-                minimumDate={time ? null : new Date()}
-                accentColor={myColors.primaryT}
-                date={content?.current ? new Date(content.current) : new Date()}
-                buttonTextColorIOS={myColors.primaryT}
-                isVisible={true}
-                modalStyleIOS={{ backgroundColor: '#00000030', margin: 0, marginBottom: ios ? myHeight(1) : 0, }}
-                mode={time ? 'time' : 'date'}
-                onConfirm={handleConfirm}
-                onCancel={hideDatePicker}
-
-            />
-            {/* <RNDateTimePicker /> */}
-            {/* <DateTimePickerModal
+  return (
+    <TouchableOpacity onPress={() => show(false)} style={styles.container}>
+      <DateTimePickerModal
+        minimumDate={time ? null : new Date()}
+        accentColor={myColors.primaryT}
+        date={
+          content?.current
+            ? new Date(content.current)
+            : new Date(new Date('2024-10-10').setHours(0, 0, 0, 0))
+        }
+        buttonTextColorIOS={myColors.primaryT}
+        isVisible={true}
+        modalStyleIOS={{
+          backgroundColor: '#00000030',
+          margin: 0,
+          marginBottom: ios ? myHeight(1) : 0,
+        }}
+        mode={time ? 'time' : 'date'}
+        onConfirm={handleConfirm}
+        onCancel={hideDatePicker}
+      />
+      {/* <RNDateTimePicker /> */}
+      {/* <DateTimePickerModal
                 isVisible={true}
                 mode="date"
                 onConfirm={handleConfirm}
                 onCancel={hideDatePicker}
             /> */}
 
-            {/* <Calendar
+      {/* <Calendar
 
                 style={{
                     // borderWidth: 1,
@@ -100,19 +117,17 @@ export const CalenderDate = ({ showVal, show, value, content = null, time = true
             // Mark specific dates as marked
 
             /> */}
-        </TouchableOpacity>
-    );
-
-
-}
+    </TouchableOpacity>
+  );
+};
 const styles = StyleSheet.create({
-    container: {
-        height: '100%',
-        width: "100%",
-        position: 'absolute',
-        zIndex: 1,
-        backgroundColor: '#00000030',
-        alignItems: 'center',
-        justifyContent: 'center',
-    }
-})
+  container: {
+    height: '100%',
+    width: '100%',
+    position: 'absolute',
+    zIndex: 1,
+    backgroundColor: '#00000030',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

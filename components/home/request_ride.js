@@ -374,6 +374,7 @@ export const RequestRide = ({navigation, route}) => {
         // driverContact: null,
         // location: current ? current : {latitude: 0, longitude: 0},
       };
+      console.log('newProfile', newProfile);
 
       const options = {
         method: 'POST',
@@ -387,22 +388,20 @@ export const RequestRide = ({navigation, route}) => {
         .then(data => {
           // Work with the JSON data
           const {code, body, message} = data;
+          setIsLoading(false);
 
           if (code == 1) {
-            const {favorites = []} = body;
-            console.log(favorites);
-            dispatch(setFavoriteDrivers(favorites));
+            const {request = null} = body;
+            console.log(request);
           } else {
-            dispatch(setErrorAlert({Title: message, Status: 0}));
           }
         })
         .catch(error => {
           // Handle any errors that occurred during the fetch
+          setIsLoading(false);
 
           console.error('Fetch error:', error);
         });
-      setIsLoading(false);
-      console.log('newProfile', newProfile);
 
       return;
       if (online) {

@@ -220,7 +220,7 @@ export function getDashboardData(setIsLoading) {
       if (code == 1) {
         const {categories, locations = []} = body;
         storeRedux.dispatch(setAllDriver(categories));
-        // storeRedux.dispatch(setAreasLocation(locations));
+        storeRedux.dispatch(setAreasLocation(locations));
       } else {
         storeRedux.dispatch(setErrorAlert({Title: message, Status: 0}));
       }
